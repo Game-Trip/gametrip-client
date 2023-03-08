@@ -1,63 +1,70 @@
-import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import { Alignment, Button, Icon, InputGroup, Navbar } from "@blueprintjs/core";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Visibility from "@mui/icons-material/Visibility";
+import { IonTitle, IonToolbar } from "@ionic/react";
 import { css } from "@emotion/css";
-// import styles
-import "./styles.css";
-import logo from "./logo-no-background.png";
+import InputBase from "@mui/material/InputBase";
+import { motion, useIsPresent } from "framer-motion";
+import "../styles.css";
+import logo from "../logo-no-background.png";
 import { useMediaQuery } from "react-responsive";
 import { IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const isDesktopOrMobile = useMediaQuery({ query: "(min-width: 800px)" });
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const isPresent = useIsPresent();
+
   return (
     <>
       {isDesktopOrMobile ? (
         <div className={styles.body}>
           <div className={styles.topBar}>
             <span className={styles.topButton}>Trending</span>
-            <span className={styles.topButton}>Map</span>
+            <span className={styles.topButton}>
+              <Link
+                style={{ textDecoration: "none", color: "white" }}
+                to={"/map"}
+              >
+                Map
+              </Link>
+            </span>
             <span className={styles.topButton}>Profile</span>
           </div>
           <img className={styles.image} src={logo} />
 
           <div className={styles.footer}>
             <div className={styles.searchSection}>
-              <div className={styles.basicText}>Search for a game</div>
+              <div className={styles.basicText}>Recherchez un jeu</div>
+              <div
+                className={css`
+                  display: flex;
+                  align-items: center;
+                  width: 70%;
+                  margin: auto;
+                  padding: 0px 4px;
+                  border-radius: 8px;
+                  background-color: #ffffff;
 
-              <TextField
-                className={styles.searchBar}
-                // disable animation
-                variant="filled"
-                onFocus={() => {
-                  setIsInputFocused(!isInputFocused);
-                }}
-                onBlur={() => {
-                  setIsInputFocused(!isInputFocused);
-                }}
-                InputProps={{
-                  style: {
-                    backgroundColor: "white",
-                    borderRadius: "8px 8px 0px 0px",
-                    width: isInputFocused ? "70%" : "68%",
-                    transition: "width 0.5s",
-                    margin: "auto",
-                    // on focus
-                  },
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              ></TextField>
+                  /* on focus, move up */
+                  transition: 0.5s;
+                  &:focus-within {
+                    transform: translateY(-5px);
+                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                  }
+                `}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Battlefield 2042, Call of Duty, ..."
+                />
+                <IconButton
+                  type="button"
+                  sx={{ p: "10px" }}
+                  aria-label="search"
+                >
+                  <SearchIcon />
+                </IconButton>
+              </div>
             </div>
           </div>
         </div>
@@ -66,6 +73,13 @@ const HomePage: React.FC = () => {
           <IonTitle>Mobile view</IonTitle>
         </IonToolbar>
       )}
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+        className="privacy-screen"
+      />
     </>
   );
 };
@@ -81,7 +95,7 @@ const styles = {
     background-color: #61ba8c;
     height: 130px;
     padding: 20px;
-    box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.35);
+    box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
     width: 60%;
     /* center */
     position: absolute;
@@ -119,13 +133,13 @@ const styles = {
     bottom: 0;
     z-index: 1;
     border-top: 25px solid #85d8ac;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   `,
   topBar: css`
     border-bottom: 5px solid #85d8ac;
     background-color: #74c499;
     height: 115px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     display: flex;
     /* center elements */
     justify-content: center;
@@ -139,9 +153,17 @@ const styles = {
     font-weight: 500;
     font-size: 28px;
     line-height: 33px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-    /* align to bottom */
     align-self: flex-end;
+    border-radius: 8px;
+    padding: 10px;
+    transition: 0.5s;
+    /* on hover */
+    :hover {
+      background-color: #65aa85;
+      cursor: pointer;
+      /* move to top */
+      transform: translateY(-5px);
+    }
   `,
   basicText: css`
     font-family: "Roboto";

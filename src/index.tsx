@@ -5,13 +5,17 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { FocusStyleManager } from "@blueprintjs/core";
+import { BrowserRouter } from "react-router-dom";
+import * as ReactDOMClient from "react-dom/client";
 FocusStyleManager.onlyShowFocusOnTabs();
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <div className="bp4-dark">
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </div>
   </React.StrictMode>
 );
