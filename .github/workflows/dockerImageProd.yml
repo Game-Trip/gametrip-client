@@ -1,0 +1,36 @@
+name: Docker Image CI/CD Prod
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  CI-CD:
+    name: Building and deploy Image gametrip-client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: DockerHub login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build --file ./dockerfile --tag dercraker0/gametrip-client:latest ./
+
+      - name: Push Docker Image to Registry
+        run: docker push dercraker0/gametrip-client:latest
+
+      # - name: PUT Request Action to update Stack
+      #   uses: fjogeleit/http-request-action@v1.13.0
+      #   with:
+      #     url: '${{ secrets.PORTAINER_UPDATE_STACK_API_URL }}'
+      #     method: 'PUT'
+      #     timeout: 20000
+      #     customHeaders: '{"x-api-key": "${{ secrets.PORTAINER_X_API_KEY }}"}'
+      #     data: '${{ vars.PORTAINER_UPDATE_STACK_PROD_DATA }}'
