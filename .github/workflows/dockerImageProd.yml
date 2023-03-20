@@ -16,4 +16,5 @@ jobs:
       - name: Build and Deploy Frontend
         run: |
           npm install
-          npm run build
+          # npm run build and ignore eslint errors
+          npm run build -- --max-warnings=0
