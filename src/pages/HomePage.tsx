@@ -1,8 +1,5 @@
-import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import { Alignment, Button, Icon, InputGroup, Navbar } from "@blueprintjs/core";
+import { IonTitle, IonToolbar } from "@ionic/react";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Visibility from "@mui/icons-material/Visibility";
 import { css } from "@emotion/css";
 // import styles
 import "./styles.css";
