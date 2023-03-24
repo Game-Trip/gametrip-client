@@ -4,20 +4,26 @@ FROM node:16-alpine
 # Set the working directory
 WORKDIR /app
 
-# Copy the package.json and yarn.lock files
-COPY ./package.json ./yarn.lock /app/
+# Copy the builded app
+COPY ./build/ /app/
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy the rest of the project files
-COPY ./ /app/
-
-# Build the project
-RUN yarn build
-
-# Expose the port that the application will run on
+ENV NODE_ENV production
+# Expose the port on which the app will be running (3000 is the default that `serve` uses)
 EXPOSE 3000
+# Start the app
+# Base image
+FROM node:16-alpine
 
-# Start the application
-CMD ["yarn", "start"]
+# Set the working directory
+WORKDIR /app
+
+# Copy the builded app
+COPY ./build/ /app/
+
+ENV NODE_ENV production
+# Expose the port on which the app will be running (3000 is the default that `serve` uses)
+EXPOSE 3000
+# Start the app
+CMD ["npx", "serve", "-s"]
+
+

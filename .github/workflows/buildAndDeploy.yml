@@ -2,46 +2,36 @@ name: Docker Image CI/CD Prod
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  build:
+
+  CI-CD:
+    name: Building and deploy Image gametrip-front
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+        
+      - name: DockerHub login
+        uses: docker/login-action@v1
         with:
-          node-version: '16.x'  
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Build app
-        run: |
-          # npm run build and ignore eslint errors
-          npm run build -- --max-warnings=0
-
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v3
+      - name: Build Docker Image
+        run: docker build --file . --tag ${{ secrets.REGISTRY_NAME }}/gametrip-front:production ./
+      
+      - name: Push Docker Image to Registry
+        run: docker push ${{ secrets.REGISTRY_NAME }}/gametrip-front:production
+      
+      - name: PUT Request Action to update Stack
+        uses: fjogeleit/http-request-action@v1.13.0
         with:
-          name: production
-          path: ./build
-
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: production
-
+          url: '${{ secrets.PORTAINER_UPDATE_STACK_FRONT_PROD_URL }}'
+          method: 'PUT'
+          timeout: 20000
+          customHeaders: '${{ secrets.CUSTOM_HEADERS }}'
+          data: '${{ vars.PORTAINER_UPDATE_STACK_FRONT_PROD }}'
