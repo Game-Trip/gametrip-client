@@ -1,3 +1,4 @@
+ARG IMAGE_TAG=latest
 # Base image
 FROM node:16-alpine
 

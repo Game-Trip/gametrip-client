@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
 
           <div className={styles.footer}>
             <div className={styles.searchSection}>
-              <div className={styles.basicText}>Search for a game test test test test</div>
+              <div className={styles.basicText}>Antoine Mehdi</div>
 
               <TextField
                 className={styles.searchBar}
