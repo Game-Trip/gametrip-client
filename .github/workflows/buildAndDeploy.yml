@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build --file . --tag ${{ secrets.REGISTRY_NAME }}/gametrip-front:production ./
+        run: docker build --file ./dockerfile --tag ${{ secrets.REGISTRY_NAME }}/gametrip-front:production ./
       
       - name: Push Docker Image to Registry
         run: docker push ${{ secrets.REGISTRY_NAME }}/gametrip-front:production
