@@ -12,7 +12,12 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
-    <div className="bp4-dark">
+    <div
+      style={{
+        height: "100vh",
+      }}
+      className="bp4-dark"
+    >
       <BrowserRouter>
         <App />
       </BrowserRouter>

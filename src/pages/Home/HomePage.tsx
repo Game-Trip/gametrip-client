@@ -11,68 +11,58 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
-  const isDesktopOrMobile = useMediaQuery({ query: "(min-width: 800px)" });
   const isPresent = useIsPresent();
 
   return (
-    <>
-      {isDesktopOrMobile ? (
-        <div className={styles.body}>
-          <div className={styles.topBar}>
-            <span className={styles.topButton}>Trending</span>
-            <span className={styles.topButton}>
-              <Link
-                style={{ textDecoration: "none", color: "white" }}
-                to={"/map"}
-              >
-                Map
-              </Link>
-            </span>
-            <span className={styles.topButton}>Profile</span>
-          </div>
-          <img className={styles.image} src={logo} />
+    <div className={styles.wrapper}>
+      <div className={styles.body}>
+        <div className={styles.topBar}>
+          <span className={styles.topButton}>Trending</span>
+          <span className={styles.topButton}>
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to={"/map"}
+            >
+              Map
+            </Link>
+          </span>
+          <span className={styles.topButton}>Profile</span>
+        </div>
+        <img className={styles.image} src={logo} />
 
-          <div className={styles.footer}>
-            <div className={styles.searchSection}>
-              <div className={styles.basicText}>Recherchez un jeu</div>
-              <div
-                className={css`
-                  display: flex;
-                  align-items: center;
-                  width: 70%;
-                  margin: auto;
-                  padding: 0px 4px;
-                  border-radius: 8px;
-                  background-color: #ffffff;
+        <div className={styles.footer}>
+          <div className={styles.searchSection}>
+            <div className={styles.basicText}>Recherchez un jeu</div>
+            <div
+              className={css`
+                display: flex;
+                align-items: center;
+                width: 70%;
+                margin: auto;
+                padding: 0px 4px;
+                border-radius: 8px;
+                background-color: #ffffff;
 
-                  /* on focus, move up */
-                  transition: 0.5s;
-                  &:focus-within {
-                    transform: translateY(-5px);
-                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-                  }
-                `}
-              >
-                <InputBase
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Battlefield 2042, Call of Duty, ..."
-                />
-                <IconButton
-                  type="button"
-                  sx={{ p: "10px" }}
-                  aria-label="search"
-                >
-                  <SearchIcon />
-                </IconButton>
-              </div>
+                /* on focus, move up */
+                transition: 0.5s;
+                &:focus-within {
+                  transform: translateY(-5px);
+                  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                }
+              `}
+            >
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Battlefield 2042, Call of Duty, ..."
+              />
+              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+                <SearchIcon />
+              </IconButton>
             </div>
           </div>
         </div>
-      ) : (
-        <IonToolbar>
-          <IonTitle>Mobile view</IonTitle>
-        </IonToolbar>
-      )}
+      </div>
+
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
@@ -80,11 +70,14 @@ const HomePage: React.FC = () => {
         style={{ originX: isPresent ? 0 : 1 }}
         className="privacy-screen"
       />
-    </>
+    </div>
   );
 };
 
 const styles = {
+  wrapper: css`
+    height: 100vh;
+  `,
   searchBar: css`
     /* horizontally center */
     position: absolute;
