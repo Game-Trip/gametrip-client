@@ -131,19 +131,19 @@ const styles = {
   topBar: css`
     border-bottom: 5px solid #85d8ac;
     background-color: #74c499;
-    height: 115px;
+    height: 100px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     display: flex;
     /* center elements */
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     /* space betseen */
     gap: 40px;
   `,
   topButton: css`
     font-family: "Roboto";
     font-style: normal;
-    font-weight: 500;
+    font-weight: 300px;
     font-size: 28px;
     line-height: 33px;
     align-self: flex-end;
