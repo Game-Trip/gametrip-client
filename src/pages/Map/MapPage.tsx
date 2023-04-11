@@ -1,10 +1,11 @@
 import React from "react";
 import { css } from "@emotion/css";
-
+import SearchIcon from "@mui/icons-material/Search";
 import { motion, useIsPresent } from "framer-motion";
 import { Link } from "react-router-dom";
 import DeckGL from "@deck.gl/react/typed";
 import { Map } from "react-map-gl";
+import { InputBase, IconButton } from "@mui/material";
 interface Props {}
 
 export default function MapPage({}: Props) {
@@ -37,15 +38,44 @@ export default function MapPage({}: Props) {
     <div className={styles.wrapper}>
       <div className={styles.flex}>
         <div className={styles.navBar}>
-          <span className={styles.topButton}>
+          <div className={styles.topButton}>
             <Link style={{ textDecoration: "none", color: "white" }} to={"/"}>
               Home
             </Link>
-          </span>
+          </div>
+          <div
+            className={css`
+              display: flex;
+              align-items: center;
+              width: 30%;
+              height: 45px;
+              padding: 0px 4px;
+              border-radius: 8px;
+              background-color: #ffffff;
+
+              /* on focus, move up */
+              transition: 0.5s;
+              &:focus-within {
+                width: 35%;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+              }
+            `}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Battlefield 2042, Call of Duty, ..."
+            />
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </div>
         </div>
         <div
           style={{
             flexGrow: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <div id="mapWrapper" className={styles.mapWrapper}>
@@ -79,14 +109,13 @@ export default function MapPage({}: Props) {
 }
 const styles = {
   mapWrapper: css`
-    width: 95%;
-    height: 85%;
+    width: 97%;
+    height: 95%;
     margin: auto;
-    transform: translate(0, 9%);
     border-radius: 10px;
-    /* can't see border radius */
     overflow: hidden;
-    
+    flex-shrink: 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   `,
   flex: css`
     display: flex;
@@ -100,15 +129,16 @@ const styles = {
   navBar: css`
     background-color: #74c499;
     width: 100%;
-    height: 115px;
+    height: 90px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-bottom: 5px solid #85d8ac;
-    height: 115px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     display: flex;
-    padding: 0px 0px 20px 40px;
+    padding: 20px 40px;
+    align-items: center;
+    justify-content: space-between;
     gap: 40px;
     z-index: 1;
+    position: relative;
   `,
   topButton: css`
     font-family: "Roboto";
@@ -118,14 +148,21 @@ const styles = {
     line-height: 33px;
     align-self: flex-end;
     border-radius: 8px;
-    padding: 10px;
     transition: 0.5s;
-    /* on hover */
     :hover {
       background-color: #65aa85;
       cursor: pointer;
-      /* move to top */
-      transform: translateY(-5px);
+      padding: 10px;
     }
+  `,
+  basicText: css`
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 33px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    /* center to the middle */
+    align-self: center;
   `,
 };
