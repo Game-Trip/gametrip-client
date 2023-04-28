@@ -38,11 +38,13 @@ export default function MapPage({}: Props) {
     <div className={styles.wrapper}>
       <div className={styles.flex}>
         <div className={styles.navBar}>
-          <div className={styles.topButton}>
-            <Link style={{ textDecoration: "none", color: "white" }} to={"/"}>
-              Home
-            </Link>
-          </div>
+          <Link
+            className={styles.topButton}
+            style={{ textDecoration: "none", color: "white" }}
+            to={"/"}
+          >
+            <span>Home</span>
+          </Link>
           <div
             className={css`
               display: flex;
@@ -129,11 +131,10 @@ const styles = {
   navBar: css`
     background-color: #74c499;
     width: 100%;
-    height: 90px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-bottom: 5px solid #85d8ac;
     display: flex;
-    padding: 20px 40px;
+    padding: 30px 30px 10px 30px;
     align-items: center;
     justify-content: space-between;
     gap: 40px;
@@ -143,16 +144,19 @@ const styles = {
   topButton: css`
     font-family: "Roboto";
     font-style: normal;
-    font-weight: 500;
+    font-weight: 300px;
     font-size: 28px;
     line-height: 33px;
     align-self: flex-end;
     border-radius: 8px;
+    padding: 10px;
     transition: 0.5s;
+    /* on hover */
     :hover {
       background-color: #65aa85;
       cursor: pointer;
-      padding: 10px;
+      /* move to top */
+      transform: translateY(-5px);
     }
   `,
   basicText: css`

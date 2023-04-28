@@ -19,9 +19,10 @@ import { AnimatePresence } from "framer-motion";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { Link, useLocation, useRoutes } from "react-router-dom";
+import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import MapPage from "./pages/Map/MapPage";
+import LoginPage from "./pages/Login/LoginPage";
 
 setupIonicReact();
 
@@ -34,6 +35,10 @@ const App: React.FC = () => {
     {
       path: "/map",
       element: <MapPage />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
     },
   ]);
 
