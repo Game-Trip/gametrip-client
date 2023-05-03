@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Link } from "react-router-dom";
 import logo from "../logo-no-background.png";
-import { InputBase, IconButton } from "@mui/material";
+import { InputBase, IconButton, Snackbar, Alert } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
@@ -12,6 +12,16 @@ interface Props {}
 export default function Component({}: Props): JSX.Element {
   const isPresent = useIsPresent();
   const pwdRef = useRef<HTMLInputElement>(null);
+
+  const [userAuth, setUserAuth] = React.useState({
+    username: "",
+    password: "",
+  });
+  const [snackBarInfo, setSnackBarInfo] = React.useState({
+    isOpen: false,
+    isError: false,
+    message: "",
+  });
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
   const loginRequest = async () => {
     const options = {
@@ -22,14 +32,32 @@ export default function Component({}: Props): JSX.Element {
         "Content-Type": "application/json;charset=UTF-8",
         "Access-Control-Allow-Origin": "*",
       },
-      data: {
-        username: "Dercraker",
-        password: "NMdRx$HqyT8jX6",
-      },
+      data: userAuth,
     };
-
-    const result = await axios(options);
-    console.log(result);
+    try {
+      const result = await axios(options);
+      if (result.data.token) {
+        localStorage.setItem(
+          "game-trip-jwt",
+          JSON.stringify(result.data.token)
+        );
+        setSnackBarInfo({
+          isOpen: true,
+          isError: false,
+          message: "Login successful",
+        });
+      }
+    } catch (error: any) {
+      console.log(error.response.data);
+      if (error.response.data.errorCode === "FailedLogin") {
+        setSnackBarInfo({
+          isOpen: true,
+          isError: true,
+          message: error.response.data.message,
+        });
+      }
+    }
+    // window.location.href = "/map";
   };
 
   return (
@@ -58,7 +86,37 @@ export default function Component({}: Props): JSX.Element {
             <span className={styles.basicText}>Authentication</span>
             <span className={styles.fieldName}>E-mail</span>
             <div className={styles.formInput}>
-              <InputBase sx={{ ml: 1, flex: 1 }} placeholder="E-mail" />
+              <InputBase
+                autoComplete="off"
+                aria-autocomplete="none"
+                sx={{
+                  ml: 1,
+                  flex: 1,
+                  // on chrome autofill, dont change the background color
+                  "&:-webkit-autofill": {
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                    backgroundColor: "white !important",
+                  },
+                  "&:-webkit-autofill:focus": {
+                    backgroundColor: "white !important",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                  },
+                  "&:-webkit-autofill:hover": {
+                    backgroundColor: "white !important",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                  },
+                  "&:-webkit-autofill:active": {
+                    transition: " background-color 5000s ease-in-out 0s",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+
+                    backgroundColor: "white !important",
+                  },
+                }}
+                onChange={(val) => {
+                  setUserAuth({ ...userAuth, username: val.target.value });
+                }}
+                placeholder="E-mail"
+              />
             </div>
             <span className={styles.fieldName}>Password</span>
             <div className={styles.formInput}>
@@ -67,13 +125,19 @@ export default function Component({}: Props): JSX.Element {
                 sx={{ ml: 1, flex: 1 }}
                 placeholder="Password"
                 type={isPwdVisible ? "text" : "password"}
+                onChange={(val) => {
+                  setUserAuth({ ...userAuth, password: val.target.value });
+                }}
               />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                {isPwdVisible ? (
-                  <VisibilityIcon onClick={() => setIsPwdVisible(false)} />
-                ) : (
-                  <VisibilityOffIcon onClick={() => setIsPwdVisible(true)} />
-                )}
+              <IconButton
+                onClick={() =>
+                  isPwdVisible ? setIsPwdVisible(false) : setIsPwdVisible(true)
+                }
+                type="button"
+                sx={{ p: "10px" }}
+                aria-label="search"
+              >
+                {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
             <button onClick={loginRequest} className={styles.loginButton}>
@@ -82,7 +146,16 @@ export default function Component({}: Props): JSX.Element {
           </div>
         </div>
       </div>
-
+      <Snackbar
+        open={snackBarInfo.isOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity={snackBarInfo.isError ? "error" : "success"}>
+          {snackBarInfo.message}
+        </Alert>
+      </Snackbar>
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
