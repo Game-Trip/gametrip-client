@@ -17,16 +17,21 @@ const HomePage: React.FC = () => {
     <div className={styles.wrapper}>
       <div className={styles.body}>
         <div className={styles.topBar}>
-          <span className={styles.topButton}>Trending</span>
-          <span className={styles.topButton}>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to={"/map"}
-            >
-              Map
-            </Link>
-          </span>
-          <span className={styles.topButton}>Profile</span>
+          <span className={styles.topButton}>Home</span>
+          <Link
+            className={styles.topButton}
+            style={{ textDecoration: "none", color: "white" }}
+            to={"/map"}
+          >
+            <span>Map</span>
+          </Link>
+          <Link
+            className={styles.topButton}
+            style={{ textDecoration: "none", color: "white" }}
+            to={"/login"}
+          >
+            <span>Login</span>
+          </Link>
         </div>
         <img className={styles.image} src={logo} />
 
