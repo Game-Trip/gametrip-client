@@ -21,7 +21,7 @@ import { AnimatePresence } from "framer-motion";
 import "./theme/variables.css";
 import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
-import MapPage from "./pages/Map/MapPage";
+import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
 
 setupIonicReact();

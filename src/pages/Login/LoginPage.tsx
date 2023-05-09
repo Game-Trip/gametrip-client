@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Link } from "react-router-dom";
 import logo from "../logo-no-background.png";
-import { InputBase, IconButton, Snackbar, Alert } from "@mui/material";
+import { InputBase, IconButton, Snackbar, Alert, Button } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
@@ -183,14 +183,14 @@ const styles = {
     border-radius: 8px;
     padding: 10px;
     transition: 0.5s;
-    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.25));
     width: 100%;
-    /* on hover */
     :hover {
-      background-color: #65aa85;
       cursor: pointer;
-      /* move to top */
-      transform: translateY(-5px);
+      filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25));
+    }
+    :active {
+      background: #538e6f;
     }
   `,
   fieldName: css`

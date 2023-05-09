@@ -1,118 +1,140 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { css } from "@emotion/css";
-import SearchIcon from "@mui/icons-material/Search";
 import { motion, useIsPresent } from "framer-motion";
-import { Link } from "react-router-dom";
-import DeckGL from "@deck.gl/react/typed";
-import { Map } from "react-map-gl";
-import { InputBase, IconButton } from "@mui/material";
+import { Map, Marker, Popup } from "react-map-gl";
+import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
+import axios from "axios";
+import Pin from "../../components/Pin/Pin";
+import "mapbox-gl/dist/mapbox-gl.css";
 interface Props {}
 
-export default function MapPage({}: Props) {
-  const isPresent = useIsPresent();
-  const initialViewState = {
-    longitude: -122.4194,
-    latitude: 37.7749,
-    zoom: 12,
-    pitch: 45,
-    bearing: 0,
-  };
+interface ApiLocation {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  state: string;
+}
 
-  const data = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [-122.4194, 37.7749],
+export const MapPage = ({}: Props) => {
+  const isPresent = useIsPresent();
+  const [locationsData, setLocationsdata] = useState<ApiLocation[]>([]);
+  const [popupInfo, setPopupInfo] = useState<ApiLocation | undefined>();
+
+  const pins = useMemo(() => {
+    return locationsData.map((location: any, index) => (
+      <Marker
+        offset={[12, -10]}
+        rotationAlignment="viewport"
+        key={`marker-${index}`}
+        longitude={location.longitude}
+        latitude={location.latitude}
+        onClick={(e) => {
+          e.originalEvent.stopPropagation();
+          setPopupInfo(location);
+        }}
+      >
+        <Pin />
+      </Marker>
+    ));
+  }, [locationsData]);
+
+  React.useEffect(() => {
+    const fetchLocations = async () => {
+      const options = {
+        url: "https://staging-api.game-trip.fr/location",
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("game-trip-jwt") as string
+          )}`,
         },
-        properties: {
-          name: "San Francisco",
-        },
-      },
-    ],
-  };
+      };
+      const result = await axios(options);
+      setLocationsdata(result.data);
+    };
+    fetchLocations();
+  }, []);
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.flex}>
-        <div className={styles.navBar}>
-          <Link
-            className={styles.topButton}
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/"}
-          >
-            <span>Home</span>
-          </Link>
-          <div
-            className={css`
-              display: flex;
-              align-items: center;
-              width: 30%;
-              height: 45px;
-              padding: 0px 4px;
-              border-radius: 8px;
-              background-color: #ffffff;
-
-              /* on focus, move up */
-              transition: 0.5s;
-              &:focus-within {
-                width: 35%;
-                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-              }
-            `}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Battlefield 2042, Call of Duty, ..."
-            />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </div>
-        </div>
-        <div
-          style={{
-            flexGrow: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div id="mapWrapper" className={styles.mapWrapper}>
+    <>
+      <CollapsableNavBar />
+      <div className={styles.wrapper}>
+        <div className={styles.mapContainer}>
+          {pins.length !== 0 && (
             <Map
               initialViewState={{
-                longitude: -122.4,
-                latitude: 37.8,
-                zoom: 14,
+                latitude: 45.74573,
+                longitude: 4.83777,
+                zoom: 18.5,
+                bearing: 0,
+                pitch: 0,
               }}
-              mapStyle="mapbox://styles/mapbox/dark-v9"
+              // max zoom level
+              minZoom={2}
+              mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
               mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
               attributionControl={false}
               style={{
                 width: "100%",
                 height: "100%",
               }}
-            />
-          </div>
+            >
+              {pins}
+              {popupInfo && (
+                <Popup
+                  anchor="top"
+                  longitude={popupInfo.longitude}
+                  latitude={popupInfo.latitude}
+                  onClose={() => setPopupInfo(undefined)}
+                >
+                  <span className={styles.locationName}>{popupInfo.name}</span>
+                </Popup>
+              )}
+            </Map>
+          )}
         </div>
-      </div>
 
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      />
-    </div>
+        <motion.div
+          initial={{ scaleX: 1 }}
+          animate={{
+            scaleX: 0,
+            transition: { duration: 0.5, ease: "circOut" },
+          }}
+          exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+          style={{ originX: isPresent ? 0 : 1 }}
+          className="privacy-screen"
+        />
+      </div>
+    </>
   );
-}
+};
 const styles = {
-  mapWrapper: css`
-    width: 97%;
-    height: 95%;
+  popupContainer: css`
+    background-color: #5ab584;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+
+  locationName: css`
+    font-family: "Roboto";
+    font-style: normal;
+    font-size: 18px;
+    color: white;
+  `,
+
+  mapContainer: css`
+    width: 100%;
+    height: 100%;
     margin: auto;
     border-radius: 10px;
     overflow: hidden;
@@ -127,19 +149,24 @@ const styles = {
   wrapper: css`
     height: 100vh;
     background-color: #5ab584;
+    padding: 20px;
   `,
   navBar: css`
+    height: 20px;
     background-color: #74c499;
     width: 100%;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-bottom: 5px solid #85d8ac;
     display: flex;
-    padding: 30px 30px 10px 30px;
+    padding: 10px 30px;
     align-items: center;
     justify-content: space-between;
     gap: 40px;
     z-index: 1;
-    position: relative;
+    position: absolute;
+    :hover {
+      height: 200px;
+    }
   `,
   topButton: css`
     font-family: "Roboto";
@@ -151,22 +178,10 @@ const styles = {
     border-radius: 8px;
     padding: 10px;
     transition: 0.5s;
-    /* on hover */
     :hover {
       background-color: #65aa85;
       cursor: pointer;
-      /* move to top */
       transform: translateY(-5px);
     }
-  `,
-  basicText: css`
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 33px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-    /* center to the middle */
-    align-self: center;
   `,
 };

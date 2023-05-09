@@ -9,10 +9,10 @@ import { IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useIsLogged } from "../../utils/isLogged";
 
 const HomePage: React.FC = () => {
   const isPresent = useIsPresent();
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
@@ -47,7 +47,6 @@ const HomePage: React.FC = () => {
                 padding: 0px 4px;
                 border-radius: 8px;
                 background-color: #ffffff;
-
                 /* on focus, move up */
                 transition: 0.5s;
                 &:focus-within {
