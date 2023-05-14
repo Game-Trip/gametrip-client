@@ -10,64 +10,42 @@ import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Link } from "react-router-dom";
 import {useEffect, useState} from 'react'
+import Localize from "../../tool/translationProvider";
 
 const HomePage: React.FC = () => {
   const isPresent = useIsPresent();
-
-  const [searchText, setSearchText] = useState("");
-  let language: string = "fr_FR";
-
-  const fetchText = async () => {
-    const response = await fetch(
-      `https://cdn.simplelocalize.io/9543c8c2e15a41bfb022955f49c0aab8/_latest/${language}`
-    );
-    const translations = await response.json();
-    setSearchText(translations["Home.Search"]);
-  };
-
-  useEffect(() => {
-        fetchText();
-  }, []);
-
-
-
-  const handleChange = (e: any) => {
-    language = e.target.value;
-    fetchText();
-  };
+  const [language] = useState(
+    localStorage.getItem("language") || "en_US"
+  );
+  const translate = Localize();
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
         <div className={styles.topBar}>
-          <span className={styles.topButton}>Home</span>
+          <span className={styles.topButton}>{translate.translate('Navbar.Home')}</span>
           <Link
             className={styles.topButton}
             style={{ textDecoration: "none", color: "white" }}
             to={"/map"}
           >
-            <span>Map</span>
+            <span>{translate.translate('Navbar.Map')}</span>
           </Link>
           <Link
             className={styles.topButton}
             style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
-            <span>Login</span>
+            <span>{translate.translate('Navbar.Login')}</span>
           </Link>
         </div>
         <div>
-      <select onChange={handleChange}>
-        <option value="en_US">English</option>
-        <option value="fr_FR" selected>Français</option>
-      </select>
     </div>
         <img className={styles.image} src={logo} />
 
         <div className={styles.footer}>
           <div className={styles.searchSection}>
-            <div className={styles.basicText}>Recherchez un jeu</div>
-            <div className={styles.basicText}>{searchText}</div>
+            <div className={styles.basicText}>{translate.translate('Searchbar.Title')}</div>
             <div
               className={css`
                 display: flex;
@@ -88,7 +66,7 @@ const HomePage: React.FC = () => {
             >
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Battlefield 2042, Call of Duty, ..."
+                placeholder={translate.translate('Searchbar.Placeholder')}
               />
               <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
                 <SearchIcon />

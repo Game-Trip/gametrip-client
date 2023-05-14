@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { css } from "@emotion/css";
 import SearchIcon from "@mui/icons-material/Search";
 import { motion, useIsPresent } from "framer-motion";
@@ -6,6 +7,7 @@ import { Link } from "react-router-dom";
 import DeckGL from "@deck.gl/react/typed";
 import { Map } from "react-map-gl";
 import { InputBase, IconButton } from "@mui/material";
+import Localize from "../../tool/translationProvider";
 interface Props {}
 
 export default function MapPage({}: Props) {
@@ -17,6 +19,11 @@ export default function MapPage({}: Props) {
     pitch: 45,
     bearing: 0,
   };
+
+  const [language] = useState(
+    localStorage.getItem("language") || "en_US"
+  );
+  const translate = Localize();
 
   const data = {
     type: "FeatureCollection",
@@ -43,7 +50,7 @@ export default function MapPage({}: Props) {
             style={{ textDecoration: "none", color: "white" }}
             to={"/"}
           >
-            <span>Home</span>
+            <span>{translate.translate('Navbar.Home')}</span>
           </Link>
           <div
             className={css`
@@ -65,7 +72,7 @@ export default function MapPage({}: Props) {
           >
             <InputBase
               sx={{ ml: 1, flex: 1 }}
-              placeholder="Battlefield 2042, Call of Duty, ..."
+              placeholder={translate.translate('Searchbar.Placeholder')}
             />
             <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
               <SearchIcon />

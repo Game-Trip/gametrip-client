@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -7,11 +7,17 @@ import { InputBase, IconButton, Snackbar, Alert } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import LanguageSwitcher from "../../tool/languageSwitcher";
+import Localize from "../../tool/translationProvider";
 interface Props {}
 
 export default function Component({}: Props): JSX.Element {
   const isPresent = useIsPresent();
   const pwdRef = useRef<HTMLInputElement>(null);
+  const [language] = useState(
+    localStorage.getItem("language") || "en_US"
+  );
+  const translate = Localize();
 
   const [userAuth, setUserAuth] = React.useState({
     username: "",
@@ -68,23 +74,24 @@ export default function Component({}: Props): JSX.Element {
           style={{ textDecoration: "none", color: "white" }}
           to={"/"}
         >
-          <span>Home</span>
+          <span>{translate.translate('Navbar.Home')}</span>
         </Link>
         <Link
           className={styles.topButton}
           style={{ textDecoration: "none", color: "white" }}
           to={"/map"}
         >
-          <span>Map</span>
+          <span>{translate.translate('Navbar.Map')}</span>
         </Link>
+        <LanguageSwitcher />
       </div>
       <div id="body" className={styles.body}>
         <img className={styles.image} src={logo} />
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authentication</span>
-            <span className={styles.fieldName}>E-mail</span>
+            <span className={styles.basicText}>{translate.translate('Auth.LoginTitle')}</span>
+            <span className={styles.fieldName}>{translate.translate('Auth.Email')}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -115,15 +122,15 @@ export default function Component({}: Props): JSX.Element {
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, username: val.target.value });
                 }}
-                placeholder="E-mail"
+                placeholder={translate.translate('Auth.EmailPlaceholder')}
               />
             </div>
-            <span className={styles.fieldName}>Password</span>
+            <span className={styles.fieldName}>{translate.translate('Auth.Password')}</span>
             <div className={styles.formInput}>
               <InputBase
                 ref={pwdRef}
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
+                placeholder={translate.translate('Auth.PasswordPlaceholder')}
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, password: val.target.value });
@@ -141,7 +148,7 @@ export default function Component({}: Props): JSX.Element {
               </IconButton>
             </div>
             <button onClick={loginRequest} className={styles.loginButton}>
-              <span>Login</span>
+              <span>{translate.translate('Auth.LoginBt')}</span>
             </button>
           </div>
         </div>
