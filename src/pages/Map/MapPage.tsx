@@ -6,9 +6,12 @@ import { CollapsableNavBar } from "../../components/CollapsableNavBar/Collapsabl
 import axios from "axios";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
-interface Props {}
+import SelectionModal from "../../components/SelectionModal/SelectionModal";
+interface Props {
+  isLogged: boolean;
+}
 
-interface ApiLocation {
+export interface ApiLocation {
   id: number;
   name: string;
   description: string;
@@ -19,10 +22,15 @@ interface ApiLocation {
   state: string;
 }
 
-export const MapPage = ({}: Props) => {
+export const MapPage = ({ isLogged }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<ApiLocation[]>([]);
   const [popupInfo, setPopupInfo] = useState<ApiLocation | undefined>();
+  const [selectedLocation, setSelectedLocation] = useState<
+    ApiLocation | undefined
+  >();
+
+  const closeSelectionModal = () => setSelectedLocation(undefined);
 
   const pins = useMemo(() => {
     return locationsData.map((location: any, index) => (
@@ -34,7 +42,7 @@ export const MapPage = ({}: Props) => {
         latitude={location.latitude}
         onClick={(e) => {
           e.originalEvent.stopPropagation();
-          setPopupInfo(location);
+          setSelectedLocation(location);
         }}
       >
         <Pin />
@@ -70,8 +78,8 @@ export const MapPage = ({}: Props) => {
           {pins.length !== 0 && (
             <Map
               initialViewState={{
-                latitude: 45.74573,
-                longitude: 4.83777,
+                latitude: 48.8588443,
+                longitude: 2.2943506,
                 zoom: 18.5,
                 bearing: 0,
                 pitch: 0,
@@ -87,19 +95,14 @@ export const MapPage = ({}: Props) => {
               }}
             >
               {pins}
-              {popupInfo && (
-                <Popup
-                  anchor="top"
-                  longitude={popupInfo.longitude}
-                  latitude={popupInfo.latitude}
-                  onClose={() => setPopupInfo(undefined)}
-                >
-                  <span className={styles.locationName}>{popupInfo.name}</span>
-                </Popup>
-              )}
             </Map>
           )}
         </div>
+
+        <SelectionModal
+          closeSelectionModal={closeSelectionModal}
+          selectedLocation={selectedLocation}
+        />
 
         <motion.div
           initial={{ scaleX: 1 }}

@@ -5,6 +5,7 @@ import { InputBase, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Button } from "../Button/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Button2 } from "../Button/Button2";
 
 export const CollapsableNavBar = () => {
   const navigate = (path: string) => () => {
@@ -36,13 +37,12 @@ export const CollapsableNavBar = () => {
 
   return (
     <>
-      <Button
+      <Button2
         onClick={() => setIsOpen(true)}
-        onMouseEnter={() => setIsOpen(true)}
         className={styles.menuButton(isOpen)}
       >
         <KeyboardArrowDownIcon />
-      </Button>
+      </Button2>
       <div ref={navBarRef} className={styles.navBar(isOpen)}>
         <Button isRouterButton to="/">
           Home
@@ -98,7 +98,7 @@ const styles = {
     position: absolute;
     /* center horizontally */
     z-index: 2;
-    left: 10px;
+    left: 60px;
     top: 0px;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;

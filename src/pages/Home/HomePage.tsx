@@ -10,8 +10,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useIsLogged } from "../../utils/isLogged";
-
-const HomePage: React.FC = () => {
+interface Props {
+  isLogged: boolean;
+}
+const HomePage = ({ isLogged }: Props) => {
   const isPresent = useIsPresent();
   return (
     <div className={styles.wrapper}>
@@ -25,13 +27,15 @@ const HomePage: React.FC = () => {
           >
             <span>Map</span>
           </Link>
-          <Link
-            className={styles.topButton}
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/login"}
-          >
-            <span>Login</span>
-          </Link>
+          {!isLogged && (
+            <Link
+              className={styles.topButton}
+              style={{ textDecoration: "none", color: "white" }}
+              to={"/login"}
+            >
+              <span>Login</span>
+            </Link>
+          )}
         </div>
         <img className={styles.image} src={logo} />
 

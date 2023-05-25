@@ -1,17 +1,24 @@
 import React, { useRef } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo-no-background.png";
 import { InputBase, IconButton, Snackbar, Alert, Button } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-interface Props {}
+interface Props {
+  isLogged: boolean;
+  setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export default function Component({}: Props): JSX.Element {
+export default function Component({
+  isLogged,
+  setIsLogged,
+}: Props): JSX.Element {
   const isPresent = useIsPresent();
   const pwdRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const [userAuth, setUserAuth] = React.useState({
     username: "",
@@ -46,6 +53,12 @@ export default function Component({}: Props): JSX.Element {
           isError: false,
           message: "Login successful",
         });
+        setIsLogged(true);
+        // redirect to /
+        // wait 2 sec
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       }
     } catch (error: any) {
       console.log(error.response.data);
@@ -55,6 +68,7 @@ export default function Component({}: Props): JSX.Element {
           isError: true,
           message: error.response.data.message,
         });
+        setIsLogged(false);
       }
     }
     // window.location.href = "/map";
