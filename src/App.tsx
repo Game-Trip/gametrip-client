@@ -21,24 +21,25 @@ import { AnimatePresence } from "framer-motion";
 import "./theme/variables.css";
 import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
-import MapPage from "./pages/Map/MapPage";
+import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  const [isLogged, setIsLogged] = React.useState(false);
   const element = useRoutes([
     {
       path: "/",
-      element: <HomePage />,
+      element: <HomePage isLogged={isLogged} />,
     },
     {
       path: "/map",
-      element: <MapPage />,
+      element: <MapPage isLogged={isLogged} />,
     },
     {
       path: "/login",
-      element: <LoginPage />,
+      element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
     },
   ]);
 

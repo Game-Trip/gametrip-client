@@ -9,10 +9,12 @@ import { IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Link } from "react-router-dom";
-
-const HomePage: React.FC = () => {
+import { useIsLogged } from "../../utils/isLogged";
+interface Props {
+  isLogged: boolean;
+}
+const HomePage = ({ isLogged }: Props) => {
   const isPresent = useIsPresent();
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
@@ -25,13 +27,15 @@ const HomePage: React.FC = () => {
           >
             <span>Map</span>
           </Link>
-          <Link
-            className={styles.topButton}
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/login"}
-          >
-            <span>Login</span>
-          </Link>
+          {!isLogged && (
+            <Link
+              className={styles.topButton}
+              style={{ textDecoration: "none", color: "white" }}
+              to={"/login"}
+            >
+              <span>Login</span>
+            </Link>
+          )}
         </div>
         <img className={styles.image} src={logo} />
 
@@ -47,7 +51,6 @@ const HomePage: React.FC = () => {
                 padding: 0px 4px;
                 border-radius: 8px;
                 background-color: #ffffff;
-
                 /* on focus, move up */
                 transition: 0.5s;
                 &:focus-within {

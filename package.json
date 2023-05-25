@@ -43,6 +43,7 @@
     "react-scripts": "^5.0.0",
     "typescript": "^4.1.3",
     "web-vitals": "^0.2.4",
+    "webpack": "^5.65.0",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
     "workbox-cacheable-response": "^5.1.4",

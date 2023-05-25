@@ -17,7 +17,7 @@ html {
   right: 0;
   bottom: 0;
   background-color: #4b926b;
-  z-index: 2 !important;
+  z-index: 4 !important;
 }
 
 /* disable autofill color on inputs */
@@ -44,4 +44,12 @@ input:-webkit-autofill:active {
   animation-name: mui-auto-fill-cancel;
   -webkit-animation-duration: 10ms;
   animation-duration: 10ms;
+}
+
+.mapboxgl-popup-content {
+  background-color: #74c499 !important;
+}
+
+.mapboxgl-popup-tip {
+  border-bottom-color: #74c499 !important;
 }
