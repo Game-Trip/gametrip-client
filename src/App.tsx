@@ -24,40 +24,41 @@ import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
 
+
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [isLogged, setIsLogged] = React.useState(false);
-  const element = useRoutes([
-    {
-      path: "/",
-      element: <HomePage isLogged={isLogged} />,
-    },
-    {
-      path: "/map",
-      element: <MapPage isLogged={isLogged} />,
-    },
-    {
-      path: "/login",
-      element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
-    },
-  ]);
+    const [isLogged, setIsLogged] = React.useState(false);
+    const element = useRoutes([
+        {
+            path: "/",
+            element: <HomePage isLogged={isLogged} />,
+        },
+        {
+            path: "/map",
+            element: <MapPage isLogged={isLogged} />,
+        },
+        {
+            path: "/login",
+            element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
+        },
+    ]);
 
-  const location = useLocation();
+    const location = useLocation();
 
-  if (!element) return null;
+    if (!element) return null;
 
-  return (
-    <div className={styles.bg}>
-      <AnimatePresence mode="wait" initial={false}>
-        {React.cloneElement(element, { key: location.pathname })}
-      </AnimatePresence>
-    </div>
-  );
+    return (
+        <div className={styles.bg}>
+            <AnimatePresence mode="wait" initial={false}>
+                {React.cloneElement(element, { key: location.pathname })}
+            </AnimatePresence>
+        </div>
+    );
 };
 
 const styles = {
-  bg: css`
+    bg: css`
     background-color: #f5f5f5;
   `,
 };
