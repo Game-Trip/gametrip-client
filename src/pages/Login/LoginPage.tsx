@@ -7,182 +7,174 @@ import { InputBase, IconButton, Snackbar, Alert, Button } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { TokenDto, MessageDto } from "@game-trip/ts-api-client";
+import { AuthController } from "../../utils/api/baseApi";
 interface Props {
-  isLogged: boolean;
-  setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
+    isLogged: boolean;
+    setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Component({
-  isLogged,
-  setIsLogged,
+    isLogged,
+    setIsLogged,
 }: Props): JSX.Element {
-  const isPresent = useIsPresent();
-  const pwdRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+    const isPresent = useIsPresent();
+    const pwdRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
-  const [userAuth, setUserAuth] = React.useState({
-    username: "",
-    password: "",
-  });
-  const [snackBarInfo, setSnackBarInfo] = React.useState({
-    isOpen: false,
-    isError: false,
-    message: "",
-  });
-  const [isPwdVisible, setIsPwdVisible] = React.useState(false);
-  const loginRequest = async () => {
-    const options = {
-      url: "https://staging-api.game-trip.fr/Auth/Login",
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*",
-      },
-      data: userAuth,
+    const [userAuth, setUserAuth] = React.useState({
+        username: "",
+        password: "",
+    });
+    const [snackBarInfo, setSnackBarInfo] = React.useState({
+        isOpen: false,
+        isError: false,
+        message: "",
+    });
+    const [isPwdVisible, setIsPwdVisible] = React.useState(false);
+    const loginRequest = async () => {
+        try {
+            const result: TokenDto = await AuthController.authLoginPost(userAuth);
+            if (result.token) {
+                localStorage.setItem(
+                    "game-trip-jwt",
+                    JSON.stringify(result.token)
+                );
+                setSnackBarInfo({
+                    isOpen: true,
+                    isError: false,
+                    message: "Login successful",
+                });
+                setIsLogged(true);
+                // redirect to /
+                // wait 2 sec
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
+            }
+        } catch (error: any) {
+            console.log(error);
+            if ((error.body as MessageDto).messageCode === "FailedLogin") {
+                setSnackBarInfo({
+                    isOpen: true,
+                    isError: true,
+                    message: (error.body as MessageDto).message as string,
+                });
+                setIsLogged(false);
+            }
+        }
+        // window.location.href = "/map";
     };
-    try {
-      const result = await axios(options);
-      if (result.data.token) {
-        localStorage.setItem(
-          "game-trip-jwt",
-          JSON.stringify(result.data.token)
-        );
-        setSnackBarInfo({
-          isOpen: true,
-          isError: false,
-          message: "Login successful",
-        });
-        setIsLogged(true);
-        // redirect to /
-        // wait 2 sec
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      }
-    } catch (error: any) {
-      console.log(error.response.data);
-      if (error.response.data.errorCode === "FailedLogin") {
-        setSnackBarInfo({
-          isOpen: true,
-          isError: true,
-          message: error.response.data.message,
-        });
-        setIsLogged(false);
-      }
-    }
-    // window.location.href = "/map";
-  };
 
-  return (
-    <div className={styles.wrapper}>
-      <div id="topBar" className={styles.topBar}>
-        <Link
-          className={styles.topButton}
-          style={{ textDecoration: "none", color: "white" }}
-          to={"/"}
-        >
-          <span>Home</span>
-        </Link>
-        <Link
-          className={styles.topButton}
-          style={{ textDecoration: "none", color: "white" }}
-          to={"/map"}
-        >
-          <span>Map</span>
-        </Link>
-      </div>
-      <div id="body" className={styles.body}>
-        <img className={styles.image} src={logo} />
-
-        <div className={styles.loginSection}>
-          <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authentication</span>
-            <span className={styles.fieldName}>E-mail</span>
-            <div className={styles.formInput}>
-              <InputBase
-                autoComplete="off"
-                aria-autocomplete="none"
-                sx={{
-                  ml: 1,
-                  flex: 1,
-                  // on chrome autofill, dont change the background color
-                  "&:-webkit-autofill": {
-                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
-                    backgroundColor: "white !important",
-                  },
-                  "&:-webkit-autofill:focus": {
-                    backgroundColor: "white !important",
-                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
-                  },
-                  "&:-webkit-autofill:hover": {
-                    backgroundColor: "white !important",
-                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
-                  },
-                  "&:-webkit-autofill:active": {
-                    transition: " background-color 5000s ease-in-out 0s",
-                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
-
-                    backgroundColor: "white !important",
-                  },
-                }}
-                onChange={(val) => {
-                  setUserAuth({ ...userAuth, username: val.target.value });
-                }}
-                placeholder="E-mail"
-              />
+    return (
+        <div className={styles.wrapper}>
+            <div id="topBar" className={styles.topBar}>
+                <Link
+                    className={styles.topButton}
+                    style={{ textDecoration: "none", color: "white" }}
+                    to={"/"}
+                >
+                    <span>Home</span>
+                </Link>
+                <Link
+                    className={styles.topButton}
+                    style={{ textDecoration: "none", color: "white" }}
+                    to={"/map"}
+                >
+                    <span>Map</span>
+                </Link>
             </div>
-            <span className={styles.fieldName}>Password</span>
-            <div className={styles.formInput}>
-              <InputBase
-                ref={pwdRef}
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
-                type={isPwdVisible ? "text" : "password"}
-                onChange={(val) => {
-                  setUserAuth({ ...userAuth, password: val.target.value });
-                }}
-              />
-              <IconButton
-                onClick={() =>
-                  isPwdVisible ? setIsPwdVisible(false) : setIsPwdVisible(true)
-                }
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-              >
-                {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
-              </IconButton>
+            <div id="body" className={styles.body}>
+                <img className={styles.image} src={logo} />
+
+                <div className={styles.loginSection}>
+                    <div className={styles.formWrapper}>
+                        <span className={styles.basicText}>Authentication</span>
+                        <span className={styles.fieldName}>E-mail</span>
+                        <div className={styles.formInput}>
+                            <InputBase
+                                autoComplete="off"
+                                aria-autocomplete="none"
+                                sx={{
+                                    ml: 1,
+                                    flex: 1,
+                                    // on chrome autofill, dont change the background color
+                                    "&:-webkit-autofill": {
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                        backgroundColor: "white !important",
+                                    },
+                                    "&:-webkit-autofill:focus": {
+                                        backgroundColor: "white !important",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                    },
+                                    "&:-webkit-autofill:hover": {
+                                        backgroundColor: "white !important",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                    },
+                                    "&:-webkit-autofill:active": {
+                                        transition: " background-color 5000s ease-in-out 0s",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+
+                                        backgroundColor: "white !important",
+                                    },
+                                }}
+                                onChange={(val) => {
+                                    setUserAuth({ ...userAuth, username: val.target.value });
+                                }}
+                                placeholder="E-mail"
+                            />
+                        </div>
+                        <span className={styles.fieldName}>Password</span>
+                        <div className={styles.formInput}>
+                            <InputBase
+                                ref={pwdRef}
+                                sx={{ ml: 1, flex: 1 }}
+                                placeholder="Password"
+                                type={isPwdVisible ? "text" : "password"}
+                                onChange={(val) => {
+                                    setUserAuth({ ...userAuth, password: val.target.value });
+                                }}
+                            />
+                            <IconButton
+                                onClick={() =>
+                                    isPwdVisible ? setIsPwdVisible(false) : setIsPwdVisible(true)
+                                }
+                                type="button"
+                                sx={{ p: "10px" }}
+                                aria-label="search"
+                            >
+                                {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </IconButton>
+                        </div>
+                        <button onClick={loginRequest} className={styles.loginButton}>
+                            <span>Login</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <button onClick={loginRequest} className={styles.loginButton}>
-              <span>Login</span>
-            </button>
-          </div>
+            <Snackbar
+                open={snackBarInfo.isOpen}
+                autoHideDuration={6000}
+                onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert severity={snackBarInfo.isError ? "error" : "success"}>
+                    {snackBarInfo.message}
+                </Alert>
+            </Snackbar>
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
+                exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+                style={{ originX: isPresent ? 0 : 1 }}
+                className="privacy-screen"
+            />
         </div>
-      </div>
-      <Snackbar
-        open={snackBarInfo.isOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity={snackBarInfo.isError ? "error" : "success"}>
-          {snackBarInfo.message}
-        </Alert>
-      </Snackbar>
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      />
-    </div>
-  );
+    );
 }
 
 const styles = {
-  loginButton: css`
+    loginButton: css`
     // undo default button style
     border: none;
     outline: none;
@@ -207,7 +199,7 @@ const styles = {
       background: #538e6f;
     }
   `,
-  fieldName: css`
+    fieldName: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 500;
@@ -217,7 +209,7 @@ const styles = {
     /* center to the middle */
     align-self: start;
   `,
-  basicText: css`
+    basicText: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 500;
@@ -227,12 +219,12 @@ const styles = {
     /* center to the middle */
     align-self: center;
   `,
-  formWrapper: css`
+    formWrapper: css`
     display: flex;
     flex-direction: column;
     gap: 20px;
   `,
-  formInput: css`
+    formInput: css`
     display: flex;
     align-items: center;
     width: 100%;
@@ -249,18 +241,18 @@ const styles = {
       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     }
   `,
-  wrapper: css`
+    wrapper: css`
     height: 100vh;
     display: flex;
     flex-direction: column;
   `,
-  searchBar: css`
+    searchBar: css`
     /* horizontally center */
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
   `,
-  loginSection: css`
+    loginSection: css`
     background-color: #61ba8c;
     height: 90%;
     padding: 20px 30px;
@@ -269,7 +261,7 @@ const styles = {
     border-radius: 8px;
     // center vertically
   `,
-  body: css`
+    body: css`
     background-color: #5ab584;
     width: 100%;
     flex-grow: 1;
@@ -280,14 +272,14 @@ const styles = {
     align-items: center;
     gap: 120px;
   `,
-  image: css`
+    image: css`
     background-color: transparent;
     z-index: 1;
     -webkit-filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     width: 50%;
   `,
-  footer: css`
+    footer: css`
     height: 200px;
     width: 100%;
     background-color: #74c499;
@@ -298,7 +290,7 @@ const styles = {
     border-top: 25px solid #85d8ac;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   `,
-  topBar: css`
+    topBar: css`
     border-bottom: 5px solid #85d8ac;
     background-color: #74c499;
     height: 100px;
@@ -309,7 +301,7 @@ const styles = {
     /* space betseen */
     gap: 40px;
   `,
-  topButton: css`
+    topButton: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 300px;
