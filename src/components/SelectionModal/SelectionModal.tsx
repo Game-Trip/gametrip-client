@@ -1,45 +1,44 @@
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import CloseIcon from "@mui/icons-material/Close";
-import { ApiLocation } from "../../pages/Map/MapPage";
 import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React from "react";
+import { LocationDto } from "@game-trip/ts-api-client";
 
 type Props = {
-  selectedLocation?: ApiLocation;
-  closeSelectionModal: () => void;
+    selectedLocation?: LocationDto;
+    closeSelectionModal: () => void;
 };
 
 export default function SelectionModal({
-  selectedLocation,
-  closeSelectionModal,
+    selectedLocation,
+    closeSelectionModal,
 }: Props) {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const isOpen = !!selectedLocation;
-  return (
-    <div className={styles.wrapper(isExpanded, isOpen)}>
-      <div className={styles.header}>
-        <IconButton onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
-        </IconButton>
-        <IconButton onClick={closeSelectionModal}>
-          <CloseIcon />
-        </IconButton>
-      </div>
-      {selectedLocation?.name}
-      {selectedLocation?.city}
-    </div>
-  );
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const isOpen = !!selectedLocation;
+    return (
+        <div className={styles.wrapper(isExpanded, isOpen)}>
+            <div className={styles.header}>
+                <IconButton onClick={() => setIsExpanded(!isExpanded)}>
+                    {isExpanded ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+                </IconButton>
+                <IconButton onClick={closeSelectionModal}>
+                    <CloseIcon />
+                </IconButton>
+            </div>
+            {selectedLocation?.name}
+        </div>
+    );
 }
 
 const styles = {
-  header: css`
+    header: css`
     height: 40px;
     display: flex;
     justify-content: space-between;
   `,
-  wrapper: (isExpanded: boolean, isOpen: boolean) => css`
+    wrapper: (isExpanded: boolean, isOpen: boolean) => css`
     position: fixed;
     bottom: 0;
     right: 0;
