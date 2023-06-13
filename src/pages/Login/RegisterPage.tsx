@@ -21,10 +21,6 @@ export default function Component({
     const pwdRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
-    const [userAuth, setUserAuth] = useState({
-        username: "",
-        password: "",
-    });
 
     const [userRegister, setUserRegister] = useState({
         username: "",
@@ -37,43 +33,26 @@ export default function Component({
         isError: false,
         message: "",
     });
-    const [isLoginPwdVisible, setIsLoginPwdVisible] = useState(false);
     const [isRegisterPwdVisible, setIsRegisterPwdVisible] = useState(false);
     const [isConfirmRegisterPwdVisible, setIsConfirmRegisterPwdVisible] = useState(false);
-    const loginRequest = async () => {
+
+    const registerRequest = async () => {
         try {
-            const result: TokenDto = await AuthController.authLoginPost(userAuth);
-            if (result.token) {
-                localStorage.setItem(
-                    "game-trip-jwt",
-                    JSON.stringify(result.token)
-                );
-                setSnackBarInfo({
-                    isOpen: true,
-                    isError: false,
-                    message: "Login successful",
-                });
-                setIsLogged(true);
-                // redirect to /
-                // wait 2 sec
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
-            }
+            const result: GameTripUserDto = await AuthController.authRegisterPost(userRegister);
+            console.log(result);
+
+
         } catch (error: any) {
             console.log(error);
-            if ((error.body as MessageDto).messageCode === "FailedLogin") {
-                setSnackBarInfo({
-                    isOpen: true,
-                    isError: true,
-                    message: (error.body as MessageDto).message as string,
-                });
-                setIsLogged(false);
-            }
-        }
-        // window.location.href = "/map";
-    };
+            console.log(JSON.stringify(error));
 
+            setSnackBarInfo({
+                isOpen: true,
+                isError: true,
+                message: error.body.map((x: any) => x.description).join("\n") as string,
+            });
+        }
+    }
     return (
         <div className={styles.wrapper}>
             <div id="topBar" className={styles.topBar}>
@@ -95,10 +74,10 @@ export default function Component({
             <div id="body" className={styles.body}>
                 <img className={styles.image} src={logo} />
 
-                <div className={styles.loginSection}>
+                <div className={styles.RegisterSection}>
                     <div className={styles.formWrapper}>
-                        <span className={styles.basicText}>Authentication</span>
-                        <span className={styles.fieldName}>E-mail</span>
+                        <span className={styles.basicText}>Enregistrement</span>
+                        <span className={styles.fieldName}>Username</span>
                         <div className={styles.formInput}>
                             <InputBase
                                 autoComplete="off"
@@ -127,7 +106,42 @@ export default function Component({
                                     },
                                 }}
                                 onChange={(val) => {
-                                    setUserAuth({ ...userAuth, username: val.target.value });
+                                    console.log(val.target.value);
+                                    setUserRegister({ ...userRegister, username: val.target.value });
+                                }}
+                                placeholder="Username"
+                            />
+                        </div>
+                        <span className={styles.fieldName}>Email</span>
+                        <div className={styles.formInput}>
+                            <InputBase
+                                autoComplete="off"
+                                aria-autocomplete="none"
+                                sx={{
+                                    ml: 1,
+                                    flex: 1,
+                                    // on chrome autofill, dont change the background color
+                                    "&:-webkit-autofill": {
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                        backgroundColor: "white !important",
+                                    },
+                                    "&:-webkit-autofill:focus": {
+                                        backgroundColor: "white !important",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                    },
+                                    "&:-webkit-autofill:hover": {
+                                        backgroundColor: "white !important",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                                    },
+                                    "&:-webkit-autofill:active": {
+                                        transition: " background-color 5000s ease-in-out 0s",
+                                        WebkitBoxShadow: "0 0 0 1000px #fff inset",
+
+                                        backgroundColor: "white !important",
+                                    },
+                                }}
+                                onChange={(val) => {
+                                    setUserRegister({ ...userRegister, email: val.target.value });
                                 }}
                                 placeholder="E-mail"
                             />
@@ -138,36 +152,50 @@ export default function Component({
                                 ref={pwdRef}
                                 sx={{ ml: 1, flex: 1 }}
                                 placeholder="Password"
-                                type={isLoginPwdVisible ? "text" : "password"}
+                                type={isRegisterPwdVisible ? "text" : "password"}
                                 onChange={(val) => {
-                                    setUserAuth({ ...userAuth, password: val.target.value });
+                                    setUserRegister({ ...userRegister, password: val.target.value });
                                 }}
                             />
                             <IconButton
                                 onClick={() =>
-                                    setIsLoginPwdVisible(!isLoginPwdVisible)
+                                    setIsRegisterPwdVisible(!isRegisterPwdVisible)
                                 }
                                 type="button"
                                 sx={{ p: "10px" }}
                                 aria-label="search"
                             >
-                                {isLoginPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                {isRegisterPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
                             </IconButton>
                         </div>
-                        <button onClick={loginRequest} className={styles.loginButton}>
-                            <span>Login</span>
-                        </button>
-                        <button className={styles.loginButton}>
-                            <Link
-                                className={styles.topButton}
-                                style={{ textDecoration: "none", color: "white" }}
-                                to={"/register"}
+                        <span className={styles.fieldName}>Confirm Password</span>
+                        <div className={styles.formInput}>
+                            <InputBase
+                                ref={pwdRef}
+                                sx={{ ml: 1, flex: 1 }}
+                                placeholder="Confirm Password"
+                                type={isConfirmRegisterPwdVisible ? "text" : "password"}
+                                onChange={(val) => {
+                                    setUserRegister({ ...userRegister, confirmPassword: val.target.value });
+                                }}
+                            />
+                            <IconButton
+                                onClick={() =>
+                                    setIsConfirmRegisterPwdVisible(!isConfirmRegisterPwdVisible)
+                                }
+                                type="button"
+                                sx={{ p: "10px" }}
+                                aria-label="search"
                             >
-                                <span>Not  register ? Click me !</span>
-                            </Link>
+                                {isConfirmRegisterPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </IconButton>
+                        </div>
+                        <button onClick={registerRequest} className={styles.loginButton}>
+                            <span>Register</span>
                         </button>
                     </div>
                 </div>
+
 
             </div>
             <Snackbar
@@ -270,15 +298,6 @@ const styles = {
     left: 50%;
     transform: translate(-50%, 0);
   `,
-    loginSection: css`
-    background-color: #61ba8c;
-    height: 90%;
-    padding: 20px 30px;
-    box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
-    width: 30%;
-    border-radius: 8px;
-    // center vertically
-  `,
     RegisterSection: css`
     background-color: #61ba8c;
     height: 90%;
@@ -286,7 +305,6 @@ const styles = {
     box-shadow: rgba(100, 100, 111, 0.5) 0px 7px 29px 0px;
     width: 30%;
     border-radius: 8px;
-    transform: rotateY(180deg);
     // center vertically
   `,
     body: css`
