@@ -49,7 +49,7 @@ const App: React.FC = () => {
   if (!element) return null;
 
   return (
-    <div className={styles.bg}>
+    <div>
       <UserContext>
         <AnimatePresence mode="wait" initial={false}>
           {React.cloneElement(element, { key: location.pathname })}
@@ -57,12 +57,6 @@ const App: React.FC = () => {
       </UserContext>
     </div>
   );
-};
-
-const styles = {
-  bg: css`
-    background-color: #f5f5f5;
-  `,
 };
 
 export default App;
