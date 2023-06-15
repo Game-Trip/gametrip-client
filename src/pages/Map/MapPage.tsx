@@ -25,7 +25,6 @@ export interface ApiLocation {
 export const MapPage = ({ isLogged }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<ApiLocation[]>([]);
-  const [popupInfo, setPopupInfo] = useState<ApiLocation | undefined>();
   const [selectedLocation, setSelectedLocation] = useState<
     ApiLocation | undefined
   >();

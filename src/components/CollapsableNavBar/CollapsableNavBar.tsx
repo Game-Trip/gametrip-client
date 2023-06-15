@@ -1,11 +1,16 @@
 import React from "react";
 import { css } from "@emotion/css";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputBase, IconButton } from "@mui/material";
+import { InputBase, IconButton, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Button } from "../Button/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Button2 } from "../Button/Button2";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import { useUser } from "../../hooks/useUser";
+import ProfileButton from "../ProfileButton/ProfileButton";
+import { useOnClickOutside } from "usehooks-ts";
+import SearchInput from "../SearchInput/SearchInput";
 
 export const CollapsableNavBar = () => {
   const navigate = (path: string) => () => {
@@ -16,24 +21,20 @@ export const CollapsableNavBar = () => {
   const searchBarRef = React.useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const { isLogged } = useUser();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  //   onClick outside of navbar or searchbar, close navbar
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navBarRef.current &&
-        !navBarRef.current.contains(event.target as Node) &&
-        searchBarRef.current &&
-        !searchBarRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [navBarRef, searchBarRef]);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  useOnClickOutside(navBarRef, () => {
+    setIsOpen(false);
+  });
 
   return (
     <>
@@ -47,44 +48,20 @@ export const CollapsableNavBar = () => {
         <Button isRouterButton to="/">
           Home
         </Button>
-        <div
-          className={css`
-            display: flex;
-            align-items: center;
-            width: 30%;
-            height: 45px;
-            padding: 0px 4px;
-            border-radius: 8px;
-            background-color: #ffffff;
-            transition: 0.5s;
-            &:focus-within {
-              width: 35%;
-              box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-            }
-          `}
-        >
-          <InputBase
-            ref={searchBarRef}
-            sx={{
-              ml: 1,
-              flex: 1,
-              backgroundColor: "#ffffff",
-              "&:hover": {
-                backgroundColor: "#ffffff0",
-              },
-            }}
-            placeholder="Battlefield 2042, Call of Duty, ..."
-          />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </div>
+        <SearchInput value={""} onChange={() => {}} />
+        {isLogged && <ProfileButton />}
       </div>
     </>
   );
 };
 
 const styles = {
+  userButton: css`
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
   menuText: css`
     font-family: "Roboto";
     font-style: normal;

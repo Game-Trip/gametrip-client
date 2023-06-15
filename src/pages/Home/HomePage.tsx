@@ -6,10 +6,11 @@ import "../styles.css";
 import logo from "../logo-no-background.png";
 import { useMediaQuery } from "react-responsive";
 import { IconButton, InputAdornment } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useIsLogged } from "../../utils/isLogged";
+import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import SearchInput from "../../components/SearchInput/SearchInput";
 interface Props {
   isLogged: boolean;
 }
@@ -18,55 +19,13 @@ const HomePage = ({ isLogged }: Props) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
-        <div className={styles.topBar}>
-          <span className={styles.topButton}>Home</span>
-          <Link
-            className={styles.topButton}
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/map"}
-          >
-            <span>Map</span>
-          </Link>
-          {!isLogged && (
-            <Link
-              className={styles.topButton}
-              style={{ textDecoration: "none", color: "white" }}
-              to={"/login"}
-            >
-              <span>Login</span>
-            </Link>
-          )}
-        </div>
+        <TopNavBar showHomeButton />
         <img className={styles.image} src={logo} />
 
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <div
-              className={css`
-                display: flex;
-                align-items: center;
-                width: 70%;
-                margin: auto;
-                padding: 0px 4px;
-                border-radius: 8px;
-                background-color: #ffffff;
-                /* on focus, move up */
-                transition: 0.5s;
-                &:focus-within {
-                  transform: translateY(-5px);
-                  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-                }
-              `}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Battlefield 2042, Call of Duty, ..."
-              />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </div>
+            <SearchInput value={""} onChange={() => {}} />
           </div>
         </div>
       </div>
