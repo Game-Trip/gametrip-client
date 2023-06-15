@@ -14,19 +14,23 @@ export const Button2 = ({
   to?: string;
   isRouterButton?: boolean;
 }) => {
-  return (
+  return isRouterButton ? (
     <button
       ref={ref}
       {...props}
       className={cx(styles.topButton, props.className)}
     >
-      {isRouterButton ? (
-        <Link style={{ textDecoration: "none", color: "white" }} to={to ?? "/"}>
-          {children}
-        </Link>
-      ) : (
-        children
-      )}
+      <Link style={{ textDecoration: "none", color: "white" }} to={to ?? "/"}>
+        {children}
+      </Link>
+    </button>
+  ) : (
+    <button
+      ref={ref}
+      {...props}
+      className={cx(styles.topButton, props.className)}
+    >
+      {children}
     </button>
   );
 };
