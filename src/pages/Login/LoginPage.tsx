@@ -7,91 +7,32 @@ import { InputBase, IconButton, Snackbar, Alert, Button } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { parseJwt } from "../../utils/parseJwt";
+import { useUser } from "../../hooks/useUser";
+import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 interface Props {
   isLogged: boolean;
   setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Component({
-  isLogged,
-  setIsLogged,
-}: Props): JSX.Element {
+export default function Component({}: Props): JSX.Element {
   const isPresent = useIsPresent();
+  const { onLogin } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   const [userAuth, setUserAuth] = React.useState({
     username: "",
     password: "",
   });
-  const [snackBarInfo, setSnackBarInfo] = React.useState({
-    isOpen: false,
-    isError: false,
-    message: "",
-  });
+
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
-  const loginRequest = async () => {
-    const options = {
-      url: "https://staging-api.game-trip.fr/Auth/Login",
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*",
-      },
-      data: userAuth,
-    };
-    try {
-      const result = await axios(options);
-      if (result.data.token) {
-        localStorage.setItem(
-          "game-trip-jwt",
-          JSON.stringify(result.data.token)
-        );
-        setSnackBarInfo({
-          isOpen: true,
-          isError: false,
-          message: "Login successful",
-        });
-        setIsLogged(true);
-        // redirect to /
-        // wait 2 sec
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      }
-    } catch (error: any) {
-      console.log(error.response.data);
-      if (error.response.data.errorCode === "FailedLogin") {
-        setSnackBarInfo({
-          isOpen: true,
-          isError: true,
-          message: error.response.data.message,
-        });
-        setIsLogged(false);
-      }
-    }
-    // window.location.href = "/map";
-  };
+
+  const handleLogin = async () =>
+    await onLogin(userAuth.username, userAuth.password);
 
   return (
     <div className={styles.wrapper}>
-      <div id="topBar" className={styles.topBar}>
-        <Link
-          className={styles.topButton}
-          style={{ textDecoration: "none", color: "white" }}
-          to={"/"}
-        >
-          <span>Home</span>
-        </Link>
-        <Link
-          className={styles.topButton}
-          style={{ textDecoration: "none", color: "white" }}
-          to={"/map"}
-        >
-          <span>Map</span>
-        </Link>
-      </div>
+      <TopNavBar showLoginButton={false} showHomeButton={false} />
       <div id="body" className={styles.body}>
         <img className={styles.image} src={logo} />
 
@@ -154,13 +95,13 @@ export default function Component({
                 {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
-            <button onClick={loginRequest} className={styles.loginButton}>
+            <button onClick={handleLogin} className={styles.loginButton}>
               <span>Login</span>
             </button>
           </div>
         </div>
       </div>
-      <Snackbar
+      {/* <Snackbar
         open={snackBarInfo.isOpen}
         autoHideDuration={6000}
         onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
@@ -169,7 +110,7 @@ export default function Component({
         <Alert severity={snackBarInfo.isError ? "error" : "success"}>
           {snackBarInfo.message}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}

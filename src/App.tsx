@@ -23,6 +23,7 @@ import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
+import UserContext from "./components/UserContext/UserContext";
 
 setupIonicReact();
 
@@ -49,9 +50,11 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.bg}>
-      <AnimatePresence mode="wait" initial={false}>
-        {React.cloneElement(element, { key: location.pathname })}
-      </AnimatePresence>
+      <UserContext>
+        <AnimatePresence mode="wait" initial={false}>
+          {React.cloneElement(element, { key: location.pathname })}
+        </AnimatePresence>
+      </UserContext>
     </div>
   );
 };
