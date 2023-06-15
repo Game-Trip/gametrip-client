@@ -11,39 +11,40 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useIsLogged } from "../../utils/isLogged";
 interface Props {
-  isLogged: boolean;
+    isLogged: boolean;
+    isComputerScreen: boolean;
 }
-const HomePage = ({ isLogged }: Props) => {
-  const isPresent = useIsPresent();
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.body}>
-        <div className={styles.topBar}>
-          <span className={styles.topButton}>Home</span>
-          <Link
-            className={styles.topButton}
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/map"}
-          >
-            <span>Map</span>
-          </Link>
-          {!isLogged && (
-            <Link
-              className={styles.topButton}
-              style={{ textDecoration: "none", color: "white" }}
-              to={"/login"}
-            >
-              <span>Login</span>
-            </Link>
-          )}
-        </div>
-        <img className={styles.image} src={logo} />
+const HomePage = ({ isLogged, isComputerScreen }: Props) => {
+    const isPresent = useIsPresent();
+    return (
+        <div className={styles.wrapper}>
+            <div className={styles.body}>
+                <div className={styles.topBar}>
+                    <span className={styles.topButton}>Home</span>
+                    <Link
+                        className={styles.topButton}
+                        style={{ textDecoration: "none", color: "white" }}
+                        to={"/map"}
+                    >
+                        <span>Map</span>
+                    </Link>
+                    {!isLogged && (
+                        <Link
+                            className={styles.topButton}
+                            style={{ textDecoration: "none", color: "white" }}
+                            to={"/login"}
+                        >
+                            <span>Login</span>
+                        </Link>
+                    )}
+                </div>
+                <img className={styles.image} src={logo} />
 
-        <div className={styles.footer}>
-          <div className={styles.searchSection}>
-            <div className={styles.basicText}>Recherchez un jeu</div>
-            <div
-              className={css`
+                <div className={styles.footer}>
+                    <div className={styles.searchSection}>
+                        <div className={styles.basicText}>Recherchez un jeu</div>
+                        <div
+                            className={css`
                 display: flex;
                 align-items: center;
                 width: 70%;
@@ -58,41 +59,41 @@ const HomePage = ({ isLogged }: Props) => {
                   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
                 }
               `}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Battlefield 2042, Call of Duty, ..."
-              />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
+                        >
+                            <InputBase
+                                sx={{ ml: 1, flex: 1 }}
+                                placeholder="Battlefield 2042, Call of Duty, ..."
+                            />
+                            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      />
-    </div>
-  );
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
+                exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+                style={{ originX: isPresent ? 0 : 1 }}
+                className="privacy-screen"
+            />
+        </div>
+    );
 };
 
 const styles = {
-  wrapper: css`
+    wrapper: css`
     height: 100vh;
   `,
-  searchBar: css`
+    searchBar: css`
     /* horizontally center */
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
   `,
-  searchSection: css`
+    searchSection: css`
     background-color: #61ba8c;
     height: 130px;
     padding: 20px;
@@ -109,12 +110,12 @@ const styles = {
     flex-direction: column;
     gap: 20px;
   `,
-  body: css`
+    body: css`
     background-color: #5ab584;
     width: 100%;
     height: 100%;
   `,
-  image: css`
+    image: css`
     background-color: transparent;
     z-index: 1;
     /* center */
@@ -125,7 +126,7 @@ const styles = {
     transform: translate(-50%, -50%);
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   `,
-  footer: css`
+    footer: css`
     height: 200px;
     width: 100%;
     background-color: #74c499;
@@ -136,7 +137,7 @@ const styles = {
     border-top: 25px solid #85d8ac;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   `,
-  topBar: css`
+    topBar: css`
     border-bottom: 5px solid #85d8ac;
     background-color: #74c499;
     height: 100px;
@@ -148,7 +149,7 @@ const styles = {
     /* space betseen */
     gap: 40px;
   `,
-  topButton: css`
+    topButton: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 300px;
@@ -166,7 +167,7 @@ const styles = {
       transform: translateY(-5px);
     }
   `,
-  basicText: css`
+    basicText: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 500;
