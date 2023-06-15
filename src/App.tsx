@@ -20,6 +20,7 @@ import { AnimatePresence } from "framer-motion";
 /* Theme variables */
 import "./theme/variables.css";
 import { useLocation, useRoutes } from "react-router-dom";
+import { useMediaQuery } from 'usehooks-ts'
 import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
@@ -27,37 +28,38 @@ import LoginPage from "./pages/Login/LoginPage";
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [isLogged, setIsLogged] = React.useState(false);
-  const element = useRoutes([
-    {
-      path: "/",
-      element: <HomePage isLogged={isLogged} />,
-    },
-    {
-      path: "/map",
-      element: <MapPage isLogged={isLogged} />,
-    },
-    {
-      path: "/login",
-      element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
-    },
-  ]);
+    const [isLogged, setIsLogged] = React.useState(false);
+    const isComputerScreen: boolean = useMediaQuery("(min-width: 480px)");
 
-  const location = useLocation();
+    const element = useRoutes([
+        {
+            path: "/",
+            element: <HomePage isLogged={isLogged} isComputerScreen={isComputerScreen} />,
+        },
+        {
+            path: "/map",
+            element: <MapPage isLogged={isLogged} isComputerScreen={isComputerScreen} />,
+        },
+        {
+            path: "/login",
+            element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} isComputerScreen={isComputerScreen} />,
+        },
+    ]);
 
-  if (!element) return null;
+    const location = useLocation();
+    if (!element) return null;
 
-  return (
-    <div className={styles.bg}>
-      <AnimatePresence mode="wait" initial={false}>
-        {React.cloneElement(element, { key: location.pathname })}
-      </AnimatePresence>
-    </div>
-  );
+    return (
+        <div className={styles.bg}>
+            <AnimatePresence mode="wait" initial={false}>
+                {React.cloneElement(element, { key: location.pathname })}
+            </AnimatePresence>
+        </div>
+    );
 };
 
 const styles = {
-  bg: css`
+    bg: css`
     background-color: #f5f5f5;
   `,
 };

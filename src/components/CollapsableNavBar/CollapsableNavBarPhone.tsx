@@ -7,7 +7,9 @@ import { Button } from "../Button/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Button2 } from "../Button/Button2";
 
-export const CollapsableNavBar = () => {
+export const CollapsableNavBarPhone = () => {
+
+
     const navigate = (path: string) => () => {
         // navigate to path
         window.location.href = path;
@@ -37,7 +39,8 @@ export const CollapsableNavBar = () => {
 
     return (
         <>
-            <Button2
+            <h1>Phone</h1>
+            {/* <Button2
                 onClick={() => setIsOpen(true)}
                 className={styles.menuButton(isOpen)}
             >
@@ -45,7 +48,7 @@ export const CollapsableNavBar = () => {
             </Button2>
             <div ref={navBarRef} className={styles.navBar(isOpen)}>
                 <Button isRouterButton to="/">
-                    Home
+                    Phone
                 </Button>
                 <div
                     className={css`
@@ -79,7 +82,7 @@ export const CollapsableNavBar = () => {
                         <SearchIcon />
                     </IconButton>
                 </div>
-            </div>
+            </div> */}
         </>
     );
 };
