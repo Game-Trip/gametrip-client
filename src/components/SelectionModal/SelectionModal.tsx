@@ -1,13 +1,13 @@
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import CloseIcon from "@mui/icons-material/Close";
-import { ApiLocation } from "../../pages/Map/MapPage";
 import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React from "react";
+import { LocationDto } from "@game-trip/ts-api-client";
 
 type Props = {
-  selectedLocation?: ApiLocation;
+  selectedLocation?: LocationDto;
   closeSelectionModal: () => void;
 };
 
@@ -28,7 +28,6 @@ export default function SelectionModal({
         </IconButton>
       </div>
       {selectedLocation?.name}
-      {selectedLocation?.city}
     </div>
   );
 }
