@@ -23,47 +23,45 @@ import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
-import TestPage from "./pages/Test/TestPage";
+import NotFound from "./pages/404/NotFoundPage";
+import UserContext from "./components/UserContext/UserContext";
+
 setupIonicReact();
 
 const App: React.FC = () => {
-    const [isLogged, setIsLogged] = React.useState(false);
-    const element = useRoutes([
-        {
-            path: "/",
-            element: <HomePage isLogged={isLogged} />,
-        },
-        {
-            path: "/map",
-            element: <MapPage isLogged={isLogged} />,
-        },
-        {
-            path: "/login",
-            element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
-        },
-        {
-            path: "/test",
-            element: <TestPage setIsLogged={setIsLogged} isLogged={isLogged} />,
-        },
-    ]);
+  const [isLogged, setIsLogged] = React.useState(false);
+  const element = useRoutes([
+    {
+      path: "/",
+      element: <HomePage isLogged={isLogged} />,
+    },
+    {
+      path: "/map",
+      element: <MapPage isLogged={isLogged} />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
+  ]);
 
     const location = useLocation();
 
     if (!element) return null;
 
-    return (
-        <div className={styles.bg}>
-            <AnimatePresence mode="wait" initial={false}>
-                {React.cloneElement(element, { key: location.pathname })}
-            </AnimatePresence>
-        </div>
-    );
-};
-
-const styles = {
-    bg: css`
-    background-color: #f5f5f5;
-  `,
+  return (
+    <div>
+      <UserContext>
+        <AnimatePresence mode="wait" initial={false}>
+          {React.cloneElement(element, { key: location.pathname })}
+        </AnimatePresence>
+      </UserContext>
+    </div >
+  );
 };
 
 export default App;

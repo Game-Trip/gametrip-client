@@ -1,0 +1,20 @@
+@import url('https://fonts.cdnfonts.com/css/vt323');
+
+body {
+  background: #1E1E1E;
+}
+
+.notFoundContainer {
+  color: #FFF;
+  font-family: 'VT323', monospace !important;
+  font-size: 30px!important;
+}
+
+
+.error {
+  color: red;
+}
+
+.username {
+  color: #71D3A1;
+}
