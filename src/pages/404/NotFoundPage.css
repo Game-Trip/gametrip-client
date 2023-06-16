@@ -1,0 +1,15 @@
+body, html {
+  background: #1E1E1E;
+  color: #FFF;
+  font-family: 'VT323', monospace !important;
+  font-size: 30px!important;
+}
+
+
+.error {
+  color: red;
+}
+
+.username {
+  color: #71D3A1;
+}
