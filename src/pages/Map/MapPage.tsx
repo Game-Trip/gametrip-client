@@ -3,10 +3,11 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, Marker, Popup } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import axios from "axios";
+import { LocationController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
+import { LocationDto } from "@game-trip/ts-api-client";
 interface Props {
   isLogged: boolean;
 }
@@ -24,9 +25,9 @@ export interface ApiLocation {
 
 export const MapPage = ({ isLogged }: Props) => {
   const isPresent = useIsPresent();
-  const [locationsData, setLocationsdata] = useState<ApiLocation[]>([]);
+  const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<
-    ApiLocation | undefined
+    LocationDto | undefined
   >();
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
@@ -51,20 +52,8 @@ export const MapPage = ({ isLogged }: Props) => {
 
   React.useEffect(() => {
     const fetchLocations = async () => {
-      const options = {
-        url: "https://staging-api.game-trip.fr/location",
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json;charset=UTF-8",
-          "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("game-trip-jwt") as string
-          )}`,
-        },
-      };
-      const result = await axios(options);
-      setLocationsdata(result.data);
+      const result: LocationDto[] = await LocationController.locationGet();
+      setLocationsdata(result);
     };
     fetchLocations();
   }, []);
