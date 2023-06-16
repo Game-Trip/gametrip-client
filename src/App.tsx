@@ -49,9 +49,9 @@ const App: React.FC = () => {
     },
   ]);
 
-  const location = useLocation();
+    const location = useLocation();
 
-  if (!element) return null;
+    if (!element) return null;
 
   return (
     <div>
