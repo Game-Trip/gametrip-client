@@ -31,6 +31,13 @@ export const TopNavBar = ({
       >
         <span>Map</span>
       </Link>
+      {/* <Link
+        className={styles.topButton}
+        style={{ textDecoration: "none", color: "white" }}
+        to={"/test"}
+      >
+        <span>Test</span>
+      </Link> */}
       {!isLogged && showLoginButton && (
         <Link
           className={styles.topButton}
