@@ -23,6 +23,7 @@ import { useLocation, useRoutes } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
+import TestPage from "./pages/Test/TestPage";
 import UserContext from "./components/UserContext/UserContext";
 
 setupIonicReact();
@@ -42,6 +43,10 @@ const App: React.FC = () => {
       path: "/login",
       element: <LoginPage setIsLogged={setIsLogged} isLogged={isLogged} />,
     },
+    // {
+    //   path: "/test",
+    //   element: <TestPage isLogged={isLogged}/>,
+    // },
   ]);
 
   const location = useLocation();
