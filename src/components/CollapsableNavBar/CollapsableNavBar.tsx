@@ -11,8 +11,12 @@ import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import { useOnClickOutside } from "usehooks-ts";
 import SearchInput from "../SearchInput/SearchInput";
-
-export const CollapsableNavBar = () => {
+import { SearchedGameDto } from "@game-trip/ts-api-client";
+interface Props {
+  onSearch: (search: string) => void;
+  availableGames?: SearchedGameDto[];
+}
+export const CollapsableNavBar = ({ onSearch, availableGames }: Props) => {
   const navigate = (path: string) => () => {
     // navigate to path
     window.location.href = path;
@@ -21,6 +25,9 @@ export const CollapsableNavBar = () => {
   const searchBarRef = React.useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isoverFlowHidden, setIsOverFlowHidden] = React.useState(true);
+
+
   const { isLogged } = useUser();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -44,11 +51,11 @@ export const CollapsableNavBar = () => {
       >
         <KeyboardArrowDownIcon />
       </Button2>
-      <div ref={navBarRef} className={styles.navBar(isOpen)}>
+      <div ref={navBarRef} className={styles.navBar(isOpen, isoverFlowHidden)}>
         <Button isRouterButton to="/">
           Home
         </Button>
-        <SearchInput value={""} onChange={() => {}} />
+        <SearchInput onChange={onSearch} options={availableGames} />
         {isLogged && <ProfileButton />}
       </div>
     </>
@@ -97,8 +104,9 @@ const styles = {
     background-color: #5ab584;
     padding: 20px;
   `,
-  navBar: (isOpen: boolean) => css`
-    height: ${isOpen ? 80 : 0}px;
+  navBar: (isOpen: boolean, isoverFlowHidden: boolean) => css`
+    height: 80px;
+    top: ${isOpen ? 0 : -75}px;
     background-color: #74c499;
     width: 100%;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -112,6 +120,5 @@ const styles = {
     position: absolute;
     transition: 1s;
     /* opacity: ${isOpen ? 100 : 0}; */
-    overflow: hidden;
   `,
 };

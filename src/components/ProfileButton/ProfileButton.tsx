@@ -2,12 +2,13 @@ import { css } from "@emotion/css";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { useUser } from "../../hooks/useUser";
 
 type Props = {};
 
 export default function ProfileButton({}: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  const { onLogout } = useUser();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -44,6 +45,7 @@ export default function ProfileButton({}: Props) {
       >
         <MenuItem onClick={handleClose}>Profil</MenuItem>
         <MenuItem onClick={handleClose}>Paramètres</MenuItem>
+        <MenuItem onClick={onLogout}>Déconnexion</MenuItem>
       </Menu>
     </div>
   );

@@ -3,32 +3,24 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, Marker, Popup } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import { LocationController } from "../../utils/api/baseApi";
+import { LocationController, SearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
-import { LocationDto } from "@game-trip/ts-api-client";
-interface Props {
-  isLogged: boolean;
-}
+import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 
-export interface ApiLocation {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  latitude: number;
-  longitude: number;
-  city: string;
-  state: string;
-}
-
-export const MapPage = ({ isLogged }: Props) => {
+export const MapPage = () => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<
     LocationDto | undefined
   >();
+  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+
+  const handleSearch = async (search: string) => {
+    const result = await SearchController.searchSearchGameGet(search);
+    setAvailableGames(result);
+  };
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
@@ -60,7 +52,7 @@ export const MapPage = ({ isLogged }: Props) => {
 
   return (
     <>
-      <CollapsableNavBar />
+      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} />
       <div className={styles.wrapper}>
         <div className={styles.mapContainer}>
           {pins.length !== 0 && (

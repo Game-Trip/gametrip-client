@@ -1562,10 +1562,10 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.35.0.tgz"
   integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
-"@game-trip/ts-api-client@1.10.33":
-  version "1.10.33"
-  resolved "https://npm.pkg.github.com/download/@game-trip/ts-api-client/1.10.33/58f9b396b85d74de2e8baa4a761f376ac60758aa#58f9b396b85d74de2e8baa4a761f376ac60758aa"
-  integrity sha512-RAGHQB8R3TjHqyfrUibzTgbYxyln8MG9qB8z9sDCp0i1pw8zjx93IUlDIK6pQk1SzRHFQqNO4auMh/ptK44d2Q==
+"@game-trip/ts-api-client@1.10.38":
+  version "1.10.38-Beta"
+  resolved "https://npm.pkg.github.com/download/@game-trip/ts-api-client/1.10.38-Beta/2e7788fe4ed4c3ec91d598aae67d1e156e0dd381#2e7788fe4ed4c3ec91d598aae67d1e156e0dd381"
+  integrity sha512-ny3IBfJAHhRB/352gXFJXfd5GwKygfddjgBVZ6ncFw145ogReS4yO9CRGQxW86MLihxwetJSryMPeVpTIDZjQw==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"
