@@ -24,6 +24,7 @@ import HomePage from "./pages/Home/HomePage";
 import { MapPage } from "./pages/Map/MapPage";
 import LoginPage from "./pages/Login/LoginPage";
 import TestPage from "./pages/Test/TestPage";
+import NotFound from "./pages/404/NotFoundPage";
 import UserContext from "./components/UserContext/UserContext";
 
 setupIonicReact();
@@ -47,27 +48,25 @@ const App: React.FC = () => {
     //   path: "/test",
     //   element: <TestPage isLogged={isLogged}/>,
     // },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
 
-  const location = useLocation();
+    const location = useLocation();
 
-  if (!element) return null;
+    if (!element) return null;
 
   return (
-    <div className={styles.bg}>
+    <div>
       <UserContext>
         <AnimatePresence mode="wait" initial={false}>
           {React.cloneElement(element, { key: location.pathname })}
         </AnimatePresence>
       </UserContext>
-    </div>
+    </div >
   );
-};
-
-const styles = {
-  bg: css`
-    background-color: #f5f5f5;
-  `,
 };
 
 export default App;
