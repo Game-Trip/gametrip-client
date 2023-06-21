@@ -10,6 +10,5 @@ export const parseJwt = (token: string) => {
       })
       .join("")
   );
-  console.log(JSON.parse(jsonPayload));
   return JSON.parse(jsonPayload);
 };

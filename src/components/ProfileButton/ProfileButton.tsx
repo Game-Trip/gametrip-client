@@ -53,7 +53,6 @@ export default function ProfileButton({}: Props) {
 
 const styles = {
   userButton: css`
-    margin-left: auto;
     display: flex;
     justify-content: center;
     align-items: center;

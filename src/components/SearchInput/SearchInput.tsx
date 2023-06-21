@@ -7,18 +7,18 @@ import { SearchedGameDto } from "@game-trip/ts-api-client";
 
 type Props = {
   onChange: (search: string) => void;
-  options?: SearchedGameDto[]
+  options?: SearchedGameDto[];
+  onSelect: (option: SearchedGameDto) => void;
 };
 
-export default function SearchInput({ onChange, options }: Props) {
+export default function SearchInput({ onChange, options, onSelect }: Props) {
   const [value, setValue] = useState<string>("");
   const debounced = useDebounce(value, 500);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  console.log(options)
   useEffect(() => {
     onChange(value);
-  }, [debounced]);
+  }, [debounced, value]);
   return (
     <div className={styles.wrapper}>
       <>
@@ -41,7 +41,12 @@ export default function SearchInput({ onChange, options }: Props) {
       </>
 
       <div className={styles.dropDown(isFocused)}>
-        {options?.map((option) => <div className={styles.dropDownElement}>{option.name}</div>)}
+        {options?.map((option) => <div key={option.name} onClick={() => {
+          onSelect(option);  
+          if(option.name) {
+            setValue(option.name);        
+          }
+        }} className={styles.dropDownElement}>{option.name}</div>)}
       </div>
     </div>
   );
@@ -49,14 +54,22 @@ export default function SearchInput({ onChange, options }: Props) {
 
 const styles = {
   dropDownElement: css`
-    width: 50%;
+    width: 100%;
     border-radius: 8px;
     background-color: #ffffff;
     color: black;
     padding: 10px;
+    transition: 0.5s;
+    &:hover {
+      background-color: #f5f5f5;
+      cursor: pointer;
+      transform: translateX(-5px);
+
+    }
   `,
   dropDown: (isFocused: boolean) => css`
     opacity: ${isFocused ? 1 : 0};
+    visibility: ${isFocused ? "visible" : "hidden"};
     transition: 0.5s;
     position: absolute;
     display: flex;
@@ -65,6 +78,7 @@ const styles = {
     top: 100%;
     margin-top: 10px;
     width: 100%;
+    height: 80%;
     transition: 0.5s;
     z-index: 10000;
   `,

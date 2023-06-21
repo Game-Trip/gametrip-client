@@ -12,6 +12,7 @@ import { useIsLogged } from "../../utils/isLogged";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { useUser } from "../../hooks/useUser";
+import { SearchedGameDto } from "@game-trip/ts-api-client";
 
 const HomePage = () => {
   const isPresent = useIsPresent();
@@ -24,7 +25,7 @@ const HomePage = () => {
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <SearchInput onChange={() => { }} />
+            <SearchInput onChange={() => { } } onSelect={()=>{} } />
           </div>
         </div>
       </div>

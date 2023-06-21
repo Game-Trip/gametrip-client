@@ -21,11 +21,11 @@ import { AnimatePresence } from 'framer-motion'
 import './theme/variables.css'
 import { useLocation, useRoutes } from 'react-router-dom'
 import HomePage from './pages/Home/HomePage'
-import { MapPage } from './pages/Map/MapPage'
 import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
+import MapPage from './pages/Map/MapPage'
 
 setupIonicReact()
 
