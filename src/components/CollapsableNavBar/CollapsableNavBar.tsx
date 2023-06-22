@@ -15,13 +15,13 @@ import { SearchedGameDto } from "@game-trip/ts-api-client";
 interface Props {
   onSearch: (search: string) => void;
   availableGames?: SearchedGameDto[];
-  onSelectGame: (game: SearchedGameDto) => void;
+  onSelectGame: (game?: SearchedGameDto) => void;
 }
 export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Props) => {
   const navBarRef = React.useRef<HTMLDivElement>(null);
   const searchBarRef = React.useRef<HTMLDivElement>(null);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(true);
   const [isoverFlowHidden, setIsOverFlowHidden] = React.useState(true);
 
 
