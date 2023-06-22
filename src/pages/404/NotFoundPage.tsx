@@ -34,7 +34,6 @@ export default function NotFound() {
     window.onkeydown = function (e) {
       const key = e.keyCode;
       const code = String.fromCharCode(96 <= key && key <= 105 ? key - 48 : key);
-      // console.log(e.key);
       switch (e.key) {
         case "Backspace":
           deleteLetter();

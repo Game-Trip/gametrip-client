@@ -1,54 +1,74 @@
-import React, { useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, Marker, Popup } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import { LocationController } from "../../utils/api/baseApi";
+import { LocationController, SearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
-import { LocationDto } from "@game-trip/ts-api-client";
-interface Props {
-  isLogged: boolean;
-}
+import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 
-export interface ApiLocation {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  latitude: number;
-  longitude: number;
-  city: string;
-  state: string;
-}
-
-export const MapPage = ({ isLogged }: Props) => {
+const MapPage = () => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<
     LocationDto | undefined
   >();
+  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+
+  const handleSearch = async (search: string) => {
+    const result = await SearchController.searchSearchGameGet(search);
+    setAvailableGames(result);
+  };
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
+  const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>()
+
   const pins = useMemo(() => {
-    return locationsData.map((location: any, index) => (
-      <Marker
-        offset={[12, -10]}
-        rotationAlignment="viewport"
-        key={`marker-${index}`}
-        longitude={location.longitude}
-        latitude={location.latitude}
-        onClick={(e) => {
-          e.originalEvent.stopPropagation();
-          setSelectedLocation(location);
-        }}
-      >
-        <Pin />
-      </Marker>
-    ));
-  }, [locationsData]);
+    console.log(selectedGame);
+    if(selectedGame && selectedGame.locations) {
+      console.log('selected game');
+      return selectedGame.locations.map((location: LocationDto, index) => {
+            return (
+              <Marker
+              offset={[12, -10]}
+              rotationAlignment="viewport"
+              key={`marker-${index}`}
+              longitude={location.longitude}
+              latitude={location.latitude}
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                setSelectedLocation(location);
+              }}
+              >
+            <Pin />
+            </Marker>
+          )
+    }
+      );
+    }
+    return locationsData.map((location: LocationDto, index) => {
+          return (
+            <Marker
+            offset={[12, -10]}
+            rotationAlignment="viewport"
+            key={`marker-${index}`}
+            longitude={location.longitude}
+            latitude={location.latitude}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setSelectedLocation(location);
+            }}
+            >
+          <Pin />
+          </Marker>
+        )
+   
+  }
+    );
+  }, [locationsData,selectedGame]);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
@@ -60,10 +80,10 @@ export const MapPage = ({ isLogged }: Props) => {
 
   return (
     <>
-      <CollapsableNavBar />
+      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected)=>setSelectedGame(selected)} />
       <div className={styles.wrapper}>
         <div className={styles.mapContainer}>
-          {pins.length !== 0 && (
+
             <Map
               initialViewState={{
                 latitude: 48.8588443,
@@ -84,7 +104,7 @@ export const MapPage = ({ isLogged }: Props) => {
             >
               {pins}
             </Map>
-          )}
+          
         </div>
 
         <SelectionModal
@@ -176,3 +196,5 @@ const styles = {
     }
   `,
 };
+
+export default memo(MapPage);

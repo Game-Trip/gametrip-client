@@ -23,8 +23,6 @@ export default function Component({
   const [ratingValue, setRatingValue] = useState(0);
   const onRating = (rate: number) => setRatingValue(rate);
 
-  console.log(ratingValue);
-
   return (
     <div className={styles.wrapper}>
       <div id="topBar" className={styles.topBar}>

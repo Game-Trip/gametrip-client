@@ -11,10 +11,10 @@ import { Link } from "react-router-dom";
 import { useIsLogged } from "../../utils/isLogged";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
-interface Props {
-  isLogged: boolean;
-}
-const HomePage = ({ isLogged }: Props) => {
+import { useUser } from "../../hooks/useUser";
+import { SearchedGameDto } from "@game-trip/ts-api-client";
+
+const HomePage = () => {
   const isPresent = useIsPresent();
   return (
     <div className={styles.wrapper}>
@@ -25,7 +25,7 @@ const HomePage = ({ isLogged }: Props) => {
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <SearchInput value={""} onChange={() => {}} />
+            <SearchInput onChange={() => { } } onSelect={()=>{} } />
           </div>
         </div>
       </div>

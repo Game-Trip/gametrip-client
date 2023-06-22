@@ -1,6 +1,6 @@
 import React from "react";
 import { css, cx } from "@emotion/css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Button = ({
   to,
@@ -14,11 +14,16 @@ export const Button = ({
   to?: string;
   isRouterButton?: boolean;
 }) => {
+  const navigate = useNavigate();
   return (
     <button
       ref={ref}
       {...props}
       className={cx(styles.topButton, props.className)}
+      // onClick, navigate to "to"
+      onClick={() => {
+        navigate(to ?? "/");
+      }}
     >
       {isRouterButton ? (
         <Link style={{ textDecoration: "none", color: "white" }} to={to ?? "/"}>

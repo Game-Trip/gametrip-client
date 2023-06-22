@@ -40,12 +40,16 @@ export const TopNavBar = ({
           <span>Login</span>
         </Link>
       )}
-      {isLogged && <ProfileButton />}
+      {isLogged && <div className={styles.mlauto}><ProfileButton /></div>
+      }
     </div>
   );
 };
 
 const styles = {
+  mlauto: css`
+    margin-left: auto;
+  `,
   userButton: css`
     margin-left: auto;
     display: flex;

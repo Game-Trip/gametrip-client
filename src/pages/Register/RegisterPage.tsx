@@ -13,18 +13,19 @@ import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
-  const { onLogin } = useUser();
+  const { onRegister } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
 
   const [userAuth, setUserAuth] = React.useState({
+    email: "",
     username: "",
     password: "",
   });
 
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
-  const handleLogin = async () =>
-    await onLogin(userAuth.username, userAuth.password);
+  const handleRegister = async () =>
+    await onRegister(userAuth.email, userAuth.username, userAuth.password);
 
   return (
     <div className={styles.wrapper}>
@@ -34,8 +35,42 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authenticate</span>
+            <span className={styles.basicText}>Register</span>
             <span className={styles.fieldName}>E-mail</span>
+            <div className={styles.formInput}>
+              <InputBase
+                autoComplete="off"
+                aria-autocomplete="none"
+                sx={{
+                  ml: 1,
+                  flex: 1,
+                  // on chrome autofill, dont change the background color
+                  "&:-webkit-autofill": {
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                    backgroundColor: "white !important",
+                  },
+                  "&:-webkit-autofill:focus": {
+                    backgroundColor: "white !important",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                  },
+                  "&:-webkit-autofill:hover": {
+                    backgroundColor: "white !important",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+                  },
+                  "&:-webkit-autofill:active": {
+                    transition: " background-color 5000s ease-in-out 0s",
+                    WebkitBoxShadow: "0 0 0 1000px #fff inset",
+
+                    backgroundColor: "white !important",
+                  },
+                }}
+                onChange={(val) => {
+                  setUserAuth({ ...userAuth, email: val.target.value });
+                }}
+                placeholder="E-mail"
+              />
+            </div>
+            <span className={styles.fieldName}>Ussername</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -91,28 +126,18 @@ export default function Component(): JSX.Element {
                 {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
-            <button onClick={handleLogin} className={styles.loginButton}>
-              <span>Login</span>
+            <button onClick={handleRegister} className={styles.registerButton}>
+              <span>Register</span>
             </button>
             <Link
               style={{ textDecoration: "none", color: "white" }}
-              to="/register"
+              to="/login"
             >
-              Not registered yet ?
+              Already registered ?
             </Link>
           </div>
         </div>
       </div>
-      {/* <Snackbar
-        open={snackBarInfo.isOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity={snackBarInfo.isError ? "error" : "success"}>
-          {snackBarInfo.message}
-        </Alert>
-      </Snackbar> */}
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
@@ -125,7 +150,7 @@ export default function Component(): JSX.Element {
 }
 
 const styles = {
-  loginButton: css`
+  registerButton: css`
     // undo default button style
     border: none;
     outline: none;
@@ -156,7 +181,6 @@ const styles = {
     font-weight: 500;
     font-size: 28px;
     line-height: 33px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     /* center to the middle */
     align-self: start;
   `,
