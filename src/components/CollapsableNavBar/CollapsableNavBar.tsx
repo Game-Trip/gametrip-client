@@ -52,8 +52,13 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
         <Button isRouterButton to="/">
           Home
         </Button>
+        {!isLogged && (
+          <Button isRouterButton to="/login">
+            Login
+          </Button>
+        )}
         <div className={styles.inputWrapper}>
-        <SearchInput onChange={onSearch} options={availableGames} onSelect={onSelectGame} />
+          <SearchInput onChange={onSearch} options={availableGames} onSelect={onSelectGame} />
         </div>
         {isLogged && <ProfileButton />}
       </div>
@@ -62,7 +67,7 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
 };
 
 const styles = {
-  inputWrapper:css`
+  inputWrapper: css`
   width: 30%;
   margin-left: auto;F
   `,

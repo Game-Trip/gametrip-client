@@ -25,6 +25,7 @@ import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
+import TestPage from './pages/Test/TestPage'
 import MapPage from './pages/Map/MapPage'
 
 setupIonicReact()
@@ -44,8 +45,12 @@ const App: React.FC = () => {
       element: <LoginPage />,
     },
     {
-      path: 'register',
+      path: '/register',
       element: <RegisterPage />,
+    },
+    {
+      path: '/test',
+      element: <TestPage />,
     },
     {
       path: '*',
