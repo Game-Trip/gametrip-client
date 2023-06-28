@@ -12,6 +12,8 @@ interface Props {
   selectedLocation?: LocationDto;
   setSelectedLocation: (location?: LocationDto) => void;
 }
+import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
+import { useUser } from "../../hooks/useUser";
 
 const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
   const isPresent = useIsPresent();
@@ -19,7 +21,7 @@ const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
 console.log(selectedLocation);
 
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-  const handleSearch = useCallback(async (search: string) => {
+  const { isLogged } = useUser();  const handleSearch = useCallback(async (search: string) => {
 
     mapRef.current?.flyTo({ duration: 2000, zoom: 0});
     
@@ -34,29 +36,10 @@ console.log(selectedLocation);
   const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
   const pins = useMemo(() => {
-    if(selectedGame && selectedGame.locations) {
+    if (selectedGame && selectedGame.locations) {
       return selectedGame.locations.map((location: LocationDto, index: number) => {
-            return (
-              <Marker
-              offset={[12, -10]}
-              rotationAlignment="viewport"
-              key={`marker-${index}`}
-              longitude={location.longitude}
-              latitude={location.latitude}
-              onClick={(e) => {
-                e.originalEvent.stopPropagation();
-                setSelectedLocation(location);
-              }}
-              >
-            <Pin />
-            </Marker>
-          )
-    }
-      );
-    }
-    return locationsData.map((location: LocationDto, index) => {
-          return (
-            <Marker
+        return (
+          <Marker
             offset={[12, -10]}
             rotationAlignment="viewport"
             key={`marker-${index}`}
@@ -65,18 +48,37 @@ console.log(selectedLocation);
             onClick={(e) => {
               e.originalEvent.stopPropagation();
               setSelectedLocation(location);
+            }}
+          >
+            <Pin />
+          </Marker>
+        )
+      }
+      );
+    }
+    return locationsData.map((location: LocationDto, index) => {
+      return (
+        <Marker
+          offset={[12, -10]}
+          rotationAlignment="viewport"
+          key={`marker-${index}`}
+          longitude={location.longitude}
+          latitude={location.latitude}
+          onClick={(e) => {
+            e.originalEvent.stopPropagation();
+            setSelectedLocation(location);
               mapRef.current?.flyTo({ duration: 2000, zoom: 6,
                 center: [location?.longitude!, location?.latitude!],              
               });
-            }}
-            >
+          }}
+        >
           <Pin />
-          </Marker>
-        )
-   
-  }
+        </Marker>
+      )
+
+    }
     );
-  }, [locationsData,selectedGame]);
+  }, [locationsData, selectedGame]);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
@@ -88,30 +90,32 @@ console.log(selectedLocation);
   
   return (
     <>
-      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected)=>setSelectedGame(selected)} />
+      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} />
       <div className={styles.wrapper}>
         <div className={styles.mapContainer}>
-            <Map
-              ref={mapRef}
-              initialViewState={{
-                latitude: 48.8588443,
-                longitude: 2.2943506,
-                zoom: 0,
-                bearing: 0,
-              }}
-              minZoom={2}
-              mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
-              mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
-              attributionControl={false}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              
-            >
-              {pins}
-            </Map>
-          
+          {isLogged && <AddLocationComponent />}
+          <Map
+            ref={mapRef}
+            initialViewState={{
+              latitude: 48.8588443,
+              longitude: 2.2943506,
+              zoom: 18.5,
+              bearing: 0,
+              pitch: 0,
+            }}
+            // max zoom level
+            minZoom={2}
+            mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
+            mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
+            attributionControl={false}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            {pins}
+          </Map>
+
         </div>
 
         <SelectionModal
