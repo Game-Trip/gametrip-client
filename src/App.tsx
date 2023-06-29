@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { IonApp, setupIonicReact } from '@ionic/react'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -26,10 +26,14 @@ import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
 import MapPage from './pages/Map/MapPage'
+import { LocationDto } from '@game-trip/ts-api-client'
 
 setupIonicReact()
 
 const App: React.FC = () => {
+    const [selectedLocation, setSelectedLocation] = useState<
+    LocationDto | undefined
+  >();
   const element = useRoutes([
     {
       path: '/',
@@ -37,7 +41,7 @@ const App: React.FC = () => {
     },
     {
       path: '/map',
-      element: <MapPage />,
+      element: <MapPage selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />,
     },
     {
       path: '/login',

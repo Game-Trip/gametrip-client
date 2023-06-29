@@ -1603,7 +1603,7 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.42.0.tgz#484a1d638de2911e6f5a30c12f49c7e4a3270fb6"
   integrity sha512-6SWlXpWU5AvId8Ac7zjzmIOqMOba/JWY8XZ4A7q7Gn1Vlfg/SFFIlrtHXt9nPn4op9ZPAkl91Jao+QQv3r/ukw==
 
-"@game-trip/ts-api-client@1.10.38":
+"@game-trip/ts-api-client@1.10.38-Beta":
   version "1.10.38-Beta"
   resolved "https://npm.pkg.github.com/download/@game-trip/ts-api-client/1.10.38-Beta/2e7788fe4ed4c3ec91d598aae67d1e156e0dd381#2e7788fe4ed4c3ec91d598aae67d1e156e0dd381"
   integrity sha512-ny3IBfJAHhRB/352gXFJXfd5GwKygfddjgBVZ6ncFw145ogReS4yO9CRGQxW86MLihxwetJSryMPeVpTIDZjQw==
