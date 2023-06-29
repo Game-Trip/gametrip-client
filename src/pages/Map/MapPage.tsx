@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState,useRef ,useCallback} from "react";
+import React, { memo, useMemo, useState,useRef ,useCallback, useEffect} from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
@@ -16,6 +16,7 @@ interface Props {
 const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
+console.log(selectedLocation);
 
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
   const handleSearch = useCallback(async (search: string) => {

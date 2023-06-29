@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import { IonApp, setupIonicReact } from '@ionic/react'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -19,14 +19,15 @@ import { AnimatePresence } from 'framer-motion'
 /* Theme variables */
 
 import './theme/variables.css'
-import { useLocation, useRoutes } from 'react-router-dom'
+import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import HomePage from './pages/Home/HomePage'
 import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
 import MapPage from './pages/Map/MapPage'
-import { LocationDto } from '@game-trip/ts-api-client'
+import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
+import { SearchController } from './utils/api/baseApi'
 
 setupIonicReact()
 
@@ -34,10 +35,26 @@ const App: React.FC = () => {
     const [selectedLocation, setSelectedLocation] = useState<
     LocationDto | undefined
   >();
+  const navigate = useNavigate();
+  const handleSelect = async (search?: SearchedGameDto) => {
+    setSelectedLocation(search);
+    if(search) {
+      navigate('/map');
+    }
+  }
+
+  const handleSearch = useCallback(async (search: string) => {
+    const result = await SearchController.searchSearchGameGet(search);
+    setAvailableGames(result);
+    return;
+  },[]);
+      const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+      const [search, setSearch] = useState<string>('');
+
   const element = useRoutes([
     {
       path: '/',
-      element: <HomePage />,
+      element: <HomePage onSearch={handleSearch} onSelect={handleSelect} options={availableGames} />,
     },
     {
       path: '/map',
