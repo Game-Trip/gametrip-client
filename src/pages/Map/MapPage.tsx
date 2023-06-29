@@ -1,7 +1,7 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo, useState,useRef ,useCallback} from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Map, Marker, Popup } from "react-map-gl";
+import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
 import { LocationController, SearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
@@ -16,20 +16,22 @@ const MapPage = () => {
     LocationDto | undefined
   >();
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+  const handleSearch = useCallback(async (search: string) => {
 
-  const handleSearch = async (search: string) => {
+    mapRef.current?.flyTo({ duration: 2000, zoom: 0});
+    
     const result = await SearchController.searchSearchGameGet(search);
     setAvailableGames(result);
-  };
+    return;
+  },[]);
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
   const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>()
+  const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
   const pins = useMemo(() => {
-    console.log(selectedGame);
     if(selectedGame && selectedGame.locations) {
-      console.log('selected game');
       return selectedGame.locations.map((location: LocationDto, index) => {
             return (
               <Marker
@@ -60,6 +62,9 @@ const MapPage = () => {
             onClick={(e) => {
               e.originalEvent.stopPropagation();
               setSelectedLocation(location);
+              mapRef.current?.flyTo({ duration: 2000, zoom: 6,
+                center: [location?.longitude!, location?.latitude!],              
+              });
             }}
             >
           <Pin />
@@ -77,22 +82,20 @@ const MapPage = () => {
     };
     fetchLocations();
   }, []);
-
+  
   return (
     <>
       <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected)=>setSelectedGame(selected)} />
       <div className={styles.wrapper}>
         <div className={styles.mapContainer}>
-
             <Map
+              ref={mapRef}
               initialViewState={{
                 latitude: 48.8588443,
                 longitude: 2.2943506,
-                zoom: 18.5,
+                zoom: 0,
                 bearing: 0,
-                pitch: 0,
               }}
-              // max zoom level
               minZoom={2}
               mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
               mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
@@ -101,6 +104,7 @@ const MapPage = () => {
                 width: "100%",
                 height: "100%",
               }}
+              
             >
               {pins}
             </Map>
