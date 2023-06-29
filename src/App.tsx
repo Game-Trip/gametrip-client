@@ -28,6 +28,7 @@ import RegisterPage from './pages/Register/RegisterPage'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import { SearchController } from './utils/api/baseApi'
+import EmailCheck from './pages/EmailCheck/EmailCheck'
 
 setupIonicReact()
 
@@ -67,6 +68,10 @@ const App: React.FC = () => {
     {
       path: 'register',
       element: <RegisterPage />,
+    },
+    {
+      path: '/Auth/ConfirmationMail',
+      element: <EmailCheck />,
     },
     {
       path: '*',
