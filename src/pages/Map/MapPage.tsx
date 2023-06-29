@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState,useRef ,useCallback} from "react";
+import React, { memo, useMemo, useState,useRef ,useCallback, useEffect} from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
@@ -8,13 +8,16 @@ import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
+interface Props {
+  selectedLocation?: LocationDto;
+  setSelectedLocation: (location?: LocationDto) => void;
+}
 
-const MapPage = () => {
+const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<
-    LocationDto | undefined
-  >();
+console.log(selectedLocation);
+
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
   const handleSearch = useCallback(async (search: string) => {
 
@@ -32,7 +35,7 @@ const MapPage = () => {
 
   const pins = useMemo(() => {
     if(selectedGame && selectedGame.locations) {
-      return selectedGame.locations.map((location: LocationDto, index) => {
+      return selectedGame.locations.map((location: LocationDto, index: number) => {
             return (
               <Marker
               offset={[12, -10]}

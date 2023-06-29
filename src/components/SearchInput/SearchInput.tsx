@@ -9,6 +9,7 @@ type Props = {
   onChange: (search: string) => void;
   options?: SearchedGameDto[];
   onSelect: (option?: SearchedGameDto) => void;
+  showMenuTop?: boolean;
 };
 
 export default function SearchInput({ onChange, options, onSelect }: Props) {

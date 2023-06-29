@@ -3,6 +3,7 @@ import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
 import { useNavigate } from "react-router-dom";
 import { AuthController } from "../../utils/api/baseApi";
+import { Alert, Snackbar } from "@mui/material";
 
 export interface User {
   userName: string;
@@ -31,6 +32,7 @@ export const UserContext = createContext<userContextProps | undefined>(
 );
 const GameWrapper = ({ children }: Props) => {
   const [user, setUser] = useState<User>();
+  const [snackBarOpen, setSnackBarOpen] = useState({ open: false, message: "" });
   const isLogged = !!user;
   const navigate = useNavigate();
   const onLogin = async (username: string, password: string) => {
@@ -58,21 +60,37 @@ const GameWrapper = ({ children }: Props) => {
     username: string,
     password: string
   ) => {
-    await AuthController.authRegisterPost({
+    const result = await AuthController.authRegisterPost({
       email,
       username,
       password,
       confirmPassword: password,
     }).then(() => {
       navigate("/");
+      setSnackBarOpen({ open: true, message: "Un email de confirmation vous a été envoyé" });
+    }).catch((err) => {
+      console.log(err.message);
+      setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };
 
   return (
     <UserContext.Provider
       value={{ user, onLogin, isLogged, onRegister, onLogout }}
-    >
+    ><>
+    
       {children}
+            <Snackbar open={snackBarOpen.open} autoHideDuration={6000} onClose={()=>setSnackBarOpen(
+        { open: false, message: "" }
+            )}>
+        <Alert onClose={()=>setSnackBarOpen(
+        { open: false, message: "" }
+            )} severity="info" sx={{ width: '100%' }}>
+          {snackBarOpen.message}
+        </Alert>
+      </Snackbar>
+    </>
+      
     </UserContext.Provider>
   );
 };
