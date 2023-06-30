@@ -29,7 +29,7 @@ export default function Component(): JSX.Element {
 
   return (
     <div className={styles.wrapper}>
-      <TopNavBar showLoginButton={false} showHomeButton={false} />
+      <TopNavBar showLoginButton={false} showHomeButton={true} />
       <div id="body" className={styles.body}>
         <img className={styles.image} src={logo} />
 

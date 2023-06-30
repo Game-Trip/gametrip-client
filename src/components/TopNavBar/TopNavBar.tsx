@@ -16,7 +16,7 @@ export const TopNavBar = ({
 
   return (
     <div className={styles.wrapper}>
-      {!showHomeButton && (
+      {showHomeButton && (
         <Link
           className={styles.topButton}
           style={{ textDecoration: "none", color: "white" }}

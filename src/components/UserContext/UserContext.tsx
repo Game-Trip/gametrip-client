@@ -72,7 +72,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un email de confirmation vous a été envoyé" });
     }).catch((err) => {
-      console.log(err.message);
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };

@@ -6,23 +6,15 @@ import { useDebounce } from "usehooks-ts";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
 
 type Props = {
+  value: string,
   onChange: (search: string) => void;
   options?: SearchedGameDto[];
   onSelect: (option?: SearchedGameDto) => void;
-  showMenuTop?: boolean;
 };
 
-export default function SearchInput({ onChange, options, onSelect }: Props) {
-  const [value, setValue] = useState<string>("");
-  const debounced = useDebounce(value, 500);
+export default function SearchInput({ value,onChange, options, onSelect }: Props) {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    onChange(value);
-    if(debounced === "") {
-      onSelect(undefined);
-    }
-  }, [debounced]);
   return (
     <div className={styles.wrapper}>
       <>
@@ -31,7 +23,7 @@ export default function SearchInput({ onChange, options, onSelect }: Props) {
           value={value}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           sx={{ ml: 1, flex: 1 }}
           placeholder="Battlefield 2042, Call of Duty, ..."
         />
@@ -48,7 +40,7 @@ export default function SearchInput({ onChange, options, onSelect }: Props) {
         {options?.map((option) => <div key={option.name} onClick={() => {
           onSelect(option);  
           if(option.name) {
-            setValue(option.name);        
+            onChange(option.name);        
           }
         }} className={styles.dropDownElement}>{option.name}</div>)}
       </div>

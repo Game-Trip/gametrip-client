@@ -33,6 +33,6 @@ const navigate = useNavigate();
   confirmEmail();
   }, [])
   return (
-    <div>Checking email...</div>
+    <div>Email has been verified, you can close this tab</div>
   )
 }
