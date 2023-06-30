@@ -4,18 +4,18 @@ import InputBase from "@mui/material/InputBase";
 import { motion, useIsPresent } from "framer-motion";
 import "../styles.css";
 import logo from "../logo-no-background.png";
-import { useMediaQuery } from "react-responsive";
-import { IconButton, InputAdornment } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
-import { useIsLogged } from "../../utils/isLogged";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { useUser } from "../../hooks/useUser";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
-
-const HomePage = () => {
+interface Props {
+  onSearch: (game: string) => void;
+  onSelect: (game?: SearchedGameDto) => void;
+  options: SearchedGameDto[];
+}
+const HomePage = ({onSearch,onSelect,options}: Props) => {
+  
   const isPresent = useIsPresent();
+  
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
@@ -25,7 +25,7 @@ const HomePage = () => {
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <SearchInput onChange={() => { } } onSelect={()=>{} } />
+            <SearchInput options={options} onChange={onSearch} onSelect={onSelect} />
           </div>
         </div>
       </div>

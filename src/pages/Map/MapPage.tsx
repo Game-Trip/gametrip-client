@@ -1,38 +1,43 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo, useState,useRef ,useCallback, useEffect} from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Map, Marker, Popup } from "react-map-gl";
+import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
 import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
+interface Props {
+  selectedLocation?: LocationDto;
+  setSelectedLocation: (location?: LocationDto) => void;
+}
 import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
 import { useUser } from "../../hooks/useUser";
 
-const MapPage = () => {
+const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<
-    LocationDto | undefined
-  >();
+console.log(selectedLocation);
+
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-  const { isLogged } = useUser();
-  const handleSearch = async (search: string) => {
+  const { isLogged } = useUser();  const handleSearch = useCallback(async (search: string) => {
+
+    mapRef.current?.flyTo({ duration: 2000, zoom: 0});
+    
     const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
-  };
+    return;
+  },[]);
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
   const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>()
+  const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
   const pins = useMemo(() => {
-    console.log(selectedGame);
     if (selectedGame && selectedGame.locations) {
-      console.log('selected game');
-      return selectedGame.locations.map((location: LocationDto, index) => {
+      return selectedGame.locations.map((location: LocationDto, index: number) => {
         return (
           <Marker
             offset={[12, -10]}
@@ -62,6 +67,9 @@ const MapPage = () => {
           onClick={(e) => {
             e.originalEvent.stopPropagation();
             setSelectedLocation(location);
+              mapRef.current?.flyTo({ duration: 2000, zoom: 6,
+                center: [location?.longitude!, location?.latitude!],              
+              });
           }}
         >
           <Pin />
@@ -79,7 +87,7 @@ const MapPage = () => {
     };
     fetchLocations();
   }, []);
-
+  
   return (
     <>
       <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} />
@@ -87,6 +95,7 @@ const MapPage = () => {
         <div className={styles.mapContainer}>
           {isLogged && <AddLocationComponent />}
           <Map
+            ref={mapRef}
             initialViewState={{
               latitude: 48.8588443,
               longitude: 2.2943506,

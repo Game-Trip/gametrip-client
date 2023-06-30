@@ -8,7 +8,8 @@ import { SearchedGameDto } from "@game-trip/ts-api-client";
 type Props = {
   onChange: (search: string) => void;
   options?: SearchedGameDto[];
-  onSelect: (option: SearchedGameDto) => void;
+  onSelect: (option?: SearchedGameDto) => void;
+  showMenuTop?: boolean;
 };
 
 export default function SearchInput({ onChange, options, onSelect }: Props) {
@@ -18,7 +19,10 @@ export default function SearchInput({ onChange, options, onSelect }: Props) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     onChange(value);
-  }, [debounced, value]);
+    if(debounced === "") {
+      onSelect(undefined);
+    }
+  }, [debounced]);
   return (
     <div className={styles.wrapper}>
       <>

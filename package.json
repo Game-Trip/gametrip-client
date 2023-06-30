@@ -2,7 +2,7 @@
   "name": "game-trip",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {
+  "devDependencies": {
     "@blueprintjs/core": "^4.15.0",
     "@capacitor/android": "^4.7.0",
     "@capacitor/app": "4.1.1",
@@ -59,7 +59,8 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4"
+    "workbox-streams": "^5.1.4",
+    "@capacitor/cli": "4.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -87,9 +88,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@capacitor/cli": "4.7.0"
   },
   "description": "An Ionic project"
 }

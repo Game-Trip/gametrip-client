@@ -78,10 +78,6 @@ export default function AddLocationComponent() {
 
   const AddNewLocation = async () => {
 
-    setNewLocation({ ...newLocation, latitude: 48.758371 })
-    setNewLocation({ ...newLocation, longitude: 2.394485 })
-
-
     setNewLocation({ ...newLocation, authorId: userContext.user?.Id })
     await LocationController.locationCreateLocationPost(true, newLocation)
       .then((res: apiClient.MessageDto) => console.log(res))

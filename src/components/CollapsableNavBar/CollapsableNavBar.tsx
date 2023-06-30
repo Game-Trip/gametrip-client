@@ -15,26 +15,14 @@ import { SearchedGameDto } from "@game-trip/ts-api-client";
 interface Props {
   onSearch: (search: string) => void;
   availableGames?: SearchedGameDto[];
-  onSelectGame: (game: SearchedGameDto) => void;
+  onSelectGame: (game?: SearchedGameDto) => void;
 }
 export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Props) => {
   const navBarRef = React.useRef<HTMLDivElement>(null);
-  const searchBarRef = React.useRef<HTMLDivElement>(null);
-  const menuButtonRef = React.useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(true);
   const [isoverFlowHidden, setIsOverFlowHidden] = React.useState(true);
 
-
   const { isLogged } = useUser();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   useOnClickOutside(navBarRef, () => {
     setIsOpen(false);
@@ -69,7 +57,7 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
 const styles = {
   inputWrapper: css`
   width: 30%;
-  margin-left: auto;F
+  margin-left: auto;
   `,
   userButton: css`
     margin-left: auto;
