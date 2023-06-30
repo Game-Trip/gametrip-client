@@ -8,6 +8,7 @@ import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
+import { useUser } from "../../hooks/useUser";
 
 interface Props {
   selectedLocation?: LocationDto;
@@ -19,8 +20,6 @@ interface Props {
   searchValue: string;
   setSearchValue: (value: string) => void;
 }
-import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
-import { useUser } from "../../hooks/useUser";
 
 const MapPage = ({setSearchValue,selectedLocation, setSelectedLocation,selectedGame, setSelectedGame,availableGames,setAvailableGames, searchValue}: Props) => {
   const isPresent = useIsPresent();
@@ -102,7 +101,6 @@ const MapPage = ({setSearchValue,selectedLocation, setSelectedLocation,selectedG
       <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} searchValue={searchValue} />
       <div className={styles.wrapper}>
         <div className={styles.mapContainer}>
-          {isLogged && <AddLocationComponent />}
           <Map
             ref={mapRef}
             initialViewState={{

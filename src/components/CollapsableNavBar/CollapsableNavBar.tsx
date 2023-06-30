@@ -9,7 +9,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import SearchInput from "../SearchInput/SearchInput";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
 interface Props {
-  searchValue:string,
+  searchValue: string,
   onSearch: (search: string) => void;
   availableGames?: SearchedGameDto[];
   onSelectGame: (game?: SearchedGameDto) => void;
@@ -26,11 +26,10 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame, sear
 
   const handleSelectGame = useCallback((game?: SearchedGameDto) => {
     onSelectGame(game);
-  },[onSelectGame]);
+  }, [onSelectGame]);
 
   const handleChange = (search: string) => {
     onSearch(search);
-    console.log(search);
   };
   return (
     <>
@@ -46,7 +45,7 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame, sear
         </Button>
         <Button to="/newlocation" className={styles.mlauto}>Submit new location</Button>
         <div className={styles.inputWrapper}>
-        <SearchInput onChange={handleChange} options={availableGames} onSelect={handleSelectGame} value={searchValue} />
+          <SearchInput onChange={handleChange} options={availableGames} onSelect={handleSelectGame} value={searchValue} />
         </div>
         {!isLogged && (
           <Button isRouterButton to="/login">
@@ -60,10 +59,10 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame, sear
 };
 
 const styles = {
-  mlauto:css`
+  mlauto: css`
   margin-left: auto;
   `,
-  inputWrapper:css`
+  inputWrapper: css`
   width: 30%;
   `,
   userButton: css`

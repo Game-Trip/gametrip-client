@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { IconButton, InputBase } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { css } from "@emotion/css";
-import { useDebounce } from "usehooks-ts";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
 
 type Props = {
@@ -10,13 +9,24 @@ type Props = {
   onChange: (search: string) => void;
   options?: SearchedGameDto[];
   onSelect: (option?: SearchedGameDto) => void;
+  changeOnSelect?: boolean;
 };
 
-export default function SearchInput({ value,onChange, options, onSelect }: Props) {
+export default function SearchInput({ changeOnSelect, value, onChange, options, onSelect }: Props) {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
   const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className={styles.wrapper}>
+
+      <div className={styles.dropDown(isFocused)}>
+        {options?.map((option) => <div key={option.name} onClick={() => {
+          onSelect(option);
+          if (option.name && changeOnSelect) {
+            onChange(option.name);
+          }
+        }} className={styles.dropDownElement}>{option.name}</div>)}
+      </div>
       <>
         <InputBase
           ref={inputRef}
@@ -24,7 +34,7 @@ export default function SearchInput({ value,onChange, options, onSelect }: Props
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onChange={(e) => onChange(e.target.value)}
-          sx={{ ml: 1, flex: 1 }}
+          sx={{ ml: 1, flex: 1, width: "100%" }}
           placeholder="Battlefield 2042, Call of Duty, ..."
         />
         <IconButton
@@ -36,19 +46,15 @@ export default function SearchInput({ value,onChange, options, onSelect }: Props
         </IconButton>
       </>
 
-      <div className={styles.dropDown(isFocused)}>
-        {options?.map((option) => <div key={option.name} onClick={() => {
-          onSelect(option);  
-          if(option.name) {
-            onChange(option.name);        
-          }
-        }} className={styles.dropDownElement}>{option.name}</div>)}
-      </div>
     </div>
   );
 }
 
 const styles = {
+  inputWrapper: css`
+    display: flex;
+    flex: 1;
+  `,
   dropDownElement: css`
     width: 100%;
     border-radius: 8px;
@@ -62,6 +68,7 @@ const styles = {
       transform: translateX(-5px);
 
     }
+    z-index: 10000;
   `,
   dropDown: (isFocused: boolean) => css`
     opacity: ${isFocused ? 1 : 0};
@@ -71,12 +78,12 @@ const styles = {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    top: 100%;
     margin-top: 10px;
     width: 100%;
     height: 80%;
     transition: 0.5s;
     z-index: 10000;
+    top: 100%;
   `,
   wrapper: css`
     position: relative;
