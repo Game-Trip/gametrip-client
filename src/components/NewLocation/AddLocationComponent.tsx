@@ -47,6 +47,7 @@ export default function AddLocationComponent() {
   const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto())
   const [searchAddress, setSearchAddress] = useState<string>("")
   const [addressResult, setAddressResult] = useState<AddressInformation>()
+  const [autoCompleteAddress, setAutoCompleteAddress] = useState<AddressInformation[]>()
 
 
   const GetAddressInformation = async () => {
@@ -96,6 +97,28 @@ export default function AddLocationComponent() {
 
   }
 
+  const getAutoCompleteAddress = async (address: string) => {
+    setSearchAddress(address);
+    if (address.length < 3)
+      return;
+
+    const result = await geoCodingApi.getAutoCompleteAddress(address);
+    if (result.status != 200)
+      return console.error(result);
+
+    const addressList: AddressInformation[] = result.data.features.map((address: any) => {
+      return {
+        address: address.properties.formatted,
+        latitude: address.properties.lat,
+        longitude: address.properties.lon
+      }
+    });
+
+    setAutoCompleteAddress(addressList);
+
+    console.log(autoCompleteAddress);
+
+  }
 
   return (
     <>
@@ -129,7 +152,7 @@ export default function AddLocationComponent() {
                 aria-autocomplete="none"
                 value={searchAddress}
                 onChange={(val) => {
-                  setSearchAddress(val.target.value);
+                  getAutoCompleteAddress(val.target.value);
                 }}
                 onDoubleClick={GetAddressInformation}
                 placeholder="Address Of Location"
