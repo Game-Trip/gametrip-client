@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import { LocationController, SearchController } from "../../utils/api/baseApi";
+import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
@@ -25,7 +25,7 @@ console.log(selectedLocation);
 
     mapRef.current?.flyTo({ duration: 2000, zoom: 0});
     
-    const result = await SearchController.searchSearchGameGet(search);
+    const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     return;
   },[]);
@@ -82,7 +82,7 @@ console.log(selectedLocation);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
-      const result: LocationDto[] = await LocationController.locationGet();
+      const result: LocationDto[] = await AnnonymLocationController.locationGet();
       setLocationsdata(result);
     };
     fetchLocations();
