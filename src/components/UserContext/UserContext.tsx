@@ -2,11 +2,12 @@ import axios from "axios";
 import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
 import { useNavigate } from "react-router-dom";
-import { AuthController } from "../../utils/api/baseApi";
+import { AnnonymAuthController } from "../../utils/api/baseApi";
 
 export interface User {
   userName: string;
   email: string;
+  id: string;
   jti: string;
   roles: string[];
   nbf: number;
@@ -34,7 +35,7 @@ const GameWrapper = ({ children }: Props) => {
   const isLogged = !!user;
   const navigate = useNavigate();
   const onLogin = async (username: string, password: string) => {
-    await AuthController.authLoginPost({ username, password }).then(
+    await AnnonymAuthController.authLoginPost({ username, password }).then(
       (result) => {
         if (result.token) {
           setUser({
@@ -42,7 +43,6 @@ const GameWrapper = ({ children }: Props) => {
             jwt: result.token,
             isLogged: true,
           });
-
           navigate("/");
         }
       }
@@ -58,7 +58,7 @@ const GameWrapper = ({ children }: Props) => {
     username: string,
     password: string
   ) => {
-    await AuthController.authRegisterPost({
+    await AnnonymAuthController.authRegisterPost({
       email,
       username,
       password,
