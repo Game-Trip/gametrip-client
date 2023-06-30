@@ -1612,6 +1612,11 @@
     url-parse "^1.4.3"
     whatwg-fetch "^3.0.0"
 
+"@geoapify/geocoder-autocomplete@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@geoapify/geocoder-autocomplete/-/geocoder-autocomplete-1.5.1.tgz#1e96fd2b63f36b7296bc7eb07dfad6fa76b0e4d1"
+  integrity sha512-/zU/IwW7f8EHZsdwl4Rm8wN42VlsZYtOvMDqijz0ZNMfeaBtIizMNI3/NfToj6k7b84b/o8GlCa9puaFwmPzSQ==
+
 "@grafana/eslint-config@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@grafana/eslint-config/-/eslint-config-6.0.0.tgz#31c639cf31cec9b2233624a7defa2d874605a867"

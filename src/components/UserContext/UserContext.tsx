@@ -7,7 +7,7 @@ import { AnnonymAuthController } from "../../utils/api/baseApi";
 export interface User {
   userName: string;
   email: string;
-  id: string;
+  Id: string;
   jti: string;
   roles: string[];
   nbf: number;
