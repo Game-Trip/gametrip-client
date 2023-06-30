@@ -27,8 +27,8 @@ import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
-import { SearchController } from './utils/api/baseApi'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
+import { AnnonymSearchController } from './utils/api/baseApi'
 
 setupIonicReact()
 
@@ -45,7 +45,7 @@ const App: React.FC = () => {
   }
 
   const handleSearch = useCallback(async (search: string) => {
-    const result = await SearchController.searchSearchGameGet(search);
+    const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     return;
   },[]);
@@ -66,7 +66,7 @@ const App: React.FC = () => {
       element: <LoginPage />,
     },
     {
-      path: 'register',
+      path: '/register',
       element: <RegisterPage />,
     },
     {

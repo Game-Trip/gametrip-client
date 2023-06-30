@@ -31,7 +31,7 @@ export default function NotFound() {
   useEffect(() => {
 
 
-    window.onkeydown = function (e) {
+    window.onkeydown = function (e: any) {
       const key = e.keyCode;
       const code = String.fromCharCode(96 <= key && key <= 105 ? key - 48 : key);
       switch (e.key) {

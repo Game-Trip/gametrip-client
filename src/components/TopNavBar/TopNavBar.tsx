@@ -12,6 +12,7 @@ export const TopNavBar = ({
   showLoginButton = true,
 }: Props) => {
   const { isLogged } = useUser();
+  const isDev = true;
 
   return (
     <div className={styles.wrapper}>

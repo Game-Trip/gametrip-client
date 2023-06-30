@@ -4,16 +4,9 @@ import InputBase from "@mui/material/InputBase";
 import { motion, useIsPresent } from "framer-motion";
 import "../styles.css";
 import logo from "../logo-no-background.png";
-import { useMediaQuery } from "react-responsive";
-import { IconButton, InputAdornment } from "@mui/material";
-import React, { useCallback } from "react";
-import { Link } from "react-router-dom";
-import { useIsLogged } from "../../utils/isLogged";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { useUser } from "../../hooks/useUser";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
-import { SearchController } from "../../utils/api/baseApi";
 interface Props {
   onSearch: (game: string) => void;
   onSelect: (game?: SearchedGameDto) => void;
