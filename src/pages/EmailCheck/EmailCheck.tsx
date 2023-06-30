@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { AuthController } from '../../utils/api/baseApi'
 import { useNavigate } from 'react-router-dom';
+import { AnnonymAuthController } from '../../utils/api/baseApi';
 
 export default function EmailCheck() {
   const getUrlParameter = (url :string, parameterName:string ) => {
@@ -25,7 +25,7 @@ const navigate = useNavigate();
     const token = splitUrl2[0];
     const email = splitUrl2[1];
     console.log(token, email);
-    const result = await AuthController.authConfirmEmailPost({email: email || '', token: token || ''});
+    const result = await AnnonymAuthController.authConfirmEmailPost({email: email || '', token: token || ''});
     navigate('/home');
 
     

@@ -32,15 +32,6 @@ export const TopNavBar = ({
       >
         <span>Map</span>
       </Link>
-      {isDev && (
-        <Link
-          className={styles.topButton}
-          style={{ textDecoration: "none", color: "white" }}
-          to={"/test"}
-        >
-          <span>TestPage</span>
-        </Link>
-      )}
       {!isLogged && showLoginButton && (
         <Link
           className={styles.topButton}

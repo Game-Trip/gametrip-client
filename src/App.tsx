@@ -25,11 +25,10 @@ import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
-import TestPage from './pages/Test/TestPage'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
-import { SearchController } from './utils/api/baseApi'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
+import { AnnonymSearchController } from './utils/api/baseApi'
 
 setupIonicReact()
 
@@ -46,7 +45,7 @@ const App: React.FC = () => {
   }
 
   const handleSearch = useCallback(async (search: string) => {
-    const result = await SearchController.searchSearchGameGet(search);
+    const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     return;
   },[]);
