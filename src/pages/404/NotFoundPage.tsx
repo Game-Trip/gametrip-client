@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./NotFoundPage.css";
 import { useEffect, useRef, useState } from "react";
+import React from 'react';
 
-let typeText: any[] = [];
+const typeText: any[] = [];
 export default function NotFound() {
 
   const typeRef = useRef<HTMLSpanElement>(null);
@@ -52,7 +53,7 @@ export default function NotFound() {
           else {
             setError(`bash: ${text.slice(text.indexOf(" ") + 1, text.length)}: command not found`);
             setText("");
-          };
+          }
           break;
 
         default:

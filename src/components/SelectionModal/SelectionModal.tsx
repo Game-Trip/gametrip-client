@@ -48,7 +48,7 @@ const styles = {
     width: ${isExpanded ? "100%" : "400px"};
     padding: 10px;
     background-color: #5ab584;
-    border-radius: 10px;
+    border-radius: ${isExpanded ? 0 : 10}px 0px 0px 0px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     transition: 0.5s ease-in-out;
   `,

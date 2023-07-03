@@ -1,3 +1,4 @@
+import React from 'react';
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import "../styles.css";
@@ -12,10 +13,10 @@ interface Props {
   onSelect: (game?: SearchedGameDto) => void;
   options: SearchedGameDto[];
 }
-const HomePage = ({onSearch,onSelect,options,searchValue}: Props) => {
-  
+const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
+
   const isPresent = useIsPresent();
-  
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
@@ -25,7 +26,7 @@ const HomePage = ({onSearch,onSelect,options,searchValue}: Props) => {
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <SearchInput options={options} onChange={onSearch} onSelect={onSelect} value={searchValue} />
+            <SearchInput onChange={onSearch} onSelect={onSelect} value={searchValue} />
           </div>
         </div>
       </div>

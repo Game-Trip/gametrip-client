@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from "axios";
 import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
@@ -77,19 +78,19 @@ const GameWrapper = ({ children }: Props) => {
     <UserContext.Provider
       value={{ user, onLogin, isLogged, onRegister, onLogout }}
     ><>
-    
-      {children}
-            <Snackbar open={snackBarOpen.open} autoHideDuration={6000} onClose={()=>setSnackBarOpen(
-        { open: false, message: "" }
-            )}>
-        <Alert onClose={()=>setSnackBarOpen(
-        { open: false, message: "" }
-            )} severity="info" sx={{ width: '100%' }}>
-          {snackBarOpen.message}
-        </Alert>
-      </Snackbar>
-    </>
-      
+
+        {children}
+        <Snackbar open={snackBarOpen.open} autoHideDuration={6000} onClose={() => setSnackBarOpen(
+          { open: false, message: "" }
+        )}>
+          <Alert onClose={() => setSnackBarOpen(
+            { open: false, message: "" }
+          )} severity="info" sx={{ width: '100%' }}>
+            {snackBarOpen.message}
+          </Alert>
+        </Snackbar>
+      </>
+
     </UserContext.Provider>
   );
 };

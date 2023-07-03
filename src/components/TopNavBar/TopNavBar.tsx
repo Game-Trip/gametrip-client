@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
-
+import React from 'react';
 interface Props {
   showHomeButton?: boolean;
   showLoginButton?: boolean;
@@ -60,7 +60,6 @@ const styles = {
   wrapper: css`
     border-bottom: 5px solid #85d8ac;
     background-color: #74c499;
-    height: 80px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     display: flex;
     padding: 10px 30px;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import CloseIcon from '@mui/icons-material/Close';
@@ -53,7 +54,7 @@ export default function LocationForm(): JSX.Element {
   let LocationController = AnnonymLocationController;
   if (isLogged) {
     const config = apiClient.createConfiguration({
-      baseServer: new ServerConfiguration<{}>(
+      baseServer: new ServerConfiguration(
         "https://staging-api.game-trip.fr",
         {}
       ),
@@ -74,7 +75,7 @@ export default function LocationForm(): JSX.Element {
 
   const handleAddressChange = async (value: string) => {
     setSearchAddress(value);
-    var result = await geoCodingApi.getAddressInformation(value);
+    const result = await geoCodingApi.getAddressInformation(value);
     if (result.status != 200)
       return console.error(result);
     setAddressResult({
@@ -163,7 +164,7 @@ export default function LocationForm(): JSX.Element {
           <input type="file" multiple />
         </div>
         <span className={styles.fieldName}>Related games</span>
-        <SearchInput options={filteredOptions}
+        <SearchInput
           value={gameSearchInput}
           onChange={setGameSearchInput}
           changeOnSelect={false}

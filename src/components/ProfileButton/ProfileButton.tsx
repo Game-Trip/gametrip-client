@@ -4,9 +4,8 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useUser } from "../../hooks/useUser";
 
-type Props = {};
 
-export default function ProfileButton({}: Props) {
+export default function ProfileButton() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { onLogout } = useUser();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

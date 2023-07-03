@@ -3,24 +3,36 @@ import { IconButton, InputBase } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { css } from "@emotion/css";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
+import { AnnonymSearchController } from "../../utils/api/baseApi";
 
 type Props = {
   value: string,
   onChange: (search: string) => void;
-  options?: SearchedGameDto[];
   onSelect: (option?: SearchedGameDto) => void;
   changeOnSelect?: boolean;
 };
 
-export default function SearchInput({ changeOnSelect, value, onChange, options, onSelect }: Props) {
+export default function SearchInput({ changeOnSelect, value, onChange, onSelect }: Props) {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
+  const [options, setOptions] = useState<SearchedGameDto[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      const result = await AnnonymSearchController.searchSearchGameGet('');
+      setOptions(result);
+    };
+    fetchGames();
+  }, []);
+
+  const filteredOptions = options?.filter((option) => option.name?.toLowerCase().includes(value.toLowerCase()));
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className={styles.wrapper}>
 
       <div className={styles.dropDown(isFocused)}>
-        {options?.map((option) => <div key={option.name} onClick={() => {
+        {filteredOptions?.map((option) => <div key={option.name} onClick={() => {
           onSelect(option);
           if (option.name && changeOnSelect) {
             onChange(option.name);
@@ -94,7 +106,6 @@ const styles = {
     background-color: #ffffff;
     transition: 0.5s;
     /* take all left space */
-    flex: 1;
     &:focus-within {
       transform: translateY(-5px);
       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
