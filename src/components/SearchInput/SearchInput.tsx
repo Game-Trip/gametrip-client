@@ -30,7 +30,6 @@ export default function SearchInput({ changeOnSelect, value, onChange, onSelect 
   const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className={styles.wrapper}>
-
       <div className={styles.dropDown(isFocused)}>
         {filteredOptions?.map((option) => <div key={option.name} onClick={() => {
           onSelect(option);
@@ -57,7 +56,6 @@ export default function SearchInput({ changeOnSelect, value, onChange, onSelect 
           <SearchIcon />
         </IconButton>
       </>
-
     </div>
   );
 }

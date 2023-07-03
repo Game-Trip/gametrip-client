@@ -5,7 +5,7 @@
 }
 
 .mapboxgl-ctrl-logo {
-  display: none;
+  display: none !important;
 }
 
 .map {
