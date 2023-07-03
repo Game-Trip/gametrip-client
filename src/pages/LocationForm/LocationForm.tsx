@@ -11,7 +11,11 @@ import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
 import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import AddressInput from "../../components/AddressInput/AddressInput";
+import Select from 'react-select';
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
 
 const inputStyle = {
   ml: 1,
@@ -45,12 +49,6 @@ export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
   const { isLogged, user } = useUser();
   const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto());
-
-
-
-  const [searchAddress, setSearchAddress] = useState<string>("");
-  const [searchAddressOptions, setSearchAddressOptions] = useState<any[]>([]); // [AddressInformation
-  const [addressResult, setAddressResult] = useState<AddressInformation>();
   let LocationController = AnnonymLocationController;
   if (isLogged) {
     const config = apiClient.createConfiguration({
@@ -73,21 +71,11 @@ export default function LocationForm(): JSX.Element {
 
 
 
-  const handleAddressChange = async (value: string) => {
-    setSearchAddress(value);
-    const result = await geoCodingApi.getAddressInformation(value);
-    if (result.status != 200)
-      return console.error(result);
-    setAddressResult({
-      address: result.data.features[0].properties.formatted,
-      latitude: result.data.features[0].properties.lat,
-      longitude: result.data.features[0].properties.lon
-    })
-  };
 
   const AddNewLocation = async () => {
 
-    // setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371 })
+    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371 })
+    console.log(newLocation);
     // await LocationController.locationCreateLocationPost(true, newLocation)
     //   .then((res: apiClient.MessageDto) => console.log(res))
     //   .catch((err) => {
@@ -107,8 +95,6 @@ export default function LocationForm(): JSX.Element {
   const [gameSearchOptions, setGameSearchOptions] = useState<SearchedGameDto[]>([]);
   const [selectedGames, setSelectedGames] = useState<SearchedGameDto[]>([]);
 
-
-  const filteredOptions = gameSearchOptions.filter((option) => option.name!.toLowerCase().includes(gameSearchInput.toLowerCase()));
   useEffect(() => {
     const loadGamesOptions = async () => {
       const result = await AnnonymSearchController.searchSearchGameGet('');
@@ -126,9 +112,16 @@ export default function LocationForm(): JSX.Element {
     }
   }
 
-  const handleAddressSelect = (selected?: any) => {
-    console.log(selected);
-  }
+  const [addressInformation, setAddressInformation] = useState({ name: "", latitude: 0, longitude: 0 });
+  const handleChange = (address: string) => {
+    setAddressInformation({ ...addressInformation, name: address });
+  };
+  const handleAddressSelect = (address: string) => {
+    geocodeByAddress(address)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => console.log('Success', latLng))
+      .catch(error => console.error('Error', error));
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -147,21 +140,6 @@ export default function LocationForm(): JSX.Element {
             placeholder="Place, monument..."
             onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
           />
-        </div>
-
-        <span className={styles.fieldName}>Address</span>
-        <AddressInput value={searchAddress} options={searchAddressOptions} onChange={handleAddressChange} onSelect={handleAddressSelect} />
-
-        <span className={styles.fieldName}>Description</span>
-        <InputBase
-          multiline
-          autoComplete="off"
-          aria-autocomplete="none"
-          placeholder="Description"
-        />
-        <div className="locationPictures">
-          <label>Location Pictures</label>
-          <input type="file" multiple />
         </div>
         <span className={styles.fieldName}>Related games</span>
         <SearchInput
@@ -188,6 +166,58 @@ export default function LocationForm(): JSX.Element {
               </IconButton>
             </div>
           </div>)}
+        </div>
+
+        <PlacesAutocomplete
+          value={addressInformation.name}
+          onChange={handleChange}
+          onSelect={handleAddressSelect}
+        >
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
+            console.log(suggestions);
+            return (
+              <div>
+                <div className={styles.formInput}>
+                  <InputBase
+                    {...getInputProps({
+                      placeholder: 'Search Places ...',
+                      className: 'location-search-input',
+                    })}
+                    autoComplete="off"
+                    aria-autocomplete="none"
+                    sx={inputStyle}
+                    placeholder=""
+                  />
+                </div>
+                <div className="autocomplete-dropdown-container">
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map(suggestion => {
+                    // inline style for demonstration purpose
+                    return (
+                      // eslint-disable-next-line react/jsx-key
+                      <div
+                        {...getSuggestionItemProps(suggestion)}
+                      >
+                        <span>{suggestion.description}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )
+          }}
+        </PlacesAutocomplete>
+
+        <span className={styles.fieldName}>Description</span>
+        <InputBase
+          multiline
+          autoComplete="off"
+          aria-autocomplete="none"
+          placeholder="Description"
+        />
+        <div className="locationPictures">
+          <label>Location Pictures</label>
+          <input type="file" multiple />
         </div>
       </div>
       <motion.div
