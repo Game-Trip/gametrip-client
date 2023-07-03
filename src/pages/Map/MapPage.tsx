@@ -1,5 +1,4 @@
-import React, { memo, useMemo, useState, useRef } from "react";
-import React, { memo, useMemo, useState, useRef } from "react";
+import React, { memo, useMemo, useState, useRef, useEffect } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, MapRef, Marker } from "react-map-gl";
@@ -23,55 +22,43 @@ interface Props {
 }
 
 const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
-  const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
-    const isPresent = useIsPresent();
-    const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
-
-
-    const handleSearch = async (search: string) => {
-
-      mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
-
-      mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
-
-      const result = await AnnonymSearchController.searchSearchGameGet(search);
-      setAvailableGames(result);
-      setSearchValue(search);
-    };
-
-    const closeSelectionModal = () => setSelectedLocation(undefined);
-
-
-    const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
-
-    const pins = useMemo(() => {
-      if (selectedGame && selectedGame.locations) {
-        return selectedGame.locations.map((location: LocationDto, index: number) => {
-          return (
-            <Marker
-              offset={[12, -10]}
-              rotationAlignment="viewport"
-              key={`marker-${index}`}
-              longitude={location.longitude ?? 0}
-              latitude={location.latitude ?? 0}
-              onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
-                e.originalEvent.stopPropagation();
-                setSelectedLocation(location);
-                mapRef.current?.flyTo({
-                  duration: 2000, zoom: 6,
-                  center: [location?.longitude ?? 0, location?.latitude ?? 0],
-                });
-              }}
-            >
-            }}
-          >
-              <Pin />
-            </Marker>
-          )
-        }
-        );
+  const isPresent = useIsPresent();
+  const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
+  useEffect(() => {
+    if (selectedGame) {
+      const firstLocation = selectedGame.locations?.[0];
+      if (firstLocation) {
+        setSelectedLocation(firstLocation);
+        console.log([firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50])
+        mapRef.current?.flyTo({
+          duration: 2000, zoom: 6,
+          center: [firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50],
+        });
       }
-      return locationsData.map((location: LocationDto, index) => {
+    }
+  }, [selectedGame]);
+
+
+  const handleSearch = async (search: string) => {
+
+    mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
+
+    mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
+
+    const result = await AnnonymSearchController.searchSearchGameGet(search);
+    setAvailableGames(result);
+    setSearchValue(search);
+  };
+
+  const closeSelectionModal = () => setSelectedLocation(undefined);
+
+  const handleSelect = (selected?: SearchedGameDto) => { setSelectedGame(selected); setSearchValue(selected!.name!); }
+
+  const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
+
+  const pins = useMemo(() => {
+    if (selectedGame && selectedGame.locations && searchValue != "") {
+      return selectedGame.locations.map((location: LocationDto, index: number) => {
         return (
           <Marker
             offset={[12, -10]}
@@ -91,73 +78,95 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
             <Pin />
           </Marker>
         )
-
       }
       );
-    }, [locationsData, selectedGame]);
-
-    React.useEffect(() => {
-      const fetchLocations = async () => {
-        const result: LocationDto[] = await AnnonymLocationController.locationGet();
-        setLocationsdata(result);
-      };
-      fetchLocations();
-    }, []);
-
-
-    return (
-      <div className={styles.wrapper}>
-        <CollapsableNavBar onSearch={handleSearch}
-          onSelectGame={(selected) => setSelectedGame(selected)}
-          searchValue={searchValue} />
-
-        <div className={styles.mapContainer}>
-          <Map
-            ref={mapRef}
-            initialViewState={{
-              latitude: 48.8588443,
-              longitude: 2.2943506,
-              zoom: 18.5,
-              bearing: 0,
-              pitch: 0,
-            }}
-            // max zoom level
-            minZoom={2}
-            dragRotate={false}
-            mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
-            mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
-            attributionControl={false}
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            {pins}
-          </Map>
-
-        </div>
-
-
-        <SelectionModal
-          closeSelectionModal={closeSelectionModal}
-          selectedLocation={selectedLocation}
-        />
-
-        <motion.div
-          initial={{ scaleX: 1 }}
-          animate={{
-            scaleX: 0,
-            transition: { duration: 0.5, ease: "circOut" },
+    }
+    return locationsData.map((location: LocationDto, index) => {
+      return (
+        <Marker
+          offset={[12, -10]}
+          rotationAlignment="viewport"
+          key={`marker-${index}`}
+          longitude={location.longitude ?? 0}
+          latitude={location.latitude ?? 0}
+          onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
+            e.originalEvent.stopPropagation();
+            setSelectedLocation(location);
+            mapRef.current?.flyTo({
+              duration: 2000, zoom: 6,
+              center: [location?.longitude ?? 0, location?.latitude ?? 0],
+            });
           }}
-          exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-          style={{ originX: isPresent ? 0 : 1 }}
-          className="privacy-screen"
-        />
-      </div>
+        >
+          <Pin />
+        </Marker>
+      )
+
+    }
     );
-  };
-  const styles = {
-    popupContainer: css`
+  }, [locationsData, selectedGame, searchValue]);
+
+  React.useEffect(() => {
+    const fetchLocations = async () => {
+      const result: LocationDto[] = await AnnonymLocationController.locationGet();
+      setLocationsdata(result);
+    };
+    fetchLocations();
+  }, []);
+
+  return (
+    <div className={styles.wrapper}>
+      <CollapsableNavBar onSearch={handleSearch}
+        onSelectGame={(selected) => handleSelect(selected)}
+        searchValue={searchValue} />
+
+      <div className={styles.mapContainer}>
+        <Map
+          ref={mapRef}
+          initialViewState={{
+            latitude: 48.8588443,
+            longitude: 2.2943506,
+            zoom: 2,
+            bearing: 0,
+            pitch: 0,
+          }}
+          // max zoom level
+          minZoom={2}
+          dragRotate={false}
+          mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
+          mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
+          attributionControl={false}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {pins}
+        </Map>
+
+      </div>
+
+
+      <SelectionModal
+        closeSelectionModal={closeSelectionModal}
+        selectedLocation={selectedLocation}
+      />
+
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{
+          scaleX: 0,
+          transition: { duration: 0.5, ease: "circOut" },
+        }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+        className="privacy-screen"
+      />
+    </div>
+  );
+};
+const styles = {
+  popupContainer: css`
     background-color: #5ab584;
     border-radius: 10px;
     padding: 10px;
@@ -166,31 +175,31 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
     justify-content: center;
   `,
 
-    locationName: css`
+  locationName: css`
     font-family: "Roboto";
     font-style: normal;
     font-size: 18px;
     color: white;
   `,
 
-    mapContainer: css`
+  mapContainer: css`
     width: 100%;
     height: 100%;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   `,
-    flex: css`
+  flex: css`
     display: flex;
     flex-direction: column;
     height: 100vh;
   `,
-    wrapper: css`
+  wrapper: css`
     height: 100vh;
     width: 100%;
     background-color: #5ab584;
   `,
-    navBar: css`
+  navBar: css`
     height: 20px;
     background-color: #74c499;
     width: 100%;
@@ -207,7 +216,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
       height: 200px;
     }
   `,
-    topButton: css`
+  topButton: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 300px;
@@ -223,6 +232,6 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
       transform: translateY(-5px);
     }
   `,
-  };
+};
 
-  export default memo(MapPage);
+export default memo(MapPage);

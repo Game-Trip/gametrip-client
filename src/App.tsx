@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const handleSelect = async (search?: SearchedGameDto) => {
     setSelectedGame(search);
+    setSearchValue(search!.name!);
     if (search) {
       if (search) {
         navigate('/map');

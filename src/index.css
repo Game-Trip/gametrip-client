@@ -7,3 +7,11 @@
 .mapboxgl-ctrl-logo {
   display: none;
 }
+
+.map {
+  position: absolute !important;
+  left: -150px;
+  right: -150px;
+  top: -150px;
+  bottom: -150px;
+}
