@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "../logo-no-background.png";
-import { InputBase, IconButton, Snackbar, Alert, Button } from "@mui/material";
+import { InputBase, IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
-import { parseJwt } from "../../utils/parseJwt";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 

@@ -1,14 +1,15 @@
 import React, { memo, useMemo, useState, useRef } from "react";
+import React, { memo, useMemo, useState, useRef } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
+import { Map, MapRef, Marker } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
 import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import { useUser } from "../../hooks/useUser";
+import { MarkerEvent } from "react-map-gl/dist/esm/types";
 
 interface Props {
   selectedLocation?: LocationDto;
@@ -22,86 +23,94 @@ interface Props {
 }
 
 const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
-  const isPresent = useIsPresent();
-  const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
+  const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
+    const isPresent = useIsPresent();
+    const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
 
 
-  const { isLogged } = useUser(); const handleSearch = async (search: string) => {
+    const handleSearch = async (search: string) => {
 
-    mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
+      mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
 
-    const result = await AnnonymSearchController.searchSearchGameGet(search);
-    setAvailableGames(result);
-    setSearchValue(search);
-  };
+      mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
 
-  const closeSelectionModal = () => setSelectedLocation(undefined);
+      const result = await AnnonymSearchController.searchSearchGameGet(search);
+      setAvailableGames(result);
+      setSearchValue(search);
+    };
+
+    const closeSelectionModal = () => setSelectedLocation(undefined);
 
 
-  const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
+    const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
-  const pins = useMemo(() => {
-    if (selectedGame && selectedGame.locations) {
-      return selectedGame.locations.map((location: LocationDto, index: number) => {
+    const pins = useMemo(() => {
+      if (selectedGame && selectedGame.locations) {
+        return selectedGame.locations.map((location: LocationDto, index: number) => {
+          return (
+            <Marker
+              offset={[12, -10]}
+              rotationAlignment="viewport"
+              key={`marker-${index}`}
+              longitude={location.longitude ?? 0}
+              latitude={location.latitude ?? 0}
+              onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
+                e.originalEvent.stopPropagation();
+                setSelectedLocation(location);
+                mapRef.current?.flyTo({
+                  duration: 2000, zoom: 6,
+                  center: [location?.longitude ?? 0, location?.latitude ?? 0],
+                });
+              }}
+            >
+            }}
+          >
+              <Pin />
+            </Marker>
+          )
+        }
+        );
+      }
+      return locationsData.map((location: LocationDto, index) => {
         return (
           <Marker
             offset={[12, -10]}
             rotationAlignment="viewport"
             key={`marker-${index}`}
-            longitude={location.longitude}
-            latitude={location.latitude}
-            onClick={(e) => {
+            longitude={location.longitude ?? 0}
+            latitude={location.latitude ?? 0}
+            onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
               e.originalEvent.stopPropagation();
               setSelectedLocation(location);
               mapRef.current?.flyTo({
                 duration: 2000, zoom: 6,
-                center: [location?.longitude!, location?.latitude!],
+                center: [location?.longitude ?? 0, location?.latitude ?? 0],
               });
             }}
           >
             <Pin />
           </Marker>
         )
+
       }
       );
-    }
-    return locationsData.map((location: LocationDto, index) => {
-      return (
-        <Marker
-          offset={[12, -10]}
-          rotationAlignment="viewport"
-          key={`marker-${index}`}
-          longitude={location.longitude!}
-          latitude={location.latitude!}
-          onClick={(e) => {
-            e.originalEvent.stopPropagation();
-            setSelectedLocation(location);
-            mapRef.current?.flyTo({
-              duration: 2000, zoom: 6,
-              center: [location?.longitude!, location?.latitude!],
-            });
-          }}
-        >
-          <Pin />
-        </Marker>
-      )
+    }, [locationsData, selectedGame]);
 
-    }
-    );
-  }, [locationsData, selectedGame]);
+    React.useEffect(() => {
+      const fetchLocations = async () => {
+        const result: LocationDto[] = await AnnonymLocationController.locationGet();
+        setLocationsdata(result);
+      };
+      fetchLocations();
+    }, []);
 
-  React.useEffect(() => {
-    const fetchLocations = async () => {
-      const result: LocationDto[] = await AnnonymLocationController.locationGet();
-      setLocationsdata(result);
-    };
-    fetchLocations();
-  }, []);
 
-  return (
-    <>
-      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} searchValue={searchValue} />
+    return (
       <div className={styles.wrapper}>
+        <CollapsableNavBar onSearch={handleSearch}
+          onSelectGame={(selected) => setSelectedGame(selected)}
+          searchValue={searchValue} />
+
         <div className={styles.mapContainer}>
           <Map
             ref={mapRef}
@@ -114,6 +123,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
             }}
             // max zoom level
             minZoom={2}
+            dragRotate={false}
             mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
             mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
             attributionControl={false}
@@ -126,6 +136,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
           </Map>
 
         </div>
+
 
         <SelectionModal
           closeSelectionModal={closeSelectionModal}
@@ -143,11 +154,10 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
           className="privacy-screen"
         />
       </div>
-    </>
-  );
-};
-const styles = {
-  popupContainer: css`
+    );
+  };
+  const styles = {
+    popupContainer: css`
     background-color: #5ab584;
     border-radius: 10px;
     padding: 10px;
@@ -156,33 +166,31 @@ const styles = {
     justify-content: center;
   `,
 
-  locationName: css`
+    locationName: css`
     font-family: "Roboto";
     font-style: normal;
     font-size: 18px;
     color: white;
   `,
 
-  mapContainer: css`
+    mapContainer: css`
     width: 100%;
     height: 100%;
-    margin: auto;
-    border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   `,
-  flex: css`
+    flex: css`
     display: flex;
     flex-direction: column;
     height: 100vh;
   `,
-  wrapper: css`
+    wrapper: css`
     height: 100vh;
+    width: 100%;
     background-color: #5ab584;
-    padding: 20px;
   `,
-  navBar: css`
+    navBar: css`
     height: 20px;
     background-color: #74c499;
     width: 100%;
@@ -199,7 +207,7 @@ const styles = {
       height: 200px;
     }
   `,
-  topButton: css`
+    topButton: css`
     font-family: "Roboto";
     font-style: normal;
     font-weight: 300px;
@@ -215,6 +223,6 @@ const styles = {
       transform: translateY(-5px);
     }
   `,
-};
+  };
 
-export default memo(MapPage);
+  export default memo(MapPage);

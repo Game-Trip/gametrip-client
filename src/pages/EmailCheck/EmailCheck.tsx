@@ -4,14 +4,14 @@ import { AnnonymAuthController } from '../../utils/api/baseApi';
 
 export default function EmailCheck() {
   const getUrlParameter = (url: string, parameterName: string) => {
-    parameterName = parameterName.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + parameterName + "(=([^&#]*)|&|#|$)");
-    var results = regex.exec(url);
+    parameterName = parameterName.replace(/[[\]]/g, "\\$&");
+    const regex = new RegExp("[?&]" + parameterName + "(=([^&#]*)|&|#|$)");
+    const results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
 
     // Preserve plus and dot characters
-    var decodedValue = decodeURIComponent(results[2].replace(/\+/g, "%20"));
+    const decodedValue = decodeURIComponent(results[2].replace(/\+/g, "%20"));
 
     return decodedValue;
   }
