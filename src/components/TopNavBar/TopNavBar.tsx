@@ -6,17 +6,18 @@ import ProfileButton from "../ProfileButton/ProfileButton";
 interface Props {
   showHomeButton?: boolean;
   showLoginButton?: boolean;
+  showAdminButton?: boolean;
 }
 export const TopNavBar = ({
-  showHomeButton = true,
-  showLoginButton = true,
+  showHomeButton = false,
+  showLoginButton = false,
+  showAdminButton = false,
 }: Props) => {
-  const { isLogged } = useUser();
-  const isDev = true;
+  const { isLogged, isAdmin } = useUser();
 
   return (
     <div className={styles.wrapper}>
-      {!showHomeButton && (
+      {showHomeButton && (
         <Link
           className={styles.topButton}
           style={{ textDecoration: "none", color: "white" }}
@@ -39,6 +40,15 @@ export const TopNavBar = ({
           to={"/login"}
         >
           <span>Login</span>
+        </Link>
+      )}
+      {isLogged && isAdmin && showAdminButton && (
+        <Link
+          className={styles.topButton}
+          style={{ textDecoration: "none", color: "white" }}
+          to={"/AdminPanel"}
+        >
+          <span>Admin Panel</span>
         </Link>
       )}
       {isLogged && <div className={styles.mlauto}><ProfileButton /></div>

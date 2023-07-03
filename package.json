@@ -6,6 +6,7 @@
     "@blueprintjs/core": "^4.15.0",
     "@capacitor/android": "^4.7.0",
     "@capacitor/app": "4.1.1",
+    "@capacitor/cli": "4.7.0",
     "@capacitor/core": "4.7.0",
     "@capacitor/haptics": "4.1.0",
     "@capacitor/ios": "^4.7.0",
@@ -59,8 +60,7 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4",
-    "@capacitor/cli": "4.7.0"
+    "workbox-streams": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -89,5 +89,8 @@
       "last 1 safari version"
     ]
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "dependencies": {
+    "react-select": "^5.7.3"
+  }
 }

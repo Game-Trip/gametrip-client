@@ -10,7 +10,7 @@ export interface User {
   email: string;
   Id: string;
   jti: string;
-  roles: string[];
+  Roles: string[];
   nbf: number;
   exp: number;
   iat: number;
@@ -20,6 +20,7 @@ export interface User {
 export interface userContextProps {
   user?: User;
   isLogged: boolean;
+  isAdmin: boolean;
   onLogin: (username: string, password: string) => void;
   onRegister: (email: string, username: string, password: string) => void;
   onLogout: () => void;
@@ -35,6 +36,7 @@ const GameWrapper = ({ children }: Props) => {
   const [user, setUser] = useState<User>();
   const [snackBarOpen, setSnackBarOpen] = useState({ open: false, message: "" });
   const isLogged = !!user;
+  const isAdmin = user?.Roles?.includes("Admin") ?? false;
   const navigate = useNavigate();
   const onLogin = async (username: string, password: string) => {
     await AnnonymAuthController.authLoginPost({ username, password }).then(
@@ -76,21 +78,21 @@ const GameWrapper = ({ children }: Props) => {
 
   return (
     <UserContext.Provider
-      value={{ user, onLogin, isLogged, onRegister, onLogout }}
+      value={{ user, onLogin, isLogged, isAdmin, onRegister, onLogout }}
     ><>
-    
-      {children}
-            <Snackbar open={snackBarOpen.open} autoHideDuration={6000} onClose={()=>setSnackBarOpen(
-        { open: false, message: "" }
-            )}>
-        <Alert onClose={()=>setSnackBarOpen(
-        { open: false, message: "" }
-            )} severity="info" sx={{ width: '100%' }}>
-          {snackBarOpen.message}
-        </Alert>
-      </Snackbar>
-    </>
-      
+
+        {children}
+        <Snackbar open={snackBarOpen.open} autoHideDuration={6000} onClose={() => setSnackBarOpen(
+          { open: false, message: "" }
+        )}>
+          <Alert onClose={() => setSnackBarOpen(
+            { open: false, message: "" }
+          )} severity="info" sx={{ width: '100%' }}>
+            {snackBarOpen.message}
+          </Alert>
+        </Snackbar>
+      </>
+
     </UserContext.Provider>
   );
 };

@@ -54,8 +54,6 @@ export default function AddLocationComponent() {
 
 
   const GetAddressInformation = async () => {
-    console.log("GetAddressInformation");
-
     var result = await geoCodingApi.getAddressInformation(searchAddress);
     if (result.status != 200)
       return console.error(result);

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState,useRef ,useCallback, useEffect} from "react";
+import React, { memo, useMemo, useState, useRef, useCallback, useEffect } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
@@ -8,27 +8,26 @@ import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
+import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
+import { useUser } from "../../hooks/useUser";
 interface Props {
   selectedLocation?: LocationDto;
   setSelectedLocation: (location?: LocationDto) => void;
 }
-import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
-import { useUser } from "../../hooks/useUser";
 
-const MapPage = ({selectedLocation, setSelectedLocation}: Props) => {
+const MapPage = ({ selectedLocation, setSelectedLocation }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
-console.log(selectedLocation);
 
   const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-  const { isLogged } = useUser();  const handleSearch = useCallback(async (search: string) => {
+  const { isLogged } = useUser(); const handleSearch = useCallback(async (search: string) => {
 
-    mapRef.current?.flyTo({ duration: 2000, zoom: 0});
-    
+    mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
+
     const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     return;
-  },[]);
+  }, []);
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
@@ -67,9 +66,10 @@ console.log(selectedLocation);
           onClick={(e) => {
             e.originalEvent.stopPropagation();
             setSelectedLocation(location);
-              mapRef.current?.flyTo({ duration: 2000, zoom: 6,
-                center: [location?.longitude!, location?.latitude!],              
-              });
+            mapRef.current?.flyTo({
+              duration: 2000, zoom: 6,
+              center: [location?.longitude!, location?.latitude!],
+            });
           }}
         >
           <Pin />
@@ -87,7 +87,7 @@ console.log(selectedLocation);
     };
     fetchLocations();
   }, []);
-  
+
   return (
     <>
       <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} />

@@ -22,7 +22,7 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
   const [isOpen, setIsOpen] = React.useState(true);
   const [isoverFlowHidden, setIsOverFlowHidden] = React.useState(true);
 
-  const { isLogged } = useUser();
+  const { isLogged, isAdmin } = useUser();
 
   useOnClickOutside(navBarRef, () => {
     setIsOpen(false);
@@ -43,6 +43,11 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
         {!isLogged && (
           <Button isRouterButton to="/login">
             Login
+          </Button>
+        )}
+        {isLogged && isAdmin && (
+          <Button isRouterButton to="/AdminPanel">
+            Admin Panel
           </Button>
         )}
         <div className={styles.inputWrapper}>

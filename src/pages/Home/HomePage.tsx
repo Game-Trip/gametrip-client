@@ -12,14 +12,14 @@ interface Props {
   onSelect: (game?: SearchedGameDto) => void;
   options: SearchedGameDto[];
 }
-const HomePage = ({onSearch,onSelect,options}: Props) => {
-  
+const HomePage = ({ onSearch, onSelect, options }: Props) => {
+
   const isPresent = useIsPresent();
-  
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
-        <TopNavBar showHomeButton />
+        <TopNavBar showAdminButton showLoginButton />
         <img className={styles.image} src={logo} />
 
         <div className={styles.footer}>
