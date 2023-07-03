@@ -20,7 +20,7 @@ const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
-        <TopNavBar showHomeButton />
+        <TopNavBar showHomeButton={false} />
         <img className={styles.image} src={logo} />
 
         <div className={styles.footer}>

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useRef } from "react";
+import React, { memo, useMemo, useState, useRef, useEffect } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, MapRef, Marker } from "react-map-gl";
@@ -23,6 +23,19 @@ interface Props {
 const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
+  useEffect(() => {
+    if (selectedGame) {
+      const firstLocation = selectedGame.locations?.[0];
+      if (firstLocation) {
+        setSelectedLocation(firstLocation);
+        console.log([firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50])
+        mapRef.current?.flyTo({
+          duration: 2000, zoom: 6,
+          center: [firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50],
+        });
+      }
+    }
+  }, [selectedGame]);
 
   const handleSearch = async (search: string) => {
     mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
@@ -33,11 +46,12 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
+  const handleSelect = (selected?: SearchedGameDto) => { setSelectedGame(selected); setSearchValue(selected!.name!); }
 
   const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
   const pins = useMemo(() => {
-    if (selectedGame && selectedGame.locations) {
+    if (selectedGame && selectedGame.locations && searchValue != "") {
       return selectedGame.locations.map((location: LocationDto, index: number) => {
         return (
           <Marker
@@ -84,7 +98,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
 
     }
     );
-  }, [locationsData, selectedGame]);
+  }, [locationsData, selectedGame, searchValue]);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
@@ -97,7 +111,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
   return (
     <div className={styles.wrapper}>
       <CollapsableNavBar onSearch={handleSearch}
-        onSelectGame={(selected) => setSelectedGame(selected)}
+        onSelectGame={(selected) => handleSelect(selected)}
         searchValue={searchValue} />
 
       <div className={styles.mapContainer}>
@@ -106,7 +120,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
           initialViewState={{
             latitude: 48.8588443,
             longitude: 2.2943506,
-            zoom: 18.5,
+            zoom: 2,
             bearing: 0,
             pitch: 0,
           }}

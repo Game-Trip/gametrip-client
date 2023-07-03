@@ -106,7 +106,7 @@ const styles = {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-bottom: 5px solid #85d8ac;
     display: flex;
-    padding: ${isOpen ? 5 : 0}px 5px;
+    padding: ${isOpen ? 5 : 0}px 15px;
     align-items: center;
     justify-content: space-between;
     gap: 40px;
