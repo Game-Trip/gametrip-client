@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'
 import { setupIonicReact } from '@ionic/react'
 import { AnimatePresence } from 'framer-motion'
@@ -8,6 +9,8 @@ import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
+import ForgotPasswordPage from './pages/ForgotPassword/SendMail'
+import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
@@ -17,7 +20,6 @@ import { AnnonymSearchController } from './utils/api/baseApi'
 setupIonicReact()
 
 const App: React.FC = () => {
-
   const [selectedLocation, setSelectedLocation] = useState<
     LocationDto | undefined
   >();
@@ -28,6 +30,7 @@ const App: React.FC = () => {
       navigate('/map');
     }
   }
+
 
   const handleSearch = async (search: string) => {
     setSearchValue(search);
@@ -44,7 +47,6 @@ const App: React.FC = () => {
 
   const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>();
   const [searchValue, setSearchValue] = useState<string>('');
-
   const element = useRoutes([
     {
       path: '/',
@@ -74,6 +76,14 @@ const App: React.FC = () => {
     {
       path: '/newlocation',
       element: <LocationForm key={5} />,
+    },
+    {
+      path: '/forgot-password',
+      element: <ForgotPasswordPage />,
+    },
+    {
+      path: '/Auth/FrogotPassword',
+      element: <ResetPasswordPage />,
     },
     {
       path: '/Auth/ConfirmationMail',

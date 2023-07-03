@@ -1,28 +1,19 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Link } from "react-router-dom";
 import logo from "../logo-no-background.png";
-import { InputBase, IconButton } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { InputBase } from "@mui/material";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
-  const { onLogin } = useUser();
-  const pwdRef = useRef<HTMLInputElement>(null);
+  const { onForgotPassword } = useUser();
 
-  const [userAuth, setUserAuth] = React.useState({
-    username: "",
-    password: "",
-  });
+  const [forgotPasswordDto, setForgotPasswordDto] = useState({});
 
-  const [isPwdVisible, setIsPwdVisible] = React.useState(false);
-
-  const handleLogin = async () =>
-    await onLogin(userAuth.username, userAuth.password);
+  const sendForgotPasswordMail = async () =>
+    await onForgotPassword(forgotPasswordDto);
 
   return (
     <div className={styles.wrapper}>
@@ -32,8 +23,8 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authenticate</span>
-            <span className={styles.fieldName}>E-mail</span>
+            <span className={styles.basicText}>Forgot Password </span>
+            <span className={styles.fieldName}>Username / E-mail</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -62,48 +53,14 @@ export default function Component(): JSX.Element {
                   },
                 }}
                 onChange={(val) => {
-                  setUserAuth({ ...userAuth, username: val.target.value });
+                  setForgotPasswordDto({ ...forgotPasswordDto, email: val.target.value });
                 }}
-                placeholder="E-mail"
+                placeholder="Username or E-mail"
               />
             </div>
-            <span className={styles.fieldName}>Password</span>
-            <div className={styles.formInput}>
-              <InputBase
-                ref={pwdRef}
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
-                type={isPwdVisible ? "text" : "password"}
-                onChange={(val) => {
-                  setUserAuth({ ...userAuth, password: val.target.value });
-                }}
-              />
-              <IconButton
-                onClick={() =>
-                  isPwdVisible ? setIsPwdVisible(false) : setIsPwdVisible(true)
-                }
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-              >
-                {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
-              </IconButton>
-            </div>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to="/forgot-password"
-            >
-              Forgot Password ?
-            </Link>
-            <button onClick={handleLogin} className={styles.loginButton}>
-              <span>Login</span>
+            <button onClick={sendForgotPasswordMail} className={styles.loginButton}>
+              <span>Send Mail</span>
             </button>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to="/register"
-            >
-              Not registered yet ?
-            </Link>
           </div>
         </div>
       </div>

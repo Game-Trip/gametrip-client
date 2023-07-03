@@ -9,7 +9,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 import { MarkerEvent } from "react-map-gl/dist/esm/types";
-
 interface Props {
   selectedLocation?: LocationDto;
   setSelectedLocation: (location?: LocationDto) => void;
@@ -25,11 +24,8 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
 
-
   const handleSearch = async (search: string) => {
-
     mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
-
     const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     setSearchValue(search);
