@@ -1,4 +1,4 @@
-# Project Name
+# Game trip
 
 This is a web project built with React and Ionic.
 
