@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,21 +10,31 @@ import axios from "axios";
 import { parseJwt } from "../../utils/parseJwt";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import { ResetPasswordDto } from "@game-trip/ts-api-client";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
-  const { onLogin } = useUser();
+  const { onResetPassword } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
 
-  const [userAuth, setUserAuth] = React.useState({
-    username: "",
-    password: "",
-  });
+  const [resetPasswordModel, setResetPasswordModel] = useState<ResetPasswordDto>({});
+
+  useEffect(() => {
+    const url = window.location.href;
+    const splitUrl1 = url.split('?Token=');
+    const splitUrl2 = splitUrl1[1].split('&Email=');
+
+    setResetPasswordModel({ ...resetPasswordModel, token: splitUrl2[0], email: splitUrl2[1] });
+
+  }, [])
+
+
+
 
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
-  const handleLogin = async () =>
-    await onLogin(userAuth.username, userAuth.password);
+  const ResetPassword = async () =>
+    await onResetPassword(resetPasswordModel);
 
   return (
     <div className={styles.wrapper}>
@@ -34,7 +44,7 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authenticate</span>
+            <span className={styles.basicText}>Reset Password</span>
             <span className={styles.fieldName}>E-mail</span>
             <div className={styles.formInput}>
               <InputBase
@@ -63,10 +73,8 @@ export default function Component(): JSX.Element {
                     backgroundColor: "white !important",
                   },
                 }}
-                onChange={(val) => {
-                  setUserAuth({ ...userAuth, username: val.target.value });
-                }}
-                placeholder="E-mail"
+                readOnly={true}
+                value={resetPasswordModel.email}
               />
             </div>
             <span className={styles.fieldName}>Password</span>
@@ -77,7 +85,7 @@ export default function Component(): JSX.Element {
                 placeholder="Password"
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
-                  setUserAuth({ ...userAuth, password: val.target.value });
+                  setResetPasswordModel({ ...resetPasswordModel, password: val.target.value });
                 }}
               />
               <IconButton
@@ -91,34 +99,34 @@ export default function Component(): JSX.Element {
                 {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to="/forgot-password"
-            >
-              Forgot Password ?
-            </Link>
-            <button onClick={handleLogin} className={styles.loginButton}>
-              <span>Login</span>
+            <span className={styles.fieldName}>Confirm Password</span>
+            <div className={styles.formInput}>
+              <InputBase
+                ref={pwdRef}
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Password"
+                type={isPwdVisible ? "text" : "password"}
+                onChange={(val) => {
+                  setResetPasswordModel({ ...resetPasswordModel, passwordConfirmation: val.target.value });
+                }}
+              />
+              <IconButton
+                onClick={() =>
+                  isPwdVisible ? setIsPwdVisible(false) : setIsPwdVisible(true)
+                }
+                type="button"
+                sx={{ p: "10px" }}
+                aria-label="search"
+              >
+                {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              </IconButton>
+            </div>
+            <button onClick={ResetPassword} className={styles.registerButton}>
+              <span>Reset My Password</span>
             </button>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to="/register"
-            >
-              Not registered yet ?
-            </Link>
           </div>
         </div>
       </div>
-      {/* <Snackbar
-        open={snackBarInfo.isOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackBarInfo({ ...snackBarInfo, isOpen: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity={snackBarInfo.isError ? "error" : "success"}>
-          {snackBarInfo.message}
-        </Alert>
-      </Snackbar> */}
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
@@ -131,7 +139,7 @@ export default function Component(): JSX.Element {
 }
 
 const styles = {
-  loginButton: css`
+  registerButton: css`
     // undo default button style
     border: none;
     outline: none;
@@ -162,7 +170,6 @@ const styles = {
     font-weight: 500;
     font-size: 28px;
     line-height: 33px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     /* center to the middle */
     align-self: start;
   `,

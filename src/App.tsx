@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, { useCallback, useState } from 'react'
 import { IonApp, setupIonicReact } from '@ionic/react'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -25,6 +25,8 @@ import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
 import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
+import ForgotPasswordPage from './pages/ForgotPassword/SendMail'
+import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
@@ -33,13 +35,13 @@ import { AnnonymSearchController } from './utils/api/baseApi'
 setupIonicReact()
 
 const App: React.FC = () => {
-    const [selectedLocation, setSelectedLocation] = useState<
+  const [selectedLocation, setSelectedLocation] = useState<
     LocationDto | undefined
   >();
   const navigate = useNavigate();
   const handleSelect = async (search?: SearchedGameDto) => {
     setSelectedLocation(search);
-    if(search) {
+    if (search) {
       navigate('/map');
     }
   }
@@ -48,9 +50,9 @@ const App: React.FC = () => {
     const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
     return;
-  },[]);
-      const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-      const [search, setSearch] = useState<string>('');
+  }, []);
+  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+  const [search, setSearch] = useState<string>('');
 
   const element = useRoutes([
     {
@@ -68,6 +70,14 @@ const App: React.FC = () => {
     {
       path: '/register',
       element: <RegisterPage />,
+    },
+    {
+      path: '/forgot-password',
+      element: <ForgotPasswordPage />,
+    },
+    {
+      path: '/Auth/FrogotPassword',
+      element: <ResetPasswordPage />,
     },
     {
       path: '/Auth/ConfirmationMail',
