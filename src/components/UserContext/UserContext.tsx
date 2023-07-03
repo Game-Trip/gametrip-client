@@ -90,7 +90,8 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Votre mot de passe a été réinitialisé" });
     }).catch((err) => {
-      console.log(err.message);
+      console.log(JSON.stringify(err.message));
+      console.log((err.message.message));
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };

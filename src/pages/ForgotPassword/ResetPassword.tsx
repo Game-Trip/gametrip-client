@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,13 +17,19 @@ export default function Component(): JSX.Element {
   const { onResetPassword } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
 
-  const url = window.location.href;
-  const splitUrl1 = url.split('?Token=');
-  const splitUrl2 = splitUrl1[1].split('&Email=');
-  const token = splitUrl2[0];
-  const email = splitUrl2[1];
+  const [resetPasswordModel, setResetPasswordModel] = useState<ResetPasswordDto>({});
 
-  const [resetPasswordModel, setResetPasswordModel] = useState<ResetPasswordDto>({ email: email || "", password: "", passwordConfirmation: "", token: token || "" });
+  useEffect(() => {
+    const url = window.location.href;
+    const splitUrl1 = url.split('?Token=');
+    const splitUrl2 = splitUrl1[1].split('&Email=');
+
+    setResetPasswordModel({ ...resetPasswordModel, token: splitUrl2[0], email: splitUrl2[1] });
+
+  }, [])
+
+
+
 
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
