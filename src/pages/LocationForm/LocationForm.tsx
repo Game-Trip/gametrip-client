@@ -1,5 +1,5 @@
 import React from 'react';
-import { css } from "@emotion/css";
+import { css, cx } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
@@ -13,6 +13,7 @@ import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import Select from 'react-select';
 import PlacesAutocomplete, {
+  Suggestion,
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
@@ -118,106 +119,107 @@ export default function LocationForm(): JSX.Element {
   };
   const handleAddressSelect = (address: string) => {
     geocodeByAddress(address)
-      .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
-      .catch(error => console.error('Error', error));
+      .then((results: any[]) => getLatLng(results[0]))
+      .then((latLng: any) => console.log('Success', latLng))
+      .catch((error: any) => console.error('Error', error));
   };
 
   return (
     <div className={styles.wrapper}>
       <TopNavBar showLoginButton={false} showHomeButton={true} />
+      <div className={styles.basicText}>Submit a new point of interest</div>
       <div className={styles.formWrapper}>
-        <span className={styles.basicText}>Submit a new point of interest</span>
-        <button onClick={AddNewLocation} className={styles.loginButton}>
-          <span>Post</span>
-        </button>
-        <span className={styles.fieldName}>Name</span>
-        <div className={styles.formInput}>
+        <div className={styles.side}>
+          <div className={styles.fieldName}>Name</div>
+          <div className={styles.formInput}>
+            <InputBase
+              autoComplete="off"
+              aria-autocomplete="none"
+              sx={inputStyle}
+              placeholder="Place, monument..."
+              onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
+            />
+          </div>
+          <div className={styles.fieldName}>Related games</div>
+          <SearchInput
+            value={gameSearchInput}
+            onChange={setGameSearchInput}
+            changeOnSelect={false}
+            onSelect={handleSelectGame}
+          />
+          <div className={styles.tagList}>
+            {selectedGames.map((game, idx) => <div className={styles.tag} key={idx}>
+              <span>
+                {game.name}
+              </span>
+              <div>
+                <IconButton
+                  type="button"
+                  sx={{ p: "0px" }}
+                  aria-label="arch"
+                  onClick={() => {
+                    setSelectedGames(selectedGames.filter((g) => g.id !== game.id));
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </div>
+            </div>)}
+          </div>
+        </div>
+        <div className={styles.side}>
+          <div className={styles.fieldName}>Address</div>
+          <PlacesAutocomplete
+            value={addressInformation.name}
+            onChange={handleChange}
+            onSelect={handleAddressSelect}
+          >
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
+              console.log(suggestions);
+              return (
+                <div>
+                  <div className={styles.formInput}>
+                    <InputBase
+                      {...getInputProps({
+                        placeholder: 'Search Places ...',
+                        className: 'location-search-input',
+                      })}
+                      autoComplete="off"
+                      aria-autocomplete="none"
+                      sx={inputStyle}
+                      placeholder=""
+                    />
+                  </div>
+                  <div className={cx("autocomplete-dropdown-container", styles.addrAutoComplete)}>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map((suggestion: Suggestion) => {
+                      // inline style for demonstration purpose
+                      return (
+                        // eslint-disable-next-line react/jsx-key
+                        <div {...getSuggestionItemProps(suggestion)}
+                          className={styles.dropDownElement}>
+                          {suggestion.description}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )
+            }}
+          </PlacesAutocomplete>
+
+          <div className={styles.fieldName}>Description</div>
           <InputBase
+            multiline
             autoComplete="off"
             aria-autocomplete="none"
-            sx={inputStyle}
-            placeholder="Place, monument..."
-            onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
+            placeholder="Description"
+            className={styles.formMultiline}
           />
-        </div>
-        <span className={styles.fieldName}>Related games</span>
-        <SearchInput
-          value={gameSearchInput}
-          onChange={setGameSearchInput}
-          changeOnSelect={false}
-          onSelect={handleSelectGame}
-        />
-        <div className={styles.tagList}>
-          {selectedGames.map((game, idx) => <div className={styles.tag} key={idx}>
-            <span>
-              {game.name}
-            </span>
-            <div>
-              <IconButton
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-                onClick={() => {
-                  setSelectedGames(selectedGames.filter((g) => g.id !== game.id));
-                }}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </div>
-          </div>)}
-        </div>
-
-        <PlacesAutocomplete
-          value={addressInformation.name}
-          onChange={handleChange}
-          onSelect={handleAddressSelect}
-        >
-          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
-            console.log(suggestions);
-            return (
-              <div>
-                <div className={styles.formInput}>
-                  <InputBase
-                    {...getInputProps({
-                      placeholder: 'Search Places ...',
-                      className: 'location-search-input',
-                    })}
-                    autoComplete="off"
-                    aria-autocomplete="none"
-                    sx={inputStyle}
-                    placeholder=""
-                  />
-                </div>
-                <div className="autocomplete-dropdown-container">
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map(suggestion => {
-                    // inline style for demonstration purpose
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <div
-                        {...getSuggestionItemProps(suggestion)}
-                      >
-                        <span>{suggestion.description}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )
-          }}
-        </PlacesAutocomplete>
-
-        <span className={styles.fieldName}>Description</span>
-        <InputBase
-          multiline
-          autoComplete="off"
-          aria-autocomplete="none"
-          placeholder="Description"
-        />
-        <div className="locationPictures">
-          <label>Location Pictures</label>
-          <input type="file" multiple />
+          <div className="locationPictures">
+            <label>Location Pictures</label>
+            <input type="file" multiple />
+          </div>
         </div>
       </div>
       <motion.div
@@ -232,10 +234,54 @@ export default function LocationForm(): JSX.Element {
 }
 
 const styles = {
+  addrAutoComplete: css`
+    position: inherit;
+    z-index: 10000;
+  `,
+  formMultiline: css`
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 8px;
+  `,
+  dropDownElement: css`
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: black;
+    padding: 10px;
+    transition: 0.5s;
+    &:hover {
+      background-color: #f5f5f5;
+      cursor: pointer;
+      transform: translateX(-5px);
+
+    }
+    margin-top: 10px;
+    z-index: 10000;
+  `,
+  dropDown: (isFocused: boolean) => css`
+    opacity: ${isFocused ? 1 : 0};
+    visibility: ${isFocused ? "visible" : "hidden"};
+    transition: 0.5s;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+    height: 80%;
+    transition: 0.5s;
+    z-index: 10000;
+    top: 100%;
+  `,
+  side: css`
+    width:50%;
+  `,
   tagList: css`
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-top:10px;
   `,
   tag: css`
     background: #85d8ac;
@@ -284,6 +330,7 @@ const styles = {
     line-height: 33px;
     /* center to the middle */
     align-self: start;
+    margin-top: 20px;
   `,
   basicText: css`
     font-family: "Roboto";
@@ -296,9 +343,9 @@ const styles = {
   `,
   formWrapper: css`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 20px;
-    padding: 20px 120px;
+    padding: 20px 20px;
   `,
   formInput: css`
     display: flex;
