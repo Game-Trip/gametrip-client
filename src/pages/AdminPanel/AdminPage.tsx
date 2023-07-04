@@ -1,20 +1,14 @@
-import React, { memo, useMemo, useState, useRef, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { css } from "@emotion/css";
 import * as apiClient from "@game-trip/ts-api-client";
 import { motion, useIsPresent } from "framer-motion";
-import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
-import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import { AnnonymGameController, AnnonymLocationController, AnnonymSearchController, AnnonymUserController } from "../../utils/api/baseApi";
-import Pin from "../../components/Pin/Pin";
+import { AnnonymGameController, AnnonymLocationController } from "../../utils/api/baseApi";
 import "mapbox-gl/dist/mapbox-gl.css";
-import SelectionModal from "../../components/SelectionModal/SelectionModal";
-import { GameDto, GameTripUser, GameTripUserDto, ListGameDto, LocationDto, SearchedGameDto, ServerConfiguration, UpdateGameDto, UpdateLocationDto } from "@game-trip/ts-api-client";
-import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
+import { GameTripUserDto, ListGameDto, LocationDto, ServerConfiguration, UpdateGameDto, UpdateLocationDto } from "@game-trip/ts-api-client";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
-import { Alert, Box, Button, Modal, Snackbar, Typography } from "@mui/material";
-import Select, { SingleValue } from 'react-select'
-import { Form } from "react-router-dom";
+import { Box, Modal } from "@mui/material";
+import Select from 'react-select'
 
 
 
@@ -35,6 +29,7 @@ const AdminPage = () => {
 
   let LocationController = AnnonymLocationController;
   let GameController = AnnonymGameController;
+  let ValidationController = AnnonymGameController;
   // let UserController = AnnonymUserController;
   if (isLogged) {
     const config = apiClient.createConfiguration({
@@ -57,7 +52,7 @@ const AdminPage = () => {
     // UserController = new apiClient.UserApi(config);
   }
 
-  const [selectedGame, setSelectedGame] = useState<GameDto | undefined>();
+  const [selectedGame, setSelectedGame] = useState<ListGameDto | undefined>();
 
   useEffect(() => {
     const getData = async () => {
@@ -71,6 +66,7 @@ const AdminPage = () => {
 
   }, [])
   const [gameModalOpen, setGameModalOpen] = useState(false);
+  const [confirmDeleteGameModalOpen, setConfirmDeleteGameModalOpen] = useState(false);
   const handleSelectGame = useCallback((value: any) => {
     if (!value.value) {
       console.log("No value selected");
@@ -82,9 +78,36 @@ const AdminPage = () => {
     setGameModalOpen(!gameModalOpen);
     setSelectedGame(undefined);
   }
+  const ConfirmDeleteSelectedGame = useCallback(async () => {
+    await GameController.gameDeleteGameIdDelete(selectedGame!.idGame!)
+      .then((res) => {
+        setConfirmDeleteGameModalOpen(!confirmDeleteGameModalOpen);
+        setGameModalOpen(!gameModalOpen);
+        setSelectedGame(undefined);
+        const newListGame = allGames.filter((game) => game.idGame !== selectedGame?.idGame);
+        setAllGames(newListGame);
 
+        //API Return
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
+  }, [gameModalOpen, confirmDeleteGameModalOpen, allGames, selectedGame]);
+
+  const UpdateGame = useCallback(async () => {
+    await GameController.gameGameIdPut(selectedGame!.idGame!, undefined, { gameId: selectedGame?.idGame, name: selectedGame?.name, description: selectedGame?.description, editor: selectedGame?.editor, releaseDate: selectedGame?.releaseDate } as UpdateGameDto)
+      .then((res) => {
+        const newListGame = allGames.filter((game) => game.idGame !== selectedGame?.idGame);
+        newListGame.push(selectedGame!);
+        setAllGames(newListGame);
+
+        //API Return
+        console.log(res);
+      })
+      .catch((error) => console.log(error))
+  }, [allGames, selectedGame])
 
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [confirmDeleteLocationModalOpen, setConfirmDeleteLocationModalOpen] = useState(false);
   const openSelectedLocationModal = () => {
     console.log("Selected Location ", selectedLocation as LocationDto);
     setLocationModalOpen(!locationModalOpen);
@@ -95,9 +118,35 @@ const AdminPage = () => {
 
   }
 
+  const UpdateLocation = useCallback(async () => {
+    await GameController.gameGameIdPut(selectedGame!.idGame!, undefined, { gameId: selectedGame!.idGame!, name: selectedGame?.name, description: selectedGame?.description, editor: selectedGame?.editor, releaseDate: selectedGame?.releaseDate } as UpdateGameDto)
+      .then((res) => {
+        const newListGame = allGames.filter((game) => game.idGame !== selectedGame?.idGame);
+        newListGame.push(selectedGame!);
+        setAllGames(newListGame);
 
-  console.log("Selected Game: ", selectedGame);
-  console.log(selectedGame);
+        //API Return
+        console.log(res);
+      })
+      .catch((error) => console.log(error))
+
+    await LocationController.locationLocationIdPut(selectedLocation!.id!, undefined, { id: selectedLocation?.id, name: selectedLocation?.name, description: selectedLocation?.description, latitude: selectedLocation?.latitude, longitude: selectedLocation?.longitude } as UpdateLocationDto)
+  }, [])
+
+  const ConfirmDeleteSelectedLocation = useCallback(async () => {
+    await LocationController.locationDeleteLocationIdDelete(selectedLocation!.id!)
+      .then((res) => {
+        setConfirmDeleteLocationModalOpen(!confirmDeleteLocationModalOpen);
+        setLocationModalOpen(!locationModalOpen);
+        setSelectedLocation(undefined);
+        const newListLocation = allLocations.filter((location) => location.id !== selectedLocation?.id);
+        setAllLocations(newListLocation);
+
+        //API Return
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
+  }, [confirmDeleteLocationModalOpen, locationModalOpen, allLocations, selectedLocation])
 
   return (
     <>
@@ -126,7 +175,20 @@ const AdminPage = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={modalStyle}>
+            <Modal
+              open={confirmDeleteGameModalOpen}
+              onClose={() => setConfirmDeleteGameModalOpen(!confirmDeleteGameModalOpen)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={modalStyle}>
 
+                <h1>Confirm Delete</h1>
+                <p>Merci de confirmer la supressions de ce jeux : {selectedGame?.name}</p>
+                <button onClick={() => setConfirmDeleteGameModalOpen(!confirmDeleteGameModalOpen)}>Annuler</button>
+                <button onClick={ConfirmDeleteSelectedGame}>Confirmer</button>
+              </Box>
+            </Modal>
             <label>Game Name :</label>
             <input type="text" value={selectedGame?.name as string} onChange={(event) => setSelectedGame({ ...selectedGame, name: event.target.value })} />
             <label>Description :</label>
@@ -136,14 +198,13 @@ const AdminPage = () => {
             <label>Release Date :</label>
             <input type="date" value={selectedGame?.releaseDate?.toString() as string} onChange={(event) => setSelectedGame({ ...selectedGame, releaseDate: Number(event.target.value) })} />
             <label>IsActive :</label>
-            <input type="checkbox" value={selectedGame?.isValidate?.toString() as string} onChange={(event) => setSelectedGame({ ...selectedGame, isValidate: Boolean(event.target.value) })} />
+            <input type="checkbox" onChange={(event) => setSelectedGame({ ...selectedGame, isValidate: Boolean(event.target.value) })} />
             <label>Added By</label>
             <input type="text" value={selectedGame?.authorId as string} readOnly />
-            //TODO: OpenModal to confirm delete and delete
-            <button>Delete</button>
 
-            //TODO: Update
-            <button>Update</button>
+
+            <button onClick={() => setConfirmDeleteGameModalOpen(!confirmDeleteGameModalOpen)}>Delete</button>
+            <button onClick={UpdateGame}>Update</button>
             <button onClick={closeGameModal}>Close</button>
           </Box>
         </Modal>
@@ -161,6 +222,7 @@ const AdminPage = () => {
             openSelectedLocationModal()
           }}
         />
+
         <Modal
           open={locationModalOpen}
           onClose={closeSelectedLocationModal}
@@ -168,7 +230,36 @@ const AdminPage = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={modalStyle}>
-            //TODO: display Location informations and update them
+            <Modal
+              open={confirmDeleteLocationModalOpen}
+              onClose={() => setConfirmDeleteLocationModalOpen(!confirmDeleteLocationModalOpen)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={modalStyle}>
+
+                <h1>Confirm Delete</h1>
+                <p>Merci de confirmer la supressions de ce jeux : {selectedGame?.name}</p>
+                <button onClick={() => setConfirmDeleteLocationModalOpen(!confirmDeleteLocationModalOpen)}>Annuler</button>
+                <button onClick={ConfirmDeleteSelectedLocation}>Confirmer</button>
+              </Box>
+            </Modal>
+            <label>Location Name :</label>
+            <input type="text" value={selectedLocation?.name as string} onChange={(event) => setSelectedLocation({ ...selectedLocation, name: event.target.value })} />
+            <label>Description :</label>
+            <textarea name="description" value={selectedLocation?.description as string} onChange={(event) => setSelectedLocation({ ...selectedLocation, description: event.target.value })} />
+            <label>Latitude :</label>
+            <input type="text" value={selectedLocation?.latitude} onChange={(event) => setSelectedLocation({ ...selectedLocation, latitude: Number(event.target.value) })} />
+            <label>Logintude :</label>
+            <input type="text" value={selectedLocation?.longitude} onChange={(event) => setSelectedLocation({ ...selectedLocation, longitude: Number(event.target.value) })} />
+            <label>IsActive :</label>
+            <input type="checkbox" onChange={(event) => setSelectedLocation({ ...selectedLocation, isValidate: Boolean(event.target.value) })} />
+            <label>Added By</label>
+            <input type="text" value={selectedLocation?.authorId as string} readOnly />
+
+            <button onClick={() => setConfirmDeleteLocationModalOpen(!confirmDeleteLocationModalOpen)}>Delete</button>
+            <button onClick={UpdateLocation}>Update</button>
+            <button onClick={closeSelectedLocationModal}>Close</button>
           </Box>
         </Modal>
 
