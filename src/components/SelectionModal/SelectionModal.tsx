@@ -72,7 +72,7 @@ const styles = {
     height: ${isOpen ? "80%" : "0px !important"};
     opacity: ${isOpen ? 100 : 0};
     height: ${isExpanded ? "100%" : "70px"};
-    width: ${isExpanded ? "100%" : "400px"};
+    width: ${isExpanded ? "100%" : "550px"};
     padding: 10px;
     background-color: #5ab584;
     border-radius: ${isExpanded ? 0 : 10}px 0px 0px 0px;
