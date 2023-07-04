@@ -6,7 +6,7 @@ import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { Button, IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ServerConfiguration, CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
+import { AnnonymGameController, AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
 import * as apiClient from "@game-trip/ts-api-client";
@@ -48,8 +48,7 @@ interface AddressInformation {
 
 export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
-  const { isLogged, user } = useUser();
-  const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto());
+  const { isLogged, user, setSnackBarOpen } = useUser();
   const [description, setDescription] = useState<string>("");
   const [name, setName] = useState<string>("");
   let LocationController = AnnonymLocationController;
@@ -76,18 +75,16 @@ export default function LocationForm(): JSX.Element {
 
 
   const AddNewLocation = async () => {
-
-    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371, description, name, })
-    await LocationController.locationCreateLocationPost(true, newLocation)
+    const obj = { authorId: user?.Id, longitude: addressInformation.longitude, latitude: addressInformation.latitude, description, name, };
+    await LocationController.locationCreateLocationPost(true, obj)
       .then((res: apiClient.MessageDto) => console.log(res))
       .catch((err) => {
-        if (err.code) {
-          console.log("Error Code :", err.body.messageCode);
-          console.log("Error Message :", err.body.message);
+        if (err) {
+          console.log("Error Message :", err.body);
+          setSnackBarOpen({ open: true, message: "failed, please fill in all fields" });
         } else
           console.log(err);
       })
-
 
   }
 
@@ -113,7 +110,8 @@ export default function LocationForm(): JSX.Element {
     }
   }
 
-  const [addressInformation, setAddressInformation] = useState({ name: "", latitude: 0, longitude: 0 });
+  const [addressInformation, setAddressInformation] = useState({ name: "", latitude: 0.0, longitude: 0.0 });
+  console.log(addressInformation);
   const handleChange = (address: string) => {
     setAddressInformation({ ...addressInformation, name: address });
   };
@@ -121,11 +119,11 @@ export default function LocationForm(): JSX.Element {
     geocodeByAddress(address)
       .then((results: any[]) => getLatLng(results[0]))
       .then((latLng: any) => {
-        setAddressInformation({ name: address, latitude: latLng.lat, longitude: latLng.lng });
+        console.log('Success', latLng);
+        setAddressInformation({ name: address, latitude: latLng.lat.toFixed(4), longitude: latLng.lng.toFixed(4) });
       })
       .catch((error: any) => console.error('Error', error));
   };
-
   return (
     <div className={styles.wrapper}>
       <TopNavBar showLoginButton={false} showHomeButton={true} />
