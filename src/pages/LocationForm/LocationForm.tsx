@@ -5,8 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ServerConfiguration, CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
+import { CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
 import * as apiClient from "@game-trip/ts-api-client";
@@ -50,25 +49,6 @@ export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
   const { isLogged, user } = useUser();
   const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto());
-  let LocationController = AnnonymLocationController;
-  if (isLogged) {
-    const config = apiClient.createConfiguration({
-      baseServer: new ServerConfiguration(
-        "https://staging-api.game-trip.fr",
-        {}
-      ),
-      authMethods: {
-        'Bearer': {
-          'tokenProvider': {
-            getToken() {
-              return user?.jwt;
-            },
-          }
-        } as apiClient.HttpBearerConfiguration
-      } as apiClient.AuthMethodsConfiguration,
-    });
-    LocationController = new apiClient.LocationApi(config);
-  }
 
 
 

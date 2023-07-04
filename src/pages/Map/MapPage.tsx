@@ -3,12 +3,14 @@ import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import { Map, MapRef, Marker } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
-import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
-import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 import { MarkerEvent } from "react-map-gl/dist/esm/types";
+import { SearchApi } from "../../utils/api/SearchApi";
+import { LocationApi } from "../../utils/api/LocationApi";
+import { LocationDto } from "../../utils/Models/Location/LocationDto";
+import { SearchedGameDto } from "../../utils/Models/Search/SearchGamesDto";
 interface Props {
   selectedLocation?: LocationDto;
   setSelectedLocation: (location?: LocationDto) => void;
@@ -39,14 +41,15 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
 
   const handleSearch = async (search: string) => {
     mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
-    const result = await AnnonymSearchController.searchSearchGameGet(search);
+    const result = await SearchApi.searchGamesByName(search);
+    //TODO: CHECK API RESPONSE
     setAvailableGames(result);
     setSearchValue(search);
   };
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
-  const handleSelect = (selected?: SearchedGameDto) => { setSelectedGame(selected); setSearchValue(selected!.name!); }
+  const handleSelect = (game: SearchedGameDto) => { setSelectedGame(game); setSearchValue(game.name); }
 
   const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
@@ -102,7 +105,8 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
 
   React.useEffect(() => {
     const fetchLocations = async () => {
-      const result: LocationDto[] = await AnnonymLocationController.locationGet();
+      const result: LocationDto[] = await LocationApi.getAllLocations().then((res) => res.data);
+      //TODO: CHECK API RESPONSE
       setLocationsdata(result);
     };
     fetchLocations();
@@ -111,7 +115,7 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
   return (
     <div className={styles.wrapper}>
       <CollapsableNavBar onSearch={handleSearch}
-        onSelectGame={(selected) => handleSelect(selected)}
+        onSelectGame={handleSelect}
         searchValue={searchValue} />
 
       <div className={styles.mapContainer}>

@@ -17,6 +17,7 @@ const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
 
   const isPresent = useIsPresent();
 
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
