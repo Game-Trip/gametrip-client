@@ -8,6 +8,8 @@ import { LocationDto } from "@game-trip/ts-api-client";
 import { AnnonymLocationController } from "../../utils/api/baseApi";
 import GameDetail from "../GameDetail/GameDetail";
 import { AnimatePresence, motion } from "framer-motion";
+import { useUser } from "../../hooks/useUser";
+import axios, { AxiosResponse } from "axios";
 
 type Props = {
   selectedLocation?: LocationDto;
@@ -21,15 +23,17 @@ export default function SelectionModal({
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [locationDto, setLocationDto] = React.useState<LocationDto>();
   const isOpen = !!selectedLocation;
+  const { user } = useUser();
   useEffect(() => {
-    const getLocationDto = async () => {
-      if (!selectedLocation || !selectedLocation.id) {
-        return;
-      }
-      const result = await AnnonymLocationController.locationIdLocationIdGet(selectedLocation.id);
-      setLocationDto(result);
-    };
-  }, []);
+    if (!selectedLocation) {
+      return;
+    }
+    axios.get(`https://staging-api.game-trip.fr/Location/id/${selectedLocation.id}`)
+      .then((response: AxiosResponse) => {
+        console.log(response.data);
+        setLocationDto(response.data);
+      });
+  }, [selectedLocation]);
   return (
     <div className={styles.wrapper(isExpanded, isOpen)}>
       <div className={styles.header}>

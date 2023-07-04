@@ -27,6 +27,7 @@ export interface userContextProps {
   onResetPassword: (resetPasswordDto: ResetPasswordDto) => void;
   onRegister: (email: string, username: string, password: string) => void;
   onLogout: () => void;
+  setSnackBarOpen: (value: React.SetStateAction<{ open: boolean; message: string; }>) => void;
 }
 
 interface Props {
@@ -41,18 +42,24 @@ const GameWrapper = ({ children }: Props) => {
   const isLogged = !!user;
   const navigate = useNavigate();
   const onLogin = async (username: string, password: string) => {
-    await AnnonymAuthController.authLoginPost({ username, password }).then(
-      (result) => {
-        if (result.token) {
-          setUser({
-            ...parseJwt(result.token),
-            jwt: result.token,
-            isLogged: true,
-          });
-          navigate("/");
+    try {
+
+      await AnnonymAuthController.authLoginPost({ username, password }).then(
+        (result) => {
+          if (result.token) {
+            setUser({
+              ...parseJwt(result.token),
+              jwt: result.token,
+              isLogged: true,
+            });
+            navigate("/");
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      console.log(err);
+      setSnackBarOpen({ open: true, message: "Veuillez vérifier vos identifiants" });
+    }
   };
   const onLogout = () => {
     setUser(undefined);
@@ -98,7 +105,7 @@ const GameWrapper = ({ children }: Props) => {
 
   return (
     <UserContext.Provider
-      value={{ user, onLogin, isLogged, onRegister, onResetPassword, onForgotPassword, onLogout }}
+      value={{ user, onLogin, isLogged, onRegister, onResetPassword, onForgotPassword, onLogout, setSnackBarOpen }}
     ><>
 
         {children}
