@@ -18,6 +18,7 @@ export const Button2 = ({
     <button
       ref={ref}
       {...props}
+      // eslint-disable-next-line react/prop-types
       className={cx(styles.topButton, props.className)}
     >
       <Link style={{ textDecoration: "none", color: "white" }} to={to ?? "/"}>
@@ -28,6 +29,7 @@ export const Button2 = ({
     <button
       ref={ref}
       {...props}
+      // eslint-disable-next-line react/prop-types
       className={cx(styles.topButton, props.className)}
     >
       {children}

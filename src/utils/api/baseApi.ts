@@ -4,7 +4,7 @@ import { ServerConfiguration } from "@game-trip/ts-api-client";
 
 
 const config = apiClient.createConfiguration({
-  baseServer: new ServerConfiguration<{}>(
+  baseServer: new ServerConfiguration(
     "https://staging-api.game-trip.fr",
     {}
   )

@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
+
+.map {
+  position: absolute !important;
+  left: -150px;
+  right: -150px;
+  top: -150px;
+  bottom: -150px;
+}

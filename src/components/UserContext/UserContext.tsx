@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from "axios";
 import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
@@ -72,7 +73,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un email de confirmation vous a été envoyé" });
     }).catch((err) => {
-      console.log(err.message);
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };

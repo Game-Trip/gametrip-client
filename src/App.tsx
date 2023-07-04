@@ -1,24 +1,8 @@
-import React, { useCallback, useState } from 'react'
-import { IonApp, setupIonicReact } from '@ionic/react'
-/* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css'
-import { css } from '@emotion/css'
+
+import React, { useEffect, useState } from 'react'
+import { setupIonicReact } from '@ionic/react'
 import { AnimatePresence } from 'framer-motion'
-/* Basic CSS for apps built with Ionic */
-// import '@ionic/react/css/normalize.css';
-// import '@ionic/react/css/structure.css';
-// import '@ionic/react/css/typography.css';
 
-/* Optional CSS utils that can be commented out */
-// import '@ionic/react/css/padding.css';
-// import '@ionic/react/css/float-elements.css';
-// import '@ionic/react/css/text-alignment.css';
-// import '@ionic/react/css/text-transformation.css';
-// import '@ionic/react/css/flex-utils.css';
-// import '@ionic/react/css/display.css';
-/* Theme variables */
-
-import './theme/variables.css'
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import HomePage from './pages/Home/HomePage'
 import LoginPage from './pages/Login/LoginPage'
@@ -30,6 +14,7 @@ import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
+import LocationForm from './pages/LocationForm/LocationForm'
 import { AnnonymSearchController } from './utils/api/baseApi'
 
 setupIonicReact()
@@ -40,36 +25,58 @@ const App: React.FC = () => {
   >();
   const navigate = useNavigate();
   const handleSelect = async (search?: SearchedGameDto) => {
-    setSelectedLocation(search);
+    setSelectedGame(search);
+    setSearchValue(search!.name!);
     if (search) {
       navigate('/map');
     }
   }
 
-  const handleSearch = useCallback(async (search: string) => {
-    const result = await AnnonymSearchController.searchSearchGameGet(search);
-    setAvailableGames(result);
-    return;
-  }, []);
-  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-  const [search, setSearch] = useState<string>('');
 
+  const handleSearch = async (search: string) => {
+    setSearchValue(search);
+  };
+  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      const result = await AnnonymSearchController.searchSearchGameGet('');
+      setAvailableGames(result);
+    };
+    fetchGames();
+  }, []);
+
+  const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>();
+  const [searchValue, setSearchValue] = useState<string>('');
   const element = useRoutes([
     {
       path: '/',
-      element: <HomePage onSearch={handleSearch} onSelect={handleSelect} options={availableGames} />,
+      element: <HomePage key={1} onSearch={handleSearch} onSelect={handleSelect} options={availableGames} searchValue={searchValue} />,
     },
     {
       path: '/map',
-      element: <MapPage selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />,
+      element: <MapPage
+        key={2}
+        setSearchValue={handleSearch}
+        setSelectedGame={setSelectedGame}
+        selectedGame={selectedGame}
+        selectedLocation={selectedLocation}
+        setSelectedLocation={setSelectedLocation}
+        availableGames={availableGames}
+        setAvailableGames={setAvailableGames} searchValue={searchValue}
+      />,
     },
     {
       path: '/login',
-      element: <LoginPage />,
+      element: <LoginPage key={3} />,
     },
     {
       path: '/register',
-      element: <RegisterPage />,
+      element: <RegisterPage key={4} />,
+    },
+    {
+      path: '/newlocation',
+      element: <LocationForm key={5} />,
     },
     {
       path: '/forgot-password',
@@ -81,7 +88,7 @@ const App: React.FC = () => {
     },
     {
       path: '/Auth/ConfirmationMail',
-      element: <EmailCheck />,
+      element: <EmailCheck key={4} />,
     },
     {
       path: '*',

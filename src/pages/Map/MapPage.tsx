@@ -1,53 +1,72 @@
-import React, { memo, useMemo, useState, useRef, useCallback, useEffect } from "react";
+import React, { memo, useMemo, useState, useRef, useEffect } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Layer, Map, MapRef, Marker, Popup, ViewState } from "react-map-gl";
+import { Map, MapRef, Marker } from "react-map-gl";
 import { CollapsableNavBar } from "../../components/CollapsableNavBar/CollapsableNavBar";
 import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import Pin from "../../components/Pin/Pin";
 import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import AddLocationComponent from "../../components/NewLocation/AddLocationComponent";
-import { useUser } from "../../hooks/useUser";
+import { MarkerEvent } from "react-map-gl/dist/esm/types";
 interface Props {
   selectedLocation?: LocationDto;
   setSelectedLocation: (location?: LocationDto) => void;
+  selectedGame?: SearchedGameDto;
+  setSelectedGame: (game?: SearchedGameDto) => void;
+  availableGames: SearchedGameDto[];
+  setAvailableGames: (games: SearchedGameDto[]) => void;
+  searchValue: string;
+  setSearchValue: (value: string) => void;
 }
 
-const MapPage = ({ selectedLocation, setSelectedLocation }: Props) => {
+const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
-  console.log(selectedLocation);
+  useEffect(() => {
+    if (selectedGame) {
+      const firstLocation = selectedGame.locations?.[0];
+      if (firstLocation) {
+        setSelectedLocation(firstLocation);
+        console.log([firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50])
+        mapRef.current?.flyTo({
+          duration: 2000, zoom: 6,
+          center: [firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50],
+        });
+      }
+    }
+  }, [selectedGame]);
 
-  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
-  const { isLogged } = useUser(); const handleSearch = useCallback(async (search: string) => {
-
+  const handleSearch = async (search: string) => {
     mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
-
     const result = await AnnonymSearchController.searchSearchGameGet(search);
     setAvailableGames(result);
-    return;
-  }, []);
+    setSearchValue(search);
+  };
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
-  const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>()
+  const handleSelect = (selected?: SearchedGameDto) => { setSelectedGame(selected); setSearchValue(selected!.name!); }
+
   const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
   const pins = useMemo(() => {
-    if (selectedGame && selectedGame.locations) {
+    if (selectedGame && selectedGame.locations && searchValue != "") {
       return selectedGame.locations.map((location: LocationDto, index: number) => {
         return (
           <Marker
             offset={[12, -10]}
             rotationAlignment="viewport"
             key={`marker-${index}`}
-            longitude={location.longitude!}
-            latitude={location.latitude!}
-            onClick={(e) => {
+            longitude={location.longitude ?? 0}
+            latitude={location.latitude ?? 0}
+            onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
               e.originalEvent.stopPropagation();
               setSelectedLocation(location);
+              mapRef.current?.flyTo({
+                duration: 2000, zoom: 6,
+                center: [location?.longitude ?? 0, location?.latitude ?? 0],
+              });
             }}
           >
             <Pin />
@@ -62,14 +81,14 @@ const MapPage = ({ selectedLocation, setSelectedLocation }: Props) => {
           offset={[12, -10]}
           rotationAlignment="viewport"
           key={`marker-${index}`}
-          longitude={location.longitude!}
-          latitude={location.latitude!}
-          onClick={(e) => {
+          longitude={location.longitude ?? 0}
+          latitude={location.latitude ?? 0}
+          onClick={(e: MarkerEvent<mapboxgl.Marker, MouseEvent>) => {
             e.originalEvent.stopPropagation();
             setSelectedLocation(location);
             mapRef.current?.flyTo({
               duration: 2000, zoom: 6,
-              center: [location?.longitude!, location?.latitude!],
+              center: [location?.longitude ?? 0, location?.latitude ?? 0],
             });
           }}
         >
@@ -79,7 +98,7 @@ const MapPage = ({ selectedLocation, setSelectedLocation }: Props) => {
 
     }
     );
-  }, [locationsData, selectedGame]);
+  }, [locationsData, selectedGame, searchValue]);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
@@ -90,52 +109,54 @@ const MapPage = ({ selectedLocation, setSelectedLocation }: Props) => {
   }, []);
 
   return (
-    <>
-      <CollapsableNavBar onSearch={handleSearch} availableGames={availableGames} onSelectGame={(selected) => setSelectedGame(selected)} />
-      <div className={styles.wrapper}>
-        <div className={styles.mapContainer}>
-          {isLogged && <AddLocationComponent />}
-          <Map
-            ref={mapRef}
-            initialViewState={{
-              latitude: 48.8588443,
-              longitude: 2.2943506,
-              zoom: 18.5,
-              bearing: 0,
-              pitch: 0,
-            }}
-            // max zoom level
-            minZoom={2}
-            mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
-            mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
-            attributionControl={false}
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            {pins}
-          </Map>
+    <div className={styles.wrapper}>
+      <CollapsableNavBar onSearch={handleSearch}
+        onSelectGame={(selected) => handleSelect(selected)}
+        searchValue={searchValue} />
 
-        </div>
-
-        <SelectionModal
-          closeSelectionModal={closeSelectionModal}
-          selectedLocation={selectedLocation}
-        />
-
-        <motion.div
-          initial={{ scaleX: 1 }}
-          animate={{
-            scaleX: 0,
-            transition: { duration: 0.5, ease: "circOut" },
+      <div className={styles.mapContainer}>
+        <Map
+          ref={mapRef}
+          initialViewState={{
+            latitude: 48.8588443,
+            longitude: 2.2943506,
+            zoom: 2,
+            bearing: 0,
+            pitch: 0,
           }}
-          exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-          style={{ originX: isPresent ? 0 : 1 }}
-          className="privacy-screen"
-        />
+          // max zoom level
+          minZoom={2}
+          dragRotate={false}
+          mapStyle="mapbox://styles/antoinegx/clha9331i011601p6dsogffh8"
+          mapboxAccessToken="pk.eyJ1IjoiYW50b2luZWd4IiwiYSI6ImNsYWppMjNxeTBjYWszcHJxMWtkNG50d2MifQ.AD21JR1hyg8ed2DeN3l97w"
+          attributionControl={false}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {pins}
+        </Map>
+
       </div>
-    </>
+
+
+      <SelectionModal
+        closeSelectionModal={closeSelectionModal}
+        selectedLocation={selectedLocation}
+      />
+
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{
+          scaleX: 0,
+          transition: { duration: 0.5, ease: "circOut" },
+        }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+        className="privacy-screen"
+      />
+    </div>
   );
 };
 const styles = {
@@ -158,8 +179,6 @@ const styles = {
   mapContainer: css`
     width: 100%;
     height: 100%;
-    margin: auto;
-    border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -171,8 +190,8 @@ const styles = {
   `,
   wrapper: css`
     height: 100vh;
+    width: 100%;
     background-color: #5ab584;
-    padding: 20px;
   `,
   navBar: css`
     height: 20px;

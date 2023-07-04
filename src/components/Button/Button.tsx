@@ -19,6 +19,7 @@ export const Button = ({
     <button
       ref={ref}
       {...props}
+      // eslint-disable-next-line react/prop-types
       className={cx(styles.topButton, props.className)}
       // onClick, navigate to "to"
       onClick={() => {

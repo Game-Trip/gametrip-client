@@ -1,31 +1,32 @@
-import { IonTitle, IonToolbar } from "@ionic/react";
+import React from 'react';
 import { css } from "@emotion/css";
-import InputBase from "@mui/material/InputBase";
 import { motion, useIsPresent } from "framer-motion";
 import "../styles.css";
 import logo from "../logo-no-background.png";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
+
 interface Props {
+  searchValue: string;
   onSearch: (game: string) => void;
   onSelect: (game?: SearchedGameDto) => void;
   options: SearchedGameDto[];
 }
-const HomePage = ({onSearch,onSelect,options}: Props) => {
-  
+const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
+
   const isPresent = useIsPresent();
-  
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.body}>
-        <TopNavBar showHomeButton />
+        <TopNavBar showHomeButton={false} />
         <img className={styles.image} src={logo} />
 
         <div className={styles.footer}>
           <div className={styles.searchSection}>
             <div className={styles.basicText}>Recherchez un jeu</div>
-            <SearchInput options={options} onChange={onSearch} onSelect={onSelect} />
+            <SearchInput onChange={onSearch} onSelect={onSelect} value={searchValue} />
           </div>
         </div>
       </div>
