@@ -86,11 +86,11 @@ const App: React.FC = () => {
       element: <ForgotPasswordPage />,
     },
     {
-      path: '/Auth/FrogotPassword',
+      path: '/ForgotPassword',
       element: <ResetPasswordPage />,
     },
     {
-      path: '/Auth/ConfirmationMail',
+      path: '/ConfirmationMail',
       element: <EmailCheck key={4} />,
     },
     {

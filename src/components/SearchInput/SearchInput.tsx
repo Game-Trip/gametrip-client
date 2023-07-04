@@ -71,29 +71,26 @@ const styles = {
     background-color: #ffffff;
     color: black;
     padding: 10px;
-    transition: 0.5s;
+
     &:hover {
       background-color: #f5f5f5;
       cursor: pointer;
-      transform: translateX(-5px);
-
     }
     z-index: 10000;
   `,
   dropDown: (isFocused: boolean) => css`
-    opacity: ${isFocused ? 1 : 0};
-    visibility: ${isFocused ? "visible" : "hidden"};
-    transition: 0.5s;
+    transition: 0.1s;    visibility: ${isFocused ? "visible" : "hidden"};
     position: absolute;
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
     width: 100%;
-    height: 80%;
-    transition: 0.5s;
     z-index: 10000;
     top: 100%;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 8px;
   `,
   wrapper: css`
     position: relative;
