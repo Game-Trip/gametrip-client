@@ -86,7 +86,15 @@ const App: React.FC = () => {
     element: <LocationForm key={5} />,
     },
 {
-  path: '/Auth/ConfirmationMail',
+  path: '/forgot-password',
+    element: <ForgotPasswordPage />,
+    },
+{
+  path: '/ForgotPassword',
+    element: <ResetPasswordPage />,
+    },
+{
+  path: '/ConfirmationMail',
     element: <EmailCheck key={4} />,
     },
 {

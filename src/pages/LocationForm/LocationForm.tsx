@@ -3,7 +3,7 @@ import { css, cx } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
-import { IconButton, InputBase } from "@mui/material";
+import { Button, IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ServerConfiguration, CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
@@ -50,6 +50,8 @@ export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
   const { isLogged, user } = useUser();
   const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto());
+  const [description, setDescription] = useState<string>("");
+  const [name, setName] = useState<string>("");
   let LocationController = AnnonymLocationController;
   if (isLogged) {
     const config = apiClient.createConfiguration({
@@ -75,18 +77,16 @@ export default function LocationForm(): JSX.Element {
 
   const AddNewLocation = async () => {
 
-    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371 })
-    console.log(newLocation);
-    // await LocationController.locationCreateLocationPost(true, newLocation)
-    //   .then((res: apiClient.MessageDto) => console.log(res))
-    //   .catch((err) => {
-    //     if (err.code === HttpStatusCode.BadRequest) {
-    //       console.log("Error Code :", err.body.messageCode);
-    //       console.log("Error Message :", err.body.message);
-
-    //     } else
-    //       console.log(err);
-    //   })
+    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371, description, name, })
+    await LocationController.locationCreateLocationPost(true, newLocation)
+      .then((res: apiClient.MessageDto) => console.log(res))
+      .catch((err) => {
+        if (err.code) {
+          console.log("Error Code :", err.body.messageCode);
+          console.log("Error Message :", err.body.message);
+        } else
+          console.log(err);
+      })
 
 
   }
@@ -120,7 +120,9 @@ export default function LocationForm(): JSX.Element {
   const handleAddressSelect = (address: string) => {
     geocodeByAddress(address)
       .then((results: any[]) => getLatLng(results[0]))
-      .then((latLng: any) => console.log('Success', latLng))
+      .then((latLng: any) => {
+        setAddressInformation({ name: address, latitude: latLng.lat, longitude: latLng.lng });
+      })
       .catch((error: any) => console.error('Error', error));
   };
 
@@ -137,16 +139,11 @@ export default function LocationForm(): JSX.Element {
               aria-autocomplete="none"
               sx={inputStyle}
               placeholder="Place, monument..."
-              onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className={styles.fieldName}>Related games</div>
-          <SearchInput
-            value={gameSearchInput}
-            onChange={setGameSearchInput}
-            changeOnSelect={false}
-            onSelect={handleSelectGame}
-          />
           <div className={styles.tagList}>
             {selectedGames.map((game, idx) => <div className={styles.tag} key={idx}>
               <span>
@@ -166,6 +163,12 @@ export default function LocationForm(): JSX.Element {
               </div>
             </div>)}
           </div>
+          <SearchInput
+            value={gameSearchInput}
+            onChange={setGameSearchInput}
+            changeOnSelect={false}
+            onSelect={handleSelectGame}
+          />
         </div>
         <div className={styles.side}>
           <div className={styles.fieldName}>Address</div>
@@ -175,7 +178,6 @@ export default function LocationForm(): JSX.Element {
             onSelect={handleAddressSelect}
           >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
-              console.log(suggestions);
               return (
                 <div>
                   <div className={styles.formInput}>
@@ -215,13 +217,19 @@ export default function LocationForm(): JSX.Element {
             aria-autocomplete="none"
             placeholder="Description"
             className={styles.formMultiline}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
-          <div className="locationPictures">
-            <label>Location Pictures</label>
-            <input type="file" multiple />
-          </div>
+          <div className={styles.fieldName}>Pictures</div>
+          <input type="file" multiple />
+          <button onClick={AddNewLocation} className={styles.button}>
+            <>
+              POST
+            </>
+          </button>
         </div>
       </div>
+
       <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
@@ -234,6 +242,32 @@ export default function LocationForm(): JSX.Element {
 }
 
 const styles = {
+  button: css`
+    z-index: 1;
+    // undo default button style
+    border: none;
+    outline: none;
+    background: #84deae;
+    cursor: pointer;
+    // custom style
+    font-family: "Roboto";
+    font-style: normal;
+    font-size: 28px;
+    line-height: 33px;
+    border-radius: 8px;
+    padding: 10px;
+    transition: 0.5s;
+    width: 100%;
+    :hover {
+      cursor: pointer;
+      filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25));
+    }
+    :active {
+      background: #538e6f;
+    }
+    
+    margin-top: 10px;
+  `,
   addrAutoComplete: css`
     position: inherit;
     z-index: 10000;
@@ -281,7 +315,7 @@ const styles = {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top:10px;
+    margin-bottom:10px;
   `,
   tag: css`
     background: #85d8ac;
@@ -296,31 +330,6 @@ const styles = {
     flex-direction: column;
         background: #74c499;
         height: 200vh;
-  `,
-  loginButton: css`
-    // undo default button style
-    border: none;
-    outline: none;
-    background: #74c499;
-    cursor: pointer;
-    // custom style
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 300px;
-    font-size: 28px;
-    line-height: 33px;
-    border-radius: 8px;
-    padding: 10px;
-    transition: 0.5s;
-    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.25));
-    width: 100%;
-    :hover {
-      cursor: pointer;
-      filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25));
-    }
-    :active {
-      background: #538e6f;
-    }
   `,
   fieldName: css`
     font-family: "Roboto";

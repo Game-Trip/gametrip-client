@@ -25,7 +25,7 @@ export default function EmailCheck() {
       const token = splitUrl2[0];
       const email = splitUrl2[1];
       const result = await AnnonymAuthController.authConfirmEmailPost({ email: email || '', token: token || '' });
-      navigate('/home');
+      navigate('/');
 
 
     }

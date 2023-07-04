@@ -29,7 +29,6 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
       const firstLocation = selectedGame.locations?.[0];
       if (firstLocation) {
         setSelectedLocation(firstLocation);
-        console.log([firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50])
         mapRef.current?.flyTo({
           duration: 2000, zoom: 6,
           center: [firstLocation?.longitude ?? 50, firstLocation?.latitude ?? 50],
