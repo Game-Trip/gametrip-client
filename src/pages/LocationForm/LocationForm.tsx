@@ -5,12 +5,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { Button, IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ServerConfiguration, SearchedGameDto } from "@game-trip/ts-api-client";
 import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import { useUser } from "../../hooks/useUser";
 import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import Select from 'react-select';
 import PlacesAutocomplete, {
   Suggestion,
   geocodeByAddress,
@@ -53,7 +51,7 @@ export default function LocationForm(): JSX.Element {
   let LocationController = AnnonymLocationController;
   if (isLogged) {
     const config = apiClient.createConfiguration({
-      baseServer: new ServerConfiguration(
+      baseServer: new apiClient.ServerConfiguration(
         "https://staging-api.game-trip.fr",
         {}
       ),
@@ -89,8 +87,8 @@ export default function LocationForm(): JSX.Element {
 
 
   const [gameSearchInput, setGameSearchInput] = useState<string>("");
-  const [gameSearchOptions, setGameSearchOptions] = useState<SearchedGameDto[]>([]);
-  const [selectedGames, setSelectedGames] = useState<SearchedGameDto[]>([]);
+  const [gameSearchOptions, setGameSearchOptions] = useState<apiClient.SearchedGameDto[]>([]);
+  const [selectedGames, setSelectedGames] = useState<apiClient.SearchedGameDto[]>([]);
 
   useEffect(() => {
     const loadGamesOptions = async () => {
@@ -100,7 +98,7 @@ export default function LocationForm(): JSX.Element {
     loadGamesOptions();
   }, []);
 
-  const handleSelectGame = (selected?: SearchedGameDto) => {
+  const handleSelectGame = (selected?: apiClient.SearchedGameDto) => {
     if (!selected) {
       return;
     }
