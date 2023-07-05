@@ -44,7 +44,9 @@ export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props
         <Button isRouterButton to="/">
           Home
         </Button>
-        {isLogged && isUser && <Button to="/newlocation" className={styles.mlauto}>Submit new location</Button>}
+        {isLogged && (
+          <Button to="/newlocation" className={styles.mlauto}>Submit new location</Button>
+        )}
         <div className={styles.inputWrapper}>
           <SearchInput onChange={handleChange} onSelect={handleSelectGame} value={searchValue} />
         </div>
