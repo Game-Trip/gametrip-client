@@ -1,11 +1,6 @@
 import BaseApi from './baseApi';
 
 export class SearchApi {
-	static async getAllGames(limit: number | null) {
-		if (limit) return await BaseApi.AppAnonymous.get(`/Game?limit=${limit}`);
-		else return await BaseApi.AppAnonymous.get(`/Game`);
-	}
-
 	static async searchGames(
 		name: string,
 		description: string,

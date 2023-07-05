@@ -42,14 +42,13 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
   const handleSearch = async (search: string) => {
     mapRef.current?.flyTo({ duration: 2000, zoom: 0 });
     const result = await SearchApi.searchGamesByName(search);
-    //TODO: CHECK API RESPONSE
     setAvailableGames(result);
     setSearchValue(search);
   };
 
   const closeSelectionModal = () => setSelectedLocation(undefined);
 
-  const handleSelect = (game: SearchedGameDto) => { setSelectedGame(game); setSearchValue(game.name); }
+  const handleSelect = (game?: SearchedGameDto | undefined) => { setSelectedGame(game!); setSearchValue(game!.name); }
 
   const mapRef = useRef<MapRef>() as React.RefObject<MapRef>;
 
@@ -106,7 +105,6 @@ const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, select
   React.useEffect(() => {
     const fetchLocations = async () => {
       const result: LocationDto[] = await LocationApi.getAllLocations().then((res) => res.data);
-      //TODO: CHECK API RESPONSE
       setLocationsdata(result);
     };
     fetchLocations();

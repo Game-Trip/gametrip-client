@@ -63,7 +63,7 @@ const GameWrapper = ({ children }: Props) => {
     username: string,
     password: string
   ) => {
-    const result = await AnnonymAuthController.authRegisterPost({
+    const result = await RegisterApi.registerUser({
       email,
       username,
       password,

@@ -11,10 +11,12 @@ import RegisterPage from './pages/Register/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPassword/SendMail'
 import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
-import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
 import LocationForm from './pages/LocationForm/LocationForm'
 import { SearchApi } from './utils/api/SearchApi'
+import { LocationDto } from './utils/Models/Location/LocationDto'
+import { SearchedGameDto } from './utils/Models/Search/SearchGamesDto'
+import { GameApi } from './utils/api/GameApi'
 
 setupIonicReact()
 
@@ -39,8 +41,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchGames = async () => {
-      const result = await SearchApi.getAllGames(null);
-      //TODO: CHECK API RESPONSE
+      const result = await GameApi.getAllGames(null);
       setAvailableGames(result.data);
     };
     fetchGames();

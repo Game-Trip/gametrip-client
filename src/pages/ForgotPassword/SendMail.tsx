@@ -5,15 +5,16 @@ import logo from "../logo-no-background.png";
 import { InputBase } from "@mui/material";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import { ForgotPasswordDto } from "../../utils/Models/Authentication/ForgotPasswordDto";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
   const { onForgotPassword } = useUser();
 
-  const [forgotPasswordDto, setForgotPasswordDto] = useState({});
+  const [forgotPasswordDto, setForgotPasswordDto] = useState<ForgotPasswordDto>();
 
   const sendForgotPasswordMail = async () =>
-    await onForgotPassword(forgotPasswordDto);
+    await onForgotPassword(forgotPasswordDto!);
 
   return (
     <div className={styles.wrapper}>

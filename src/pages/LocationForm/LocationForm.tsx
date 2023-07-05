@@ -5,17 +5,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
-import { CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
-import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import Select from 'react-select';
 import PlacesAutocomplete, {
   Suggestion,
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import { SearchedGameDto } from '../../utils/Models/Search/SearchGamesDto';
+import { GameApi } from '../../utils/api/GameApi';
+import { CreateLocationDto } from '../../utils/Models/Location/CreateLocationDto';
 
 const inputStyle = {
   ml: 1,
@@ -55,7 +54,7 @@ export default function LocationForm(): JSX.Element {
 
   const AddNewLocation = async () => {
 
-    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371 })
+    setNewLocation({ ...newLocation, authorId: user!.Id.toString(), longitude: 2.394485, latitude: 48.758371 })
     console.log(newLocation);
     // await LocationController.locationCreateLocationPost(true, newLocation)
     //   .then((res: apiClient.MessageDto) => console.log(res))
@@ -78,8 +77,10 @@ export default function LocationForm(): JSX.Element {
 
   useEffect(() => {
     const loadGamesOptions = async () => {
-      const result = await AnnonymSearchController.searchSearchGameGet('');
-      setGameSearchOptions(result);
+      const result = await GameApi.getAllGames(null);
+      //TODO: CheckResponse
+
+      setGameSearchOptions(result.data);
     }
     loadGamesOptions();
   }, []);

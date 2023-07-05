@@ -26,7 +26,8 @@ export default function SelectionModal({
         return;
       }
       const result = await LocationApi.getLocationById(selectedLocation.id);
-      //TODO:CHECK API RESULT
+      //TODO: CHECK RESPONSE
+
       setLocationDto(result.data);
     };
   }, []);
