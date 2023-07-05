@@ -57,7 +57,6 @@ const GameWrapper = ({ children }: Props) => {
         }
       );
     } catch (err) {
-      console.log(err);
       setSnackBarOpen({ open: true, message: "Veuillez vérifier vos identifiants" });
     }
   };
@@ -88,7 +87,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un courriel de réinitialisation du mot de passe vous a été envoyé." });
     }).catch((err) => {
-      console.log(err.message);
       setSnackBarOpen({ open: true, message: "Veuillez vérifier votre identifiant" });
     });
   };
@@ -97,8 +95,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Votre mot de passe a été réinitialisé" });
     }).catch((err) => {
-      console.log(JSON.stringify(err.message));
-      console.log((err.message.message));
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };

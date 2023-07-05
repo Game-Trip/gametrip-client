@@ -14,6 +14,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import axios from 'axios';
 
 const inputStyle = {
   ml: 1,
@@ -77,11 +78,35 @@ export default function LocationForm(): JSX.Element {
       .then((res: apiClient.MessageDto) => console.log(res))
       .catch((err) => {
         if (err) {
-          console.log("Error Message :", err.body);
           setSnackBarOpen({ open: true, message: "failed, please fill in all fields" });
-        } else
-          console.log(err);
+        }
       })
+
+
+    // axios POST request
+    const options = {
+      url: 'https://staging-api.game-trip.fr/Location/CreateLocationWithGamesAndPictures?force=true',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      data: {
+        location: {
+          authorId: user?.Id,
+          longitude: addressInformation.longitude,
+          latitude: addressInformation.latitude,
+          description,
+          name,
+        },
+        gamesIds: selectedGames.map((game) => game.id),
+      }
+    };
+
+    axios(options)
+      .then(response => {
+        console.log(response.status);
+      });
 
   }
 
@@ -108,7 +133,6 @@ export default function LocationForm(): JSX.Element {
   }
 
   const [addressInformation, setAddressInformation] = useState({ name: "", latitude: 0.0, longitude: 0.0 });
-  console.log(addressInformation);
   const handleChange = (address: string) => {
     setAddressInformation({ ...addressInformation, name: address });
   };
@@ -116,7 +140,6 @@ export default function LocationForm(): JSX.Element {
     geocodeByAddress(address)
       .then((results: any[]) => getLatLng(results[0]))
       .then((latLng: any) => {
-        console.log('Success', latLng);
         setAddressInformation({ name: address, latitude: latLng.lat.toFixed(4), longitude: latLng.lng.toFixed(4) });
       })
       .catch((error: any) => console.error('Error', error));

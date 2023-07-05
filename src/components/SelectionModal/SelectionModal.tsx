@@ -29,7 +29,6 @@ export default function SelectionModal({
     }
     axios.get(`https://staging-api.game-trip.fr/Location/id/${selectedLocation.id}`)
       .then((response: AxiosResponse) => {
-        console.log(response.data);
         setLocationDto(response.data);
       });
   }, [selectedLocation]);
