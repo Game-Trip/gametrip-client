@@ -18,12 +18,9 @@ import { AnnonymSearchController } from './utils/api/baseApi'
 
 setupIonicReact()
 
-const App: React.FC = () => {
+const App = () => {
 
-  const [selectedLocation, setSelectedLocation] = useState <
-  const [selectedLocation, setSelectedLocation] = useState<
-    LocationDto | undefined
-  >();
+  const [selectedLocation, setSelectedLocation] = useState<LocationDto | undefined>();
   const navigate = useNavigate();
   const handleSelect = async (search?: SearchedGameDto) => {
     if (!search || !search.name) {
@@ -36,86 +33,85 @@ const App: React.FC = () => {
         navigate('/map');
       }
     }
+  }
 
-    const handleSearch = async (search: string) => {
-      setSearchValue(search);
+  const handleSearch = async (search: string) => {
+    setSearchValue(search);
+  };
+  const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      const result = await AnnonymSearchController.searchSearchGameGet('');
+      setAvailableGames(result);
     };
-    const [availableGames, setAvailableGames] = useState<SearchedGameDto[]>([]);
+    fetchGames();
+  }, []);
 
-    useEffect(() => {
-      const fetchGames = async () => {
-        const result = await AnnonymSearchController.searchSearchGameGet('');
-        setAvailableGames(result);
-      };
-      fetchGames();
-    }, []);
+  const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>();
+  const [searchValue, setSearchValue] = useState<string>('');
 
-    const [selectedGame, setSelectedGame] = useState<SearchedGameDto | undefined>();
-    const [searchValue, setSearchValue] = useState<string>('');
-
-    const element = useRoutes([
-      {
-        path: '/',
-        element: <HomePage key={1} onSearch={handleSearch} onSelect={handleSelect} options={availableGames} searchValue={searchValue} />,
-      },
-      {
-        path: '/map',
-        element: <MapPage
-          key={2}
-          key={2}
-          setSearchValue={handleSearch}
-          setSelectedGame={setSelectedGame}
-          selectedGame={selectedGame}
-          selectedLocation={selectedLocation}
-          setSelectedLocation={setSelectedLocation}
-          availableGames={availableGames}
-          setAvailableGames={setAvailableGames} searchValue={searchValue}
-        />,
+  const element = useRoutes([
+    {
+      path: '/',
+      element: <HomePage key={1} onSearch={handleSearch} onSelect={handleSelect} options={availableGames} searchValue={searchValue} />,
+    },
+    {
+      path: '/map',
+      element: <MapPage
+        key={2}
+        setSearchValue={handleSearch}
+        setSelectedGame={setSelectedGame}
+        selectedGame={selectedGame}
+        selectedLocation={selectedLocation}
+        setSelectedLocation={setSelectedLocation}
+        availableGames={availableGames}
+        setAvailableGames={setAvailableGames} searchValue={searchValue}
       />,
     },
     {
       path: '/login',
       element: <LoginPage key={3} />,
     },
-  {
-    path: '/register',
-    element: <RegisterPage key={4} />,
+    {
+      path: '/register',
+      element: <RegisterPage key={4} />,
     },
-{
-  path: '/newlocation',
-    element: <LocationForm key={5} />,
+    {
+      path: '/newlocation',
+      element: <LocationForm key={5} />,
     },
-{
-  path: '/forgot-password',
-    element: <ForgotPasswordPage />,
+    {
+      path: '/forgot-password',
+      element: <ForgotPasswordPage />,
     },
-{
-  path: '/ForgotPassword',
-    element: <ResetPasswordPage />,
+    {
+      path: '/ForgotPassword',
+      element: <ResetPasswordPage />,
     },
-{
-  path: '/ConfirmationMail',
-    element: <EmailCheck key={4} />,
+    {
+      path: '/ConfirmationMail',
+      element: <EmailCheck key={4} />,
     },
-{
-  path: '*',
-    element: <NotFound />,
+    {
+      path: '*',
+      element: <NotFound />,
     },
   ])
 
-const location = useLocation()
+  const location = useLocation()
 
-if (!element) return null
+  if (!element) return null
 
-return (
-  <div>
-    <UserContext>
-      <AnimatePresence mode="wait" initial={false}>
-        {React.cloneElement(element, { key: location.pathname })}
-      </AnimatePresence>
-    </UserContext>
-  </div>
-)
+  return (
+    <div>
+      <UserContext>
+        <AnimatePresence mode="wait" initial={false}>
+          {React.cloneElement(element, { key: location.pathname })}
+        </AnimatePresence>
+      </UserContext>
+    </div>
+  )
 }
 
 export default App;
