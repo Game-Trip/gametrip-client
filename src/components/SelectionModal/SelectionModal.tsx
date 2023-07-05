@@ -5,7 +5,6 @@ import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React, { useEffect } from "react";
 import { LocationDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController } from "../../utils/api/baseApi";
 import GameDetail from "../GameDetail/GameDetail";
 import { AnimatePresence, motion } from "framer-motion";
 import { useUser } from "../../hooks/useUser";
