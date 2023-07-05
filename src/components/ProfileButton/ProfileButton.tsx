@@ -2,18 +2,23 @@ import { css } from "@emotion/css";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
-import { useUser } from "../../hooks/useUser";
+import { logout } from "../../utils/Auth";
+import { useNavigate } from "react-router";
 
 
 export default function ProfileButton() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { onLogout } = useUser();
+  const navigate = useNavigate();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    logout();
+    navigate("/")
   };
   return (
     <div className={styles.userButton}>
@@ -44,7 +49,7 @@ export default function ProfileButton() {
       >
         <MenuItem onClick={handleClose}>Profil</MenuItem>
         <MenuItem onClick={handleClose}>Paramètres</MenuItem>
-        <MenuItem onClick={onLogout}>Déconnexion</MenuItem>
+        <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
       </Menu>
     </div>
   );

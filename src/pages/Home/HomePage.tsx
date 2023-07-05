@@ -5,7 +5,7 @@ import "../styles.css";
 import logo from "../logo-no-background.png";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { SearchedGameDto } from "@game-trip/ts-api-client";
+import { SearchedGameDto } from '../../utils/Models/Search/SearchGamesDto';
 
 interface Props {
   searchValue: string;
@@ -16,6 +16,7 @@ interface Props {
 const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
 
   const isPresent = useIsPresent();
+
 
   return (
     <div className={styles.wrapper}>

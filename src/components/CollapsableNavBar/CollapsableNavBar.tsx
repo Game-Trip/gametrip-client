@@ -7,7 +7,8 @@ import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import { useOnClickOutside } from "usehooks-ts";
 import SearchInput from "../SearchInput/SearchInput";
-import { SearchedGameDto } from "@game-trip/ts-api-client";
+import { isConfirmedUser, isLoggedIn } from "../../utils/Auth";
+import { SearchedGameDto } from "../../utils/Models/Search/SearchGamesDto";
 interface Props {
   searchValue: string,
   onSearch: (search: string) => void;
@@ -17,7 +18,8 @@ export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props
   const navBarRef = React.useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = React.useState(true);
 
-  const { isLogged } = useUser();
+  const isLogged = isLoggedIn();
+  const isUser = isConfirmedUser();
 
   useOnClickOutside(navBarRef, () => {
     setIsOpen(false);
@@ -49,7 +51,7 @@ export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props
           <SearchInput onChange={handleChange} onSelect={handleSelectGame} value={searchValue} />
         </div>
 
-        {isLogged && <ProfileButton />}
+        {isLogged ? <ProfileButton /> : <Button to="/login" >Login</Button>}
       </div>
     </div>
   );
@@ -61,6 +63,8 @@ const styles = {
   `,
   inputWrapper: css`
   width: 30%;
+  margin-left: auto;
+}
   `,
   userButton: css`
     margin-left: auto;

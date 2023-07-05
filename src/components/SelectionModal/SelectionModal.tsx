@@ -4,12 +4,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React, { useEffect } from "react";
-import { LocationDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController } from "../../utils/api/baseApi";
 import GameDetail from "../GameDetail/GameDetail";
 import { AnimatePresence, motion } from "framer-motion";
 import { useUser } from "../../hooks/useUser";
 import axios, { AxiosResponse } from "axios";
+
 
 type Props = {
   selectedLocation?: LocationDto;
@@ -34,6 +33,7 @@ export default function SelectionModal({
         setLocationDto(response.data);
       });
   }, [selectedLocation]);
+
   return (
     <div className={styles.wrapper(isExpanded, isOpen)}>
       <div className={styles.header}>

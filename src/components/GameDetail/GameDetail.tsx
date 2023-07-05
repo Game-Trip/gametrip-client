@@ -1,5 +1,6 @@
 import { Location, LocationDto } from '@game-trip/ts-api-client'
 import React from 'react'
+import { LocationDto } from '../../utils/Models/Location/LocationDto';
 
 type Props = {
     locationDto?: Location;

@@ -9,14 +9,15 @@ import { ServerConfiguration, CreateLocationDto, SearchedGameDto } from "@game-t
 import { AnnonymGameController, AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
 import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
-import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import Select from 'react-select';
 import PlacesAutocomplete, {
   Suggestion,
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import { SearchedGameDto } from '../../utils/Models/Search/SearchGamesDto';
+import { GameApi } from '../../utils/api/GameApi';
+import { CreateLocationDto } from '../../utils/Models/Location/CreateLocationDto';
 
 const inputStyle = {
   ml: 1,
@@ -85,7 +86,6 @@ export default function LocationForm(): JSX.Element {
         } else
           console.log(err);
       })
-
   }
 
 
@@ -95,8 +95,10 @@ export default function LocationForm(): JSX.Element {
 
   useEffect(() => {
     const loadGamesOptions = async () => {
-      const result = await AnnonymSearchController.searchSearchGameGet('');
-      setGameSearchOptions(result);
+      const result = await GameApi.getAllGames(null);
+      //TODO: CheckResponse
+
+      setGameSearchOptions(result.data);
     }
     loadGamesOptions();
   }, []);

@@ -1,11 +1,10 @@
-import React from 'react';
-import axios from "axios";
 import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
 import { useNavigate } from "react-router-dom";
-import { AnnonymAuthController } from "../../utils/api/baseApi";
 import { Alert, Snackbar } from "@mui/material";
-import { ForgotPasswordDto, ResetPasswordDto } from "@game-trip/ts-api-client";
+import { RegisterApi } from '../../utils/api/AuthApi';
+import { ForgotPasswordDto } from '../../utils/Models/Authentication/ForgotPasswordDto';
+import { ResetPasswordDto } from '../../utils/Models/Authentication/ResetPasswordDto';
 
 export interface User {
   userName: string;
@@ -71,7 +70,7 @@ const GameWrapper = ({ children }: Props) => {
     username: string,
     password: string
   ) => {
-    const result = await AnnonymAuthController.authRegisterPost({
+    const result = await RegisterApi.registerUser({
       email,
       username,
       password,
@@ -84,7 +83,7 @@ const GameWrapper = ({ children }: Props) => {
     });
   };
   const onForgotPassword = async (forgotPasswordDto: ForgotPasswordDto) => {
-    const result = await AnnonymAuthController.authForgotPasswordPost(forgotPasswordDto).then(() => {
+    const result = await RegisterApi.forgotPassword(forgotPasswordDto).then(() => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un courriel de réinitialisation du mot de passe vous a été envoyé." });
     }).catch((err) => {
@@ -93,7 +92,7 @@ const GameWrapper = ({ children }: Props) => {
     });
   };
   const onResetPassword = async (resetPasswordDto: ResetPasswordDto) => {
-    const result = await AnnonymAuthController.authResetPasswordPost(resetPasswordDto).then(() => {
+    const result = await RegisterApi.resetPassword(resetPasswordDto).then(() => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Votre mot de passe a été réinitialisé" });
     }).catch((err) => {

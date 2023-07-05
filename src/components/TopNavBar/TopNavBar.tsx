@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import React from 'react';
+import { isLoggedIn } from "../../utils/Auth";
 interface Props {
   showHomeButton?: boolean;
   showLoginButton?: boolean;
@@ -11,8 +12,7 @@ export const TopNavBar = ({
   showHomeButton = true,
   showLoginButton = true,
 }: Props) => {
-  const { isLogged } = useUser();
-  const isDev = true;
+  const isLogin: boolean = isLoggedIn();
 
   return (
     <div className={styles.wrapper}>
@@ -32,7 +32,7 @@ export const TopNavBar = ({
       >
         <span>Map</span>
       </Link>
-      {!isLogged && showLoginButton && (
+      {!isLogin && showLoginButton && (
         <Link
           className={styles.topButton}
           style={{ textDecoration: "none", color: "white" }}
@@ -41,7 +41,7 @@ export const TopNavBar = ({
           <span>Login</span>
         </Link>
       )}
-      {isLogged && <div className={styles.mlauto}><ProfileButton /></div>
+      {isLogin && <div className={styles.mlauto}><ProfileButton /></div>
       }
     </div>
   );

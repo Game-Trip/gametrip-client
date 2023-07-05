@@ -1,22 +1,30 @@
+import { getUserInfo } from '../Auth';
+import axios, { AxiosInstance } from 'axios';
 
-import * as apiClient from "@game-trip/ts-api-client";
-import { ServerConfiguration } from "@game-trip/ts-api-client";
+export default class BaseApi {
+	private static _appAnonymous: AxiosInstance | null;
+	static get AppAnonymous() {
+		if (!this._appAnonymous) {
+			this._appAnonymous = axios.create({
+				baseURL: 'https://staging-api.game-trip.fr',
+			});
+		}
+		return this._appAnonymous;
+	}
 
+	private static _appLogged: AxiosInstance | null;
+	static get AppLogged() {
+		if (!this._appLogged) {
+			this._appLogged = axios.create({
+				baseURL: 'https://staging-api.game-trip.fr',
+				headers: { Authorization: `Bearer ${getUserInfo().token}` },
+			});
+		}
+		return this._appLogged;
+	}
 
-const config = apiClient.createConfiguration({
-  baseServer: new ServerConfiguration(
-    "https://staging-api.game-trip.fr",
-    {}
-  )
-});
-
-export const AnnonymAuthController = new apiClient.AuthApi(config);
-export const AnnonymCommentController = new apiClient.CommentApi(config);
-export const AnnonymGameController = new apiClient.GameApi(config);
-export const AnnonymLikeController = new apiClient.LikeApi(config);
-export const AnnonymLocationController = new apiClient.LocationApi(config);
-export const AnnonymPictureController = new apiClient.PictureApi(config);
-export const AnnonymSearchController = new apiClient.SearchApi(config);
-export const AnnonymStatusController = new apiClient.StatusApi(config);
-export const AnnonymUserController = new apiClient.UserApi(config);
-export const AnnonymValidationController = new apiClient.ValidationApi(config);
+	static reset() {
+		this._appAnonymous = null;
+		this._appLogged = null;
+	}
+}

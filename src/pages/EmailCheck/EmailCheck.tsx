@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { AnnonymAuthController } from '../../utils/api/baseApi';
+import { RegisterApi } from '../../utils/api/AuthApi';
 
 export default function EmailCheck() {
   const getUrlParameter = (url: string, parameterName: string) => {
