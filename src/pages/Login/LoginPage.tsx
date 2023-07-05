@@ -1,28 +1,34 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo-no-background.png";
 import { InputBase, IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useUser } from "../../hooks/useUser";
+import { login } from '../../utils/Auth'
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import { LoginDto } from "../../utils/Models/Authentication/LoginDto";
 
 export default function Component(): JSX.Element {
-  const isPresent = useIsPresent();
-  const { onLogin } = useUser();
+  const isPresent = useIsPresent()
   const pwdRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
-  const [userAuth, setUserAuth] = React.useState({
+  const [userAuth, setUserAuth] = useState<LoginDto>({
     username: "",
     password: "",
   });
 
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
-  const handleLogin = async () =>
-    await onLogin(userAuth.username, userAuth.password);
+  const handleLogin = async () => {
+    await login(userAuth).then((res) => {
+      console.log(res);
+      navigate("/");
+    })
+      .catch((err) => console.log(err));
+  }
 
   return (
     <div className={styles.wrapper}>

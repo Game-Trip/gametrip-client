@@ -4,10 +4,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React, { useEffect } from "react";
-import { LocationDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController } from "../../utils/api/baseApi";
 import GameDetail from "../GameDetail/GameDetail";
-import { AnimatePresence, motion } from "framer-motion";
+import { LocationApi } from "../../utils/api/LocationApi";
+import { LocationDto } from "../../utils/Models/Location/LocationDto";
 
 type Props = {
   selectedLocation?: LocationDto;
@@ -26,8 +25,10 @@ export default function SelectionModal({
       if (!selectedLocation || !selectedLocation.id) {
         return;
       }
-      const result = await AnnonymLocationController.locationIdLocationIdGet(selectedLocation.id);
-      setLocationDto(result);
+      const result = await LocationApi.getLocationById(selectedLocation.id);
+      //TODO: CHECK RESPONSE
+
+      setLocationDto(result.data);
     };
   }, []);
   return (

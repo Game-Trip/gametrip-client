@@ -10,14 +10,15 @@ import axios from "axios";
 import { parseJwt } from "../../utils/parseJwt";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
-import { ResetPasswordDto } from "@game-trip/ts-api-client";
+import { ResetPasswordDto } from "../../utils/Models/Authentication/ResetPasswordDto";
+import { RegisterDto } from "../../utils/Models/Authentication/RegisterDto";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
   const { onResetPassword } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
 
-  const [resetPasswordModel, setResetPasswordModel] = useState<ResetPasswordDto>({});
+  const [resetPasswordModel, setResetPasswordModel] = useState({});
 
   useEffect(() => {
     const url = window.location.href;
@@ -34,7 +35,7 @@ export default function Component(): JSX.Element {
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
   const ResetPassword = async () =>
-    await onResetPassword(resetPasswordModel);
+    await onResetPassword(resetPasswordModel as ResetPasswordDto);
 
   return (
     <div className={styles.wrapper}>
@@ -74,7 +75,7 @@ export default function Component(): JSX.Element {
                   },
                 }}
                 readOnly={true}
-                value={resetPasswordModel.email}
+                value={(resetPasswordModel as ResetPasswordDto).email}
               />
             </div>
             <span className={styles.fieldName}>Password</span>

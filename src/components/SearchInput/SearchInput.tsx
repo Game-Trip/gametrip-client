@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { IconButton, InputBase } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { css } from "@emotion/css";
-import { SearchedGameDto } from "@game-trip/ts-api-client";
-import { AnnonymSearchController } from "../../utils/api/baseApi";
+import { SearchApi } from "../../utils/api/SearchApi";
+import { SearchedGameDto } from "../../utils/Models/Search/SearchGamesDto";
+import { GameApi } from "../../utils/api/GameApi";
 
 type Props = {
   value: string,
@@ -19,8 +20,8 @@ export default function SearchInput({ changeOnSelect, value, onChange, onSelect 
 
   useEffect(() => {
     const fetchGames = async () => {
-      const result = await AnnonymSearchController.searchSearchGameGet('');
-      setOptions(result);
+      const result = await GameApi.getAllGames(null);
+      setOptions(result.data);
     };
     fetchGames();
   }, []);

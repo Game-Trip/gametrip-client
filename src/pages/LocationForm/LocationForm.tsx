@@ -5,18 +5,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { Button, IconButton, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ServerConfiguration, CreateLocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
-import { AnnonymLocationController, AnnonymSearchController } from "../../utils/api/baseApi";
-import { geoCodingApi } from "../../utils/api/geoCodingApi";
 import { useUser } from "../../hooks/useUser";
-import * as apiClient from "@game-trip/ts-api-client";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import Select from 'react-select';
 import PlacesAutocomplete, {
   Suggestion,
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import { SearchedGameDto } from '../../utils/Models/Search/SearchGamesDto';
+import { GameApi } from '../../utils/api/GameApi';
+import { CreateLocationDto } from '../../utils/Models/Location/CreateLocationDto';
 
 const inputStyle = {
   ml: 1,
@@ -50,45 +48,20 @@ export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
   const { isLogged, user } = useUser();
   const [newLocation, setNewLocation] = useState<CreateLocationDto>(new CreateLocationDto());
-  const [description, setDescription] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  let LocationController = AnnonymLocationController;
-  if (isLogged) {
-    const config = apiClient.createConfiguration({
-      baseServer: new ServerConfiguration(
-        "https://staging-api.game-trip.fr",
-        {}
-      ),
-      authMethods: {
-        'Bearer': {
-          'tokenProvider': {
-            getToken() {
-              return user?.jwt;
-            },
-          }
-        } as apiClient.HttpBearerConfiguration
-      } as apiClient.AuthMethodsConfiguration,
-    });
-    LocationController = new apiClient.LocationApi(config);
-  }
-
-
-
 
   const AddNewLocation = async () => {
+    setNewLocation({ ...newLocation, authorId: user!.Id.toString(), longitude: 2.394485, latitude: 48.758371 })
+    console.log(newLocation);
+    // await LocationController.locationCreateLocationPost(true, newLocation)
+    //   .then((res: apiClient.MessageDto) => console.log(res))
+    //   .catch((err) => {
+    //     if (err.code === HttpStatusCode.BadRequest) {
+    //       console.log("Error Code :", err.body.messageCode);
+    //       console.log("Error Message :", err.body.message);
 
-    setNewLocation({ ...newLocation, authorId: user?.Id, longitude: 2.394485, latitude: 48.758371, description, name, })
-    await LocationController.locationCreateLocationPost(true, newLocation)
-      .then((res: apiClient.MessageDto) => console.log(res))
-      .catch((err) => {
-        if (err.code) {
-          console.log("Error Code :", err.body.messageCode);
-          console.log("Error Message :", err.body.message);
-        } else
-          console.log(err);
-      })
-
-
+    //     } else
+    //       console.log(err);
+    //   })
   }
 
 
@@ -98,8 +71,10 @@ export default function LocationForm(): JSX.Element {
 
   useEffect(() => {
     const loadGamesOptions = async () => {
-      const result = await AnnonymSearchController.searchSearchGameGet('');
-      setGameSearchOptions(result);
+      const result = await GameApi.getAllGames(null);
+      //TODO: CheckResponse
+
+      setGameSearchOptions(result.data);
     }
     loadGamesOptions();
   }, []);

@@ -7,15 +7,16 @@ import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import HomePage from './pages/Home/HomePage'
 import LoginPage from './pages/Login/LoginPage'
 import NotFound from './pages/404/NotFoundPage'
-import UserContext from './components/UserContext/UserContext'
 import RegisterPage from './pages/Register/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPassword/SendMail'
 import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
-import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
 import LocationForm from './pages/LocationForm/LocationForm'
-import { AnnonymSearchController } from './utils/api/baseApi'
+import { SearchApi } from './utils/api/SearchApi'
+import { LocationDto } from './utils/Models/Location/LocationDto'
+import { SearchedGameDto } from './utils/Models/Search/SearchGamesDto'
+import { GameApi } from './utils/api/GameApi'
 
 setupIonicReact()
 
@@ -43,8 +44,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchGames = async () => {
-      const result = await AnnonymSearchController.searchSearchGameGet('');
-      setAvailableGames(result);
+      const result = await GameApi.getAllGames(null);
+      setAvailableGames(result.data);
     };
     fetchGames();
   }, []);
@@ -105,11 +106,9 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <UserContext>
-        <AnimatePresence mode="wait" initial={false}>
-          {React.cloneElement(element, { key: location.pathname })}
-        </AnimatePresence>
-      </UserContext>
+      <AnimatePresence mode="wait" initial={false}>
+        {React.cloneElement(element, { key: location.pathname })}
+      </AnimatePresence>
     </div>
   )
 }
