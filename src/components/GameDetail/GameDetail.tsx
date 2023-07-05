@@ -1,4 +1,4 @@
-import { Location, LocationDto } from '@game-trip/ts-api-client'
+import { Location } from '@game-trip/ts-api-client'
 import React from 'react'
 
 type Props = {
