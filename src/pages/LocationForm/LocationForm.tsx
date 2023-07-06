@@ -15,6 +15,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from 'react-places-autocomplete';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const inputStyle = {
   ml: 1,
@@ -71,17 +72,12 @@ export default function LocationForm(): JSX.Element {
 
 
 
+  const navigate = useNavigate();
 
   const AddNewLocation = async () => {
     const obj = { authorId: user?.Id, longitude: addressInformation.longitude, latitude: addressInformation.latitude, description, name, };
-    await LocationController.locationCreateLocationPost(true, obj)
-      .then((res: apiClient.MessageDto) => console.log(res))
-      .catch((err) => {
-        if (err) {
-          setSnackBarOpen({ open: true, message: "failed, please fill in all fields" });
-        }
-      })
-
+    console.log(obj);
+    const jwt = user?.jwt;
 
     // axios POST request
     const options = {
@@ -89,7 +85,8 @@ export default function LocationForm(): JSX.Element {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8'
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${jwt}`
       },
       data: {
         location: {
@@ -105,7 +102,13 @@ export default function LocationForm(): JSX.Element {
 
     axios(options)
       .then(response => {
-        console.log(response.status);
+        setSnackBarOpen({ open: true, message: "Location successfully submited" });
+        navigate('/map');
+      }).catch((err) => {
+        if (err) {
+          console.log(err.response.data.message);
+          setSnackBarOpen({ open: true, message: err.response.data.message });
+        }
       });
 
   }

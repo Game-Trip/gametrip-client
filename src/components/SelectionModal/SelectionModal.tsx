@@ -5,10 +5,10 @@ import { IconButton } from "@mui/material";
 import { css } from "@emotion/css";
 import React, { useEffect } from "react";
 import { LocationDto } from "@game-trip/ts-api-client";
-import GameDetail from "../GameDetail/GameDetail";
 import { AnimatePresence, motion } from "framer-motion";
 import { useUser } from "../../hooks/useUser";
 import axios, { AxiosResponse } from "axios";
+import LocationDetail from "../LocationDetail/LocationDetail";
 
 type Props = {
   selectedLocation?: LocationDto;
@@ -30,6 +30,7 @@ export default function SelectionModal({
     axios.get(`https://staging-api.game-trip.fr/Location/id/${selectedLocation.id}`)
       .then((response: AxiosResponse) => {
         setLocationDto(response.data);
+        console.log(response.data);
       });
   }, [selectedLocation]);
   return (
@@ -47,7 +48,7 @@ export default function SelectionModal({
       </div>
       {
         isExpanded && (
-          <GameDetail locationDto={locationDto} />
+          <LocationDetail locationDto={locationDto} />
         )
       }
 

@@ -79,7 +79,7 @@ const styles = {
     z-index: 10000;
   `,
   dropDown: (isFocused: boolean) => css`
-    transition: 0.1s;    visibility: ${isFocused ? "visible" : "hidden"};
+    transition: 0.2s;    visibility: ${isFocused ? "visible" : "hidden"};
     position: absolute;
     display: flex;
     flex-direction: column;
