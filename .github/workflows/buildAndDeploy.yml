@@ -56,14 +56,17 @@ jobs:
       - name: Copy Android
         run: ionic capacitor copy android
 
-      - name: Build Android Dev APK
-        run: ionic capacitor build android
-
-      - name: Build Android Release APK
-        run: ionic capacitor build android --release --prod
+      - name: build release
+        uses: sparkfabrik/android-build-action@v1.5.0
+        with:
+          project-path: android
+          output-path: my-app.apk
+          ruby-version: "2.7.5"
+          bundler-version: "2.3.26"
+          fastlane-env: "debug"
 
       - name: Upload dev APK
         uses: actions/upload-artifact@v1
         with:
           name: app-dev
-          path: apk/app-debug.apk
+          path: apk/my-app.apk
