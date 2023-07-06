@@ -2,52 +2,53 @@
   "name": "game-trip",
   "version": "0.0.1",
   "private": true,
-  "devDependencies": {
-    "@blueprintjs/core": "^4.15.0",
-    "@capacitor/android": "^4.7.0",
-    "@capacitor/app": "4.1.1",
-    "@capacitor/core": "4.7.0",
-    "@capacitor/haptics": "4.1.0",
-    "@capacitor/ios": "^4.7.0",
-    "@capacitor/keyboard": "4.1.1",
-    "@capacitor/status-bar": "4.1.1",
+  "dependencies": {
+    "@capacitor/android": "5.1.0",
+    "@capacitor/app": "5.0.5",
+    "@capacitor/cli": "5.1.0",
+    "@capacitor/core": "5.1.0",
+    "@capacitor/haptics": "5.0.5",
+    "@capacitor/keyboard": "5.0.5",
+    "@capacitor/status-bar": "5.0.5",
     "@emotion/css": "^11.10.6",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@game-trip/ts-api-client": "1.10.40-Beta",
     "@geoapify/geocoder-autocomplete": "^1.5.1",
-    "@grafana/eslint-config": "^6.0.0",
-    "@ionic/react": "^6.0.0",
-    "@ionic/react-router": "^6.0.0",
+    "@ionic/react": "^7.1.1",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^12.6.3",
-    "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^12.19.15",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
-    "@types/react-router": "^5.1.11",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router": "^5.1.20",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
     "axios": "^1.4.0",
+    "bootstrap": "^5.3.0",
     "deck.gl": "^8.9.6",
+    "eslint": "^8.35.0",
+    "eslint-plugin-react": "^7.32.2",
     "framer-motion": "^10.10.0",
     "history": "^4.9.0",
-    "ionicons": "^6.0.3",
+    "ionicons": "^7.0.0",
     "mapbox-gl": "^2.13.0",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
     "react-dom": "^18.2.0",
-    "react-map-gl": "^7.0.21",
+    "react-map-gl": "^7.1.0",
+    "react-places-autocomplete": "^7.3.0",
     "react-responsive": "^9.0.2",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^6.10.0",
+    "react-router-dom": "^6.14.1",
     "react-scripts": "^5.0.0",
+    "react-select": "^5.7.3",
     "typescript": "^4.1.3",
     "usehooks-ts": "^2.9.1",
     "web-vitals": "^0.2.4",
-    "webpack": "^5.65.0",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
     "workbox-cacheable-response": "^5.1.4",
@@ -59,35 +60,24 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4",
-    "@capacitor/cli": "4.7.0"
+    "workbox-streams": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .ts,.tsx src"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      "Chrome >=60",
-      "ChromeAndroid >=60",
-      "Firefox >=63",
-      "Edge >=79",
-      "Safari >=13",
-      "iOS >=13"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "description": "An Ionic project"
+  "browserslist": [
+    "Chrome >=79",
+    "ChromeAndroid >=79",
+    "Firefox >=70",
+    "Edge >=79",
+    "Safari >=14",
+    "iOS >=14"
+  ],
+  "description": "An Ionic project",
+  "devDependencies": {
+    "@types/react-places-autocomplete": "^7.2.9"
+  }
 }

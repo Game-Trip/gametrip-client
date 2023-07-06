@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from "axios";
 import { ReactNode, createContext, useState } from "react";
 import { parseJwt } from "../../utils/parseJwt";
@@ -26,6 +27,7 @@ export interface userContextProps {
   onResetPassword: (resetPasswordDto: ResetPasswordDto) => void;
   onRegister: (email: string, username: string, password: string) => void;
   onLogout: () => void;
+  setSnackBarOpen: (value: React.SetStateAction<{ open: boolean; message: string; }>) => void;
 }
 
 interface Props {
@@ -40,18 +42,23 @@ const GameWrapper = ({ children }: Props) => {
   const isLogged = !!user;
   const navigate = useNavigate();
   const onLogin = async (username: string, password: string) => {
-    await AnnonymAuthController.authLoginPost({ username, password }).then(
-      (result) => {
-        if (result.token) {
-          setUser({
-            ...parseJwt(result.token),
-            jwt: result.token,
-            isLogged: true,
-          });
-          navigate("/");
+    try {
+
+      await AnnonymAuthController.authLoginPost({ username, password }).then(
+        (result) => {
+          if (result.token) {
+            setUser({
+              ...parseJwt(result.token),
+              jwt: result.token,
+              isLogged: true,
+            });
+            navigate("/");
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      setSnackBarOpen({ open: true, message: "Veuillez vérifier vos identifiants" });
+    }
   };
   const onLogout = () => {
     setUser(undefined);
@@ -72,7 +79,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un email de confirmation vous a été envoyé" });
     }).catch((err) => {
-      console.log(err.message);
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };
@@ -81,7 +87,6 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Un courriel de réinitialisation du mot de passe vous a été envoyé." });
     }).catch((err) => {
-      console.log(err.message);
       setSnackBarOpen({ open: true, message: "Veuillez vérifier votre identifiant" });
     });
   };
@@ -90,15 +95,13 @@ const GameWrapper = ({ children }: Props) => {
       navigate("/");
       setSnackBarOpen({ open: true, message: "Votre mot de passe a été réinitialisé" });
     }).catch((err) => {
-      console.log(JSON.stringify(err.message));
-      console.log((err.message.message));
       setSnackBarOpen({ open: true, message: "Veuillez fournir un mot de passe plus complexe" });
     });
   };
 
   return (
     <UserContext.Provider
-      value={{ user, onLogin, isLogged, onRegister, onResetPassword, onForgotPassword, onLogout }}
+      value={{ user, onLogin, isLogged, onRegister, onResetPassword, onForgotPassword, onLogout, setSnackBarOpen }}
     ><>
 
         {children}

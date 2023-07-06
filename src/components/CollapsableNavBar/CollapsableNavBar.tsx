@@ -1,26 +1,21 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { css } from "@emotion/css";
-import SearchIcon from "@mui/icons-material/Search";
-import { InputBase, IconButton, Menu, MenuItem } from "@mui/material";
-import { Link } from "react-router-dom";
 import { Button } from "../Button/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Button2 } from "../Button/Button2";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import { useOnClickOutside } from "usehooks-ts";
 import SearchInput from "../SearchInput/SearchInput";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
 interface Props {
+  searchValue: string,
   onSearch: (search: string) => void;
-  availableGames?: SearchedGameDto[];
   onSelectGame: (game?: SearchedGameDto) => void;
 }
-export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Props) => {
+export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props) => {
   const navBarRef = React.useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = React.useState(true);
-  const [isoverFlowHidden, setIsOverFlowHidden] = React.useState(true);
 
   const { isLogged } = useUser();
 
@@ -28,36 +23,44 @@ export const CollapsableNavBar = ({ onSearch, availableGames, onSelectGame }: Pr
     setIsOpen(false);
   });
 
+  const handleSelectGame = useCallback((game?: SearchedGameDto) => {
+    onSelectGame(game);
+  }, [onSelectGame]);
+
+  const handleChange = (search: string) => {
+    onSearch(search);
+  };
   return (
-    <>
+    <div className={styles.wrapper}>
       <Button2
         onClick={() => setIsOpen(true)}
         className={styles.menuButton(isOpen)}
       >
         <KeyboardArrowDownIcon />
       </Button2>
-      <div ref={navBarRef} className={styles.navBar(isOpen, isoverFlowHidden)}>
+      <div ref={navBarRef} className={styles.navBar(isOpen)}>
         <Button isRouterButton to="/">
           Home
         </Button>
-        {!isLogged && (
-          <Button isRouterButton to="/login">
-            Login
-          </Button>
+        {isLogged && (
+          <Button to="/newlocation" className={styles.mlauto}>Submit new location</Button>
         )}
         <div className={styles.inputWrapper}>
-          <SearchInput onChange={onSearch} options={availableGames} onSelect={onSelectGame} />
+          <SearchInput onChange={handleChange} onSelect={handleSelectGame} value={searchValue} />
         </div>
+
         {isLogged && <ProfileButton />}
       </div>
-    </>
+    </div>
   );
 };
 
 const styles = {
+  mlauto: css`
+  margin-left: auto;
+  `,
   inputWrapper: css`
   width: 30%;
-  margin-left: auto;
   `,
   userButton: css`
     margin-left: auto;
@@ -79,7 +82,7 @@ const styles = {
     /* center horizontally */
     z-index: 2;
     left: 60px;
-    top: 0px;
+    top: -5px;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
     opacity: ${isOpen ? 0 : 100};
@@ -93,22 +96,19 @@ const styles = {
   flex: css`
     display: flex;
     flex-direction: column;
-    height: 100vh;
   `,
   wrapper: css`
-    height: 100vh;
     background-color: #5ab584;
-    padding: 20px;
+    width:100%;
   `,
-  navBar: (isOpen: boolean, isoverFlowHidden: boolean) => css`
-    height: 80px;
+  navBar: (isOpen: boolean) => css`
     top: ${isOpen ? 0 : -75}px;
     background-color: #74c499;
     width: 100%;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-bottom: 5px solid #85d8ac;
     display: flex;
-    padding: ${isOpen ? 30 : 0}px 30px;
+    padding: ${isOpen ? 5 : 0}px 15px;
     align-items: center;
     justify-content: space-between;
     gap: 40px;

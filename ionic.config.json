@@ -1,8 +1,7 @@
 {
-  "name": "Game Trip",
+  "name": "game-trip",
   "integrations": {
     "capacitor": {}
   },
-  "type": "react",
-  "id": "f0e3760b"
+  "type": "react"
 }
