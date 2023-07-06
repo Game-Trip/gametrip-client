@@ -1,5 +1,5 @@
-name: front CI/CD Prod
-
+name: Build Android
+run-name: Creating Production Ready Android App 🚀
 on:
   push:
     branches: [main]
@@ -7,66 +7,81 @@ on:
     branches: [main]
 
 jobs:
-  # build:
-  #   runs-on:
-  #     - self-hosted
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         persist-credentials: false
-
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: "16.x"
-  #         always-auth: true
-
-  #     - name: Install dependencies
-  #       env:
-  #         CI: false
-  #       run: |
-  #         npm install
-  #     - name: Build app
-  #       run: |
-  #         # npm run build and ignore eslint errors
-  #         npm run build -- --max-warnings=200
-
-  buildApk:
-    runs-on:
-      - self-hosted
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    # TODO: add the default directory - COMMENT IF IT'S NOT IN SUBFOLDER
+    # defaults:
+    #   run:
+    #     working-directory: ./frontend
     steps:
       - name: Checkout source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        # TODO: add your branch to checkout
+        with:
+          ref: main
 
       - name: Setup java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          distribution: "temurin"
+          java-version: "17"
 
-      - name: Setup Ionic
-        uses: coturiv/setup-ionic@v1.0.4
-
-      - name: Install app dependencies
-        run: npm install
-
-      - name: Build Ionic App
-        run: ionic build
-
-      - name: Copy Android
-        run: ionic capacitor copy android
-
-      - name: build release
-        uses: sparkfabrik/android-build-action@v1.5.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          project-path: android
-          output-path: my-app.apk
-          ruby-version: "2.7.5"
-          bundler-version: "2.3.26"
-          fastlane-env: "debug"
+          node-version: 20.x
 
-      - name: Upload dev APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: app-dev
-          path: apk/my-app.apk
+      - name: install dependencies
+        run: npm install -g npm && npm install && npm install @capacitor/cli @capacitor/android @capacitor/ios @capacitor/core
+
+      - name: Create Build Folder
+        run: npm run generate
+
+      - name: Add android folder if not present
+        run: if [ ! -d "./android" ]; then npx cap add android; fi
+
+      - name: Capacitor update
+        run: npx cap sync android && npx cap update
+
+      - name: Capacitor copy
+        run: npx cap copy
+
+      # TODO: Check for folder structure in README for generating splash screen
+      - name: Generate icons and splash screen to android folder
+        run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
+
+      - name: Build app bundle
+        run: cd android && ./gradlew bundle && ./gradlew assembleDebug
+
+      - name: Extract Android signing key from env
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE }}" > android/release.jks.base64
+          base64 -d android/release.jks.base64 > android/release.decrypted.jks
+
+      - name: Sign dev build
+        run: jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab release
+
+      - name: Check folder content of android output
+        run: ls ./android/app/build/outputs/bundle/release
+
+      # - name: Upload release bundle
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: app-release
+      #     path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
+      #     retention-days: 60
+
+      - name: Set Tag
+        id: current-datetime
+        run: echo "CURRENT_DATETIME=$(date +'%Y-%m-%d-%H_%M_%S%z')" >> "$GITHUB_OUTPUT"
+
+      - name: Build Release
+        shell: bash
+        run: |
+          hub release create ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
+          -m ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
+          -a ./android/app/build/outputs/bundle/release/app-release-signed.aab \
+          -a ./android/app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
