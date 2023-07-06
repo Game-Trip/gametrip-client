@@ -44,8 +44,8 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Install Ionic
-        run: npm install --prefix $GITHUB_WORKSPACE @ionic/cli
+      - name: Setup Ionic
+        uses: coturiv/setup-ionic@v1.0.4
 
       - name: Install app dependencies
         run: npm install
