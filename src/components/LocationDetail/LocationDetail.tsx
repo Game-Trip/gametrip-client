@@ -33,6 +33,7 @@ const styles = {
         align-items: center;
         gap: 50px;
         margin-top: 50px;
+        margin-bottom: 50px;
     `,
     image: css`
         width: 40%;
