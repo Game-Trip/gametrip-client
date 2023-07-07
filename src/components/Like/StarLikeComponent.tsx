@@ -1,3 +1,4 @@
+import Localize from "../Translations/TranslationConext";
 import { StarSvg } from "./StarSvg"
 import './style.css';
 interface Props {
@@ -5,7 +6,7 @@ interface Props {
 }
 
 export const StarLikeComponent = ({ onChange }: Props) => {
-
+  const localize = Localize();
 
   const updateRating = (e: any) => {
     onChange(e.target.value);

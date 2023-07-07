@@ -3,14 +3,17 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useUser } from "../../hooks/useUser";
+import Localize from "../Translations/TranslationConext";
 
 
 export default function ProfileButton() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { onLogout } = useUser();
+  const localize = Localize();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -42,9 +45,9 @@ export default function ProfileButton() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profil</MenuItem>
-        <MenuItem onClick={handleClose}>Paramètres</MenuItem>
-        <MenuItem onClick={onLogout}>Déconnexion</MenuItem>
+        <MenuItem onClick={handleClose}>{localize.translate("Profil.bt")}</MenuItem>
+        <MenuItem onClick={handleClose}>{localize.translate("Profil.Params")}</MenuItem>
+        <MenuItem onClick={onLogout}>{localize.translate("Profil.Logout")}</MenuItem>
       </Menu>
     </div>
   );

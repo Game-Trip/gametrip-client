@@ -11,6 +11,7 @@ import { parseJwt } from "../../utils/parseJwt";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import { ResetPasswordDto } from "@game-trip/ts-api-client";
+import Localize from "../../components/Translations/TranslationConext";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
@@ -18,6 +19,7 @@ export default function Component(): JSX.Element {
   const pwdRef = useRef<HTMLInputElement>(null);
 
   const [resetPasswordModel, setResetPasswordModel] = useState<ResetPasswordDto>({});
+  const localize = Localize();
 
   useEffect(() => {
     const url = window.location.href;
@@ -44,8 +46,8 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Reset Password</span>
-            <span className={styles.fieldName}>E-mail</span>
+            <span className={styles.basicText}>{localize.translate("ResetPassword.FormTitle")}</span>
+            <span className={styles.fieldName}>{localize.translate("ResetPassword.EmailLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -77,12 +79,12 @@ export default function Component(): JSX.Element {
                 value={resetPasswordModel.email}
               />
             </div>
-            <span className={styles.fieldName}>Password</span>
+            <span className={styles.fieldName}>{localize.translate("ResetPassword.PasswordLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 ref={pwdRef}
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
+                placeholder={localize.translate("ResetPassword.PasswordLabel")}
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
                   setResetPasswordModel({ ...resetPasswordModel, password: val.target.value });
@@ -99,12 +101,12 @@ export default function Component(): JSX.Element {
                 {isPwdVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </div>
-            <span className={styles.fieldName}>Confirm Password</span>
+            <span className={styles.fieldName}>{localize.translate("ResetPassword.ConfirmPasswordLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 ref={pwdRef}
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
+                placeholder={localize.translate("ResetPassword.ConfirmPasswordLabel")}
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
                   setResetPasswordModel({ ...resetPasswordModel, passwordConfirmation: val.target.value });
@@ -122,7 +124,7 @@ export default function Component(): JSX.Element {
               </IconButton>
             </div>
             <button onClick={ResetPassword} className={styles.registerButton}>
-              <span>Reset My Password</span>
+              <span>{localize.translate("ResetPassword.Button")}</span>
             </button>
           </div>
         </div>

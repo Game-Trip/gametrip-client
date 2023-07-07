@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./NotFoundPage.css";
 import { useEffect, useRef, useState } from "react";
 import React from 'react';
+import Localize from "../../components/Translations/TranslationConext";
 
 const typeText: any[] = [];
 export default function NotFound() {
@@ -10,6 +11,7 @@ export default function NotFound() {
   const [error, setError] = useState(`bash: 404: ".${window.location.pathname}" webpage not found`);
   const [text, setText] = useState('');
   const naviagte = useNavigate();
+  const localize = Localize();
 
   const writeLetter = (letter: string) => {
     setText((old) => old + letter.toLowerCase());
@@ -47,7 +49,7 @@ export default function NotFound() {
           else if (text === "return" || text === "back") { naviagte(-1) }
           else if (text === "dercraker") {
             setText("");
-            setError("Opening twitch.tv/flexingseal ...");
+            setError(localize.translate("404.EasterEggDercraker"));
             setTimeout(() => window.open("https://www.twitch.tv/flexingseal", "_blank"), 2000);
           }
           else if (text === "mhd") {
@@ -56,7 +58,7 @@ export default function NotFound() {
             setTimeout(() => window.open("https://www.youtube.com/watch?v=8CBjKLGwLqE", "_blank"), 2000);
           }
           else {
-            setError(`bash: ${text.slice(text.indexOf(" ") + 1, text.length)}: command not found`);
+            setError(`${localize.translate("404.Bash")} : ${text.slice(text.indexOf(" ") + 1, text.length)}: ${localize.translate("404.NotFoundCommand")}`);
             setText("");
           }
           break;
@@ -75,9 +77,9 @@ export default function NotFound() {
 
   return (
     <div className="notFoundContainer">
-      <p><span className="username">[user@hacker]$</span> cd .{window.location.pathname}</p>
+      <p><span className="username">[{localize.translate("404.Username")}]$</span> cd .{window.location.pathname}</p>
       <p className='error'>{error}</p>
-      <p><span className="username">[user@hacker]$</span> <span id='type' ref={typeRef}>{text}</span>{isVisible && (<span >_</span>)}</p>
+      <p><span className="username">[{localize.translate("404.Username")}]$</span> <span id='type' ref={typeRef}>{text}</span>{isVisible && (<span >_</span>)}</p>
     </div>
   )
 }

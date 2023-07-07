@@ -1,8 +1,9 @@
 import { css } from '@emotion/css';
 import { Location } from '@game-trip/ts-api-client'
+import Localize from '../Translations/TranslationConext';
 
 type Props = {
-    locationDto?: Location;
+  locationDto?: Location;
 }
 
 export default function LocationDetail({ locationDto }: Props) {
@@ -66,7 +67,7 @@ const styles = {
         margin-top: 50px;
         margin-bottom: 10px;
     `,
-    image: css`
+  image: css`
         width: 40%;
         height: 400px;
         /* center content */
@@ -82,14 +83,14 @@ const styles = {
     imageSmall: css`
         height: 100px;
     `,
-    tagList: css`
+  tagList: css`
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom:10px;
   `,
-    tag: css`
+  tag: css`
     background: #85d8ac;
     display: flex;
     align-items: center;
