@@ -6,10 +6,15 @@ type Props = {
 }
 
 export default function LocationDetail({ locationDto }: Props) {
+    console.log(locationDto);
     return (
         <>
             <div className={styles.flex}>
-                <img className={styles.image} src="https://i.ytimg.com/vi/xeHkYv04zbQ/maxresdefault.jpg" />
+
+                <img className={styles.image} src={
+                    // @ts-ignore
+                    "data:image/png;base64," + locationDto?.pictures![0].picture.fileContents ?? ""
+                } />
                 <img className={styles.image} src="https://www.1jour1actu.com/wp-content/uploads/2021/10/VIDEO_histoire_tour_Eiffel.jpeg" />
             </div>
             Related games

@@ -45,38 +45,18 @@ interface AddressInformation {
   longitude: number;
 }
 
-export default function LocationForm(): JSX.Element {
+export const LocationForm = (): JSX.Element => {
   const isPresent = useIsPresent();
   const { isLogged, user, setSnackBarOpen } = useUser();
   const [description, setDescription] = useState<string>("");
   const [name, setName] = useState<string>("");
   let LocationController = AnnonymLocationController;
-  if (isLogged) {
-    const config = apiClient.createConfiguration({
-      baseServer: new apiClient.ServerConfiguration(
-        "https://staging-api.game-trip.fr",
-        {}
-      ),
-      authMethods: {
-        'Bearer': {
-          'tokenProvider': {
-            getToken() {
-              return user?.jwt;
-            },
-          }
-        } as apiClient.HttpBearerConfiguration
-      } as apiClient.AuthMethodsConfiguration,
-    });
-    LocationController = new apiClient.LocationApi(config);
-  }
-
 
 
   const navigate = useNavigate();
 
   const AddNewLocation = async () => {
     const obj = { authorId: user?.Id, longitude: addressInformation.longitude, latitude: addressInformation.latitude, description, name, };
-    console.log(obj);
     const jwt = user?.jwt;
 
     // axios POST request
@@ -101,18 +81,17 @@ export default function LocationForm(): JSX.Element {
     };
 
     axios(options)
-      .then(response => {
+      .then((response) => {
         setSnackBarOpen({ open: true, message: "Location successfully submited" });
-        navigate('/map');
+        onUpload(response.data);
+        // navigate('/map');
       }).catch((err) => {
         if (err) {
-          console.log(err.response.data.message);
           setSnackBarOpen({ open: true, message: err.response.data.message });
         }
       });
 
   }
-
 
   const [gameSearchInput, setGameSearchInput] = useState<string>("");
   const [gameSearchOptions, setGameSearchOptions] = useState<apiClient.SearchedGameDto[]>([]);
@@ -147,6 +126,42 @@ export default function LocationForm(): JSX.Element {
       })
       .catch((error: any) => console.error('Error', error));
   };
+
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+
+  const onUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.warn(e.target.files)
+    const files = e.target.files;
+    if (!files) {
+      return;
+    }
+    setSelectedFiles(files);
+  }
+
+  const onUpload = async (locId: string) => {
+    if (!selectedFiles) {
+      return;
+    }
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFiles[i]);
+      reader.onload = async () => {
+        if (typeof reader.result === 'string') {
+          const base64String = reader.result.split(',')[1];
+          // Make the API request with Axios
+          await axios.post(`https://staging-api.game-trip.fr/Picture/AddPictureToLocation/${locId}/${user!.Id}`, {
+            name: "image",
+            description: "description",
+            locationId: locId,
+            pictureData: base64String,
+            authorId: user?.Id,
+          })
+
+        }
+      };
+
+    }
+  }
   return (
     <div className={styles.wrapper}>
       <TopNavBar showLoginButton={false} showHomeButton={true} />
@@ -242,7 +257,7 @@ export default function LocationForm(): JSX.Element {
             onChange={(e) => setDescription(e.target.value)}
           />
           <div className={styles.fieldName}>Pictures</div>
-          <input type="file" multiple />
+          <input type="file" multiple onChange={onUploadChange} />
           <button onClick={AddNewLocation} className={styles.button}>
             <>
               POST

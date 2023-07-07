@@ -68,7 +68,7 @@ export default function Component(): JSX.Element {
                 placeholder="E-mail"
               />
             </div>
-            <span className={styles.fieldName}>Ussername</span>
+            <span className={styles.fieldName}>Username</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
