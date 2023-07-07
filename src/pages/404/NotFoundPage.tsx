@@ -50,6 +50,11 @@ export default function NotFound() {
             setError("Opening twitch.tv/flexingseal ...");
             setTimeout(() => window.open("https://www.twitch.tv/flexingseal", "_blank"), 2000);
           }
+          else if (text === "mhd") {
+            setText("");
+            setError("Opening free discord nitro givaway...");
+            setTimeout(() => window.open("https://www.youtube.com/watch?v=8CBjKLGwLqE", "_blank"), 2000);
+          }
           else {
             setError(`bash: ${text.slice(text.indexOf(" ") + 1, text.length)}: command not found`);
             setText("");
