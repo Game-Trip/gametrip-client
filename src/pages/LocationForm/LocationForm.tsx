@@ -161,6 +161,8 @@ export const LocationForm = (): JSX.Element => {
       };
 
     }
+    setSnackBarOpen({ open: true, message: "Location successfully submited" });
+    navigate('/map');
   }
   return (
     <div className={styles.wrapper}>
