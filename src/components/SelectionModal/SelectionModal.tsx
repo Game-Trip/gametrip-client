@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useUser } from "../../hooks/useUser";
 import axios, { AxiosResponse } from "axios";
 import LocationDetail from "../LocationDetail/LocationDetail";
+import Localize from "../Translations/TranslationConext";
 
 type Props = {
   selectedLocation?: LocationDto;
@@ -23,6 +24,7 @@ export default function SelectionModal({
   const [locationDto, setLocationDto] = React.useState<LocationDto>();
   const isOpen = !!selectedLocation;
   const { user } = useUser();
+  const localize = Localize();
   useEffect(() => {
     if (!selectedLocation) {
       return;

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AnnonymAuthController } from '../../utils/api/baseApi';
+import Localize from '../../components/Translations/TranslationConext';
 
 export default function EmailCheck() {
   const getUrlParameter = (url: string, parameterName: string) => {
@@ -15,6 +16,8 @@ export default function EmailCheck() {
 
     return decodedValue;
   }
+
+  const localize = Localize();
   const navigate = useNavigate();
   // http://localhost:3000/Auth/ConfirmationMail?Token=CfDJ8Fz8hn0sCx5Hh/8JGXkoW6d6BlVaAa1je6taaJBouhlZVSJSI1B1t12fTFnK+dR8eUFJs4YOMQBKfNNCY1rWvc3ojXKJdjajIGXOKWYuSmiQIl5M1Zw41LKY9NhGRRxSZ8Outz4ZGDf2oxPiD2uDka3UpjkSXJylbpTyMZgIWhi6MGzNz94T6kZZqhJA+l211LpWq7XeXRMDK1cjgDx0AfKVauyl0qLd1iFqifjmurvNjo0PyePzqjvqssBrWFATgQ==&Email=mhdi.seddik+11@gmail.com
   useEffect(() => {
@@ -30,6 +33,6 @@ export default function EmailCheck() {
     confirmEmail();
   }, [])
   return (
-    <div>Email has been verified, you can close this tab</div>
+    <div>{localize.translate("EmailCheck.MailVerified")}</div>
   )
 }

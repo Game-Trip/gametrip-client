@@ -8,11 +8,13 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import Localize from "../../components/Translations/TranslationConext";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
   const { onRegister } = useUser();
   const pwdRef = useRef<HTMLInputElement>(null);
+  const localize = Localize();
 
   const [userAuth, setUserAuth] = React.useState({
     email: "",
@@ -33,8 +35,8 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Register</span>
-            <span className={styles.fieldName}>E-mail</span>
+            <span className={styles.basicText}>{localize.translate("Register.TitleForm")}</span>
+            <span className={styles.fieldName}>{localize.translate("Register.EmailLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -68,7 +70,7 @@ export default function Component(): JSX.Element {
                 placeholder="E-mail"
               />
             </div>
-            <span className={styles.fieldName}>Ussername</span>
+            <span className={styles.fieldName}>{localize.translate("Register.UsernameLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -99,15 +101,15 @@ export default function Component(): JSX.Element {
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, username: val.target.value });
                 }}
-                placeholder="E-mail"
+                placeholder={localize.translate("Register.UsernameLabel")}
               />
             </div>
-            <span className={styles.fieldName}>Password</span>
+            <span className={styles.fieldName}>{localize.translate("Register.PasswordLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 ref={pwdRef}
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
+                placeholder={localize.translate("Register.PasswordLabel")}
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, password: val.target.value });
@@ -125,13 +127,13 @@ export default function Component(): JSX.Element {
               </IconButton>
             </div>
             <button onClick={handleRegister} className={styles.registerButton}>
-              <span>Register</span>
+              <span>{localize.translate("Register.Button")}</span>
             </button>
             <Link
               style={{ textDecoration: "none", color: "white" }}
               to="/login"
             >
-              Already registered ?
+              {localize.translate("Register.AlreadyRegistred")}
             </Link>
           </div>
         </div>

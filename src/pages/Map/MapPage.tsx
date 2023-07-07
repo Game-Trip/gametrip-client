@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import SelectionModal from "../../components/SelectionModal/SelectionModal";
 import { LocationDto, SearchedGameDto } from "@game-trip/ts-api-client";
 import { MarkerEvent } from "react-map-gl/dist/esm/types";
+import Localize from "../../components/Translations/TranslationConext";
 
 interface Props {
   selectedLocation?: LocationDto;
@@ -24,6 +25,8 @@ interface Props {
 const MapPage = ({ setSearchValue, selectedLocation, setSelectedLocation, selectedGame, setSelectedGame, availableGames, setAvailableGames, searchValue }: Props) => {
   const isPresent = useIsPresent();
   const [locationsData, setLocationsdata] = useState<LocationDto[]>([]);
+  const localize = Localize();
+
   useEffect(() => {
     if (selectedGame) {
       const firstLocation = selectedGame.locations?.[0];

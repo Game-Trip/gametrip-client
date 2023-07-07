@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { css } from "@emotion/css";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
 import { AnnonymSearchController } from "../../utils/api/baseApi";
+import Localize from "../Translations/TranslationConext";
 
 type Props = {
   value: string,
@@ -14,6 +15,7 @@ type Props = {
 
 export default function SearchInput({ changeOnSelect, value, onChange, onSelect }: Props) {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const localize = Localize();
 
   const [options, setOptions] = useState<SearchedGameDto[]>([]);
 
@@ -46,7 +48,7 @@ export default function SearchInput({ changeOnSelect, value, onChange, onSelect 
           onBlur={() => setIsFocused(false)}
           onChange={(e) => onChange(e.target.value)}
           sx={{ ml: 1, flex: 1, width: "100%" }}
-          placeholder="Battlefield 2042, Call of Duty, ..."
+          placeholder={localize.translate("Searchbar.Placeholder")}
         />
         <IconButton
           type="button"

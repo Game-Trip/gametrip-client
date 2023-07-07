@@ -8,12 +8,14 @@ import ProfileButton from "../ProfileButton/ProfileButton";
 import { useOnClickOutside } from "usehooks-ts";
 import SearchInput from "../SearchInput/SearchInput";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
+import Localize from "../Translations/TranslationConext";
 interface Props {
   searchValue: string,
   onSearch: (search: string) => void;
   onSelectGame: (game?: SearchedGameDto) => void;
 }
 export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props) => {
+  const localize = Localize();
   const navBarRef = React.useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = React.useState(true);
 
@@ -40,10 +42,10 @@ export const CollapsableNavBar = ({ onSearch, onSelectGame, searchValue }: Props
       </Button2>
       <div ref={navBarRef} className={styles.navBar(isOpen)}>
         <Button isRouterButton to="/">
-          Home
+          {localize.translate("Navbar.Home")}
         </Button>
         {isLogged && (
-          <Button to="/newlocation" className={styles.mlauto}>Submit new location</Button>
+          <Button to="/newlocation" className={styles.mlauto}>{localize.translate("Locationform.Title")}</Button>
         )}
         <div className={styles.inputWrapper}>
           <SearchInput onChange={handleChange} onSelect={handleSelectGame} value={searchValue} />

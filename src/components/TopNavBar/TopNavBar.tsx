@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import React from 'react';
+import Localize from "../Translations/TranslationConext";
 interface Props {
   showHomeButton?: boolean;
   showLoginButton?: boolean;
@@ -11,6 +12,7 @@ export const TopNavBar = ({
   showHomeButton = true,
   showLoginButton = true,
 }: Props) => {
+  const localize = Localize();
   const { isLogged } = useUser();
   const isDev = true;
 
@@ -22,7 +24,7 @@ export const TopNavBar = ({
           style={{ textDecoration: "none", color: "white" }}
           to={"/"}
         >
-          <span>Home</span>
+          <span>{localize.translate("Navbar.Home")}</span>
         </Link>
       )}
       <Link
@@ -30,7 +32,7 @@ export const TopNavBar = ({
         style={{ textDecoration: "none", color: "white" }}
         to={"/map"}
       >
-        <span>Map</span>
+        <span>{localize.translate("Navbar.Map")}</span>
       </Link>
       {!isLogged && showLoginButton && (
         <Link
@@ -38,7 +40,7 @@ export const TopNavBar = ({
           style={{ textDecoration: "none", color: "white" }}
           to={"/login"}
         >
-          <span>Login</span>
+          <span>{localize.translate("Navbar.Login")}</span>
         </Link>
       )}
       {isLogged && <div className={styles.mlauto}><ProfileButton /></div>

@@ -16,6 +16,7 @@ import PlacesAutocomplete, {
 } from 'react-places-autocomplete';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import Localize from '../../components/Translations/TranslationConext';
 
 const inputStyle = {
   ml: 1,
@@ -47,6 +48,8 @@ interface AddressInformation {
 
 export default function LocationForm(): JSX.Element {
   const isPresent = useIsPresent();
+  const localize = Localize();
+
   const { isLogged, user, setSnackBarOpen } = useUser();
   const [description, setDescription] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -150,21 +153,21 @@ export default function LocationForm(): JSX.Element {
   return (
     <div className={styles.wrapper}>
       <TopNavBar showLoginButton={false} showHomeButton={true} />
-      <div className={styles.basicText}>Submit a new point of interest</div>
+      <div className={styles.basicText}>{localize.translate("Locationform.Title")}</div>
       <div className={styles.formWrapper}>
         <div className={styles.side}>
-          <div className={styles.fieldName}>Name</div>
+          <div className={styles.fieldName}>{localize.translate("Locationform.NameLabel")}</div>
           <div className={styles.formInput}>
             <InputBase
               autoComplete="off"
               aria-autocomplete="none"
               sx={inputStyle}
-              placeholder="Place, monument..."
+              placeholder={localize.translate("Locationform.NameLabel")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className={styles.fieldName}>Related games</div>
+          <div className={styles.fieldName}>{localize.translate("Locationform.GameLabel")}</div>
           <div className={styles.tagList}>
             {selectedGames.map((game, idx) => <div className={styles.tag} key={idx}>
               <span>
@@ -192,7 +195,7 @@ export default function LocationForm(): JSX.Element {
           />
         </div>
         <div className={styles.side}>
-          <div className={styles.fieldName}>Address</div>
+          <div className={styles.fieldName}>{localize.translate("Locationform.AddressLabel")}</div>
           <PlacesAutocomplete
             value={addressInformation.name}
             onChange={handleChange}
@@ -204,17 +207,17 @@ export default function LocationForm(): JSX.Element {
                   <div className={styles.formInput}>
                     <InputBase
                       {...getInputProps({
-                        placeholder: 'Search Places ...',
+                        placeholder: `${localize.translate("Locationform.AddressPlaceHolder")}`,
                         className: 'location-search-input',
                       })}
                       autoComplete="off"
                       aria-autocomplete="none"
                       sx={inputStyle}
-                      placeholder=""
+                      placeholder={localize.translate("Locationform.AddressPlaceHolder")}
                     />
                   </div>
                   <div className={cx("autocomplete-dropdown-container", styles.addrAutoComplete)}>
-                    {loading && <div>Loading...</div>}
+                    {loading && <div>{localize.translate("Locationform.LoadingText")}</div>}
                     {suggestions.map((suggestion: Suggestion) => {
                       // inline style for demonstration purpose
                       return (
@@ -231,21 +234,21 @@ export default function LocationForm(): JSX.Element {
             }}
           </PlacesAutocomplete>
 
-          <div className={styles.fieldName}>Description</div>
+          <div className={styles.fieldName}>{localize.translate("Locationform.DescriptionLabel")}</div>
           <InputBase
             multiline
             autoComplete="off"
             aria-autocomplete="none"
-            placeholder="Description"
+            placeholder={localize.translate("Locationform.DescriptionLabel")}
             className={styles.formMultiline}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <div className={styles.fieldName}>Pictures</div>
+          <div className={styles.fieldName}>{localize.translate("Locationform.PicturesLabel")}</div>
           <input type="file" multiple />
           <button onClick={AddNewLocation} className={styles.button}>
             <>
-              POST
+              {localize.translate("Locationform.PostBt")}
             </>
           </button>
         </div>

@@ -1,31 +1,33 @@
 import { css } from '@emotion/css';
 import { Location } from '@game-trip/ts-api-client'
+import Localize from '../Translations/TranslationConext';
 
 type Props = {
-    locationDto?: Location;
+  locationDto?: Location;
 }
 
 export default function LocationDetail({ locationDto }: Props) {
-    return (
-        <>
-            <div className={styles.flex}>
-                <img className={styles.image} src="https://i.ytimg.com/vi/xeHkYv04zbQ/maxresdefault.jpg" />
-                <img className={styles.image} src="https://www.1jour1actu.com/wp-content/uploads/2021/10/VIDEO_histoire_tour_Eiffel.jpeg" />
-            </div>
-            Related games
-            <div className={styles.tagList}>
-                {locationDto?.games?.map((game) => {
-                    return (
-                        <div className={styles.tag}>{game.name}</div>
-                    )
-                })}
-            </div>
-        </>
-    )
+  const localize = Localize();
+  return (
+    <>
+      <div className={styles.flex}>
+        <img className={styles.image} src="https://i.ytimg.com/vi/xeHkYv04zbQ/maxresdefault.jpg" />
+        <img className={styles.image} src="https://www.1jour1actu.com/wp-content/uploads/2021/10/VIDEO_histoire_tour_Eiffel.jpeg" />
+      </div>
+      {localize.translate("Locationform.GameLabel")}
+      <div className={styles.tagList}>
+        {locationDto?.games?.map((game) => {
+          return (
+            <div className={styles.tag}>{game.name}</div>
+          )
+        })}
+      </div>
+    </>
+  )
 }
 
 const styles = {
-    flex: css`
+  flex: css`
         display: flex;
         flex-direction: row;
         /* center */
@@ -35,18 +37,18 @@ const styles = {
         margin-top: 50px;
         margin-bottom: 50px;
     `,
-    image: css`
+  image: css`
         width: 40%;
         height: 400px;
     `,
-    tagList: css`
+  tagList: css`
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom:10px;
   `,
-    tag: css`
+  tag: css`
     background: #85d8ac;
     display: flex;
     align-items: center;

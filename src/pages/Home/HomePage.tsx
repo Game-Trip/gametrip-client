@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { css } from "@emotion/css";
 import { motion, useIsPresent } from "framer-motion";
 import "../styles.css";
@@ -6,6 +6,7 @@ import logo from "../logo-no-background.png";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { SearchedGameDto } from "@game-trip/ts-api-client";
+import Localize from '../../components/Translations/TranslationConext';
 
 interface Props {
   searchValue: string;
@@ -16,6 +17,8 @@ interface Props {
 const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
 
   const isPresent = useIsPresent();
+  const localize = Localize();
+
 
   return (
     <div className={styles.wrapper}>
@@ -25,7 +28,7 @@ const HomePage = ({ onSearch, onSelect, options, searchValue }: Props) => {
 
         <div className={styles.footer}>
           <div className={styles.searchSection}>
-            <div className={styles.basicText}>Recherchez un jeu</div>
+            <div className={styles.basicText}>{localize.translate("Searchbar.Title")}</div>
             <SearchInput onChange={onSearch} onSelect={onSelect} value={searchValue} />
           </div>
         </div>

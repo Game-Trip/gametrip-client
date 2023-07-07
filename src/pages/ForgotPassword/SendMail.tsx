@@ -5,12 +5,14 @@ import logo from "../logo-no-background.png";
 import { InputBase } from "@mui/material";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import Localize from "../../components/Translations/TranslationConext";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
   const { onForgotPassword } = useUser();
 
   const [forgotPasswordDto, setForgotPasswordDto] = useState({});
+  const localize = Localize();
 
   const sendForgotPasswordMail = async () =>
     await onForgotPassword(forgotPasswordDto);
@@ -23,8 +25,8 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Forgot Password </span>
-            <span className={styles.fieldName}>Username / E-mail</span>
+            <span className={styles.basicText}>{localize.translate("ForgotPassword.FormTitle")}</span>
+            <span className={styles.fieldName}>{localize.translate("ForgotPassword.UsernameLabel")}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -55,11 +57,11 @@ export default function Component(): JSX.Element {
                 onChange={(val) => {
                   setForgotPasswordDto({ ...forgotPasswordDto, email: val.target.value });
                 }}
-                placeholder="Username or E-mail"
+                placeholder={localize.translate("ForgotPassword.UsernameLabel")}
               />
             </div>
             <button onClick={sendForgotPasswordMail} className={styles.loginButton}>
-              <span>Send Mail</span>
+              <span>{localize.translate("ForgotPassword.Button")}</span>
             </button>
           </div>
         </div>

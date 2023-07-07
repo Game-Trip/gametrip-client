@@ -8,6 +8,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useUser } from "../../hooks/useUser";
 import { TopNavBar } from "../../components/TopNavBar/TopNavBar";
+import Localize from "../../components/Translations/TranslationConext";
 
 export default function Component(): JSX.Element {
   const isPresent = useIsPresent();
@@ -19,6 +20,7 @@ export default function Component(): JSX.Element {
     password: "",
   });
 
+  const localize = Localize();
   const [isPwdVisible, setIsPwdVisible] = React.useState(false);
 
   const handleLogin = async () =>
@@ -32,8 +34,8 @@ export default function Component(): JSX.Element {
 
         <div className={styles.loginSection}>
           <div className={styles.formWrapper}>
-            <span className={styles.basicText}>Authenticate</span>
-            <span className={styles.fieldName}>E-mail</span>
+            <span className={styles.basicText}>{localize.translate("Auth.LoginTitle")}</span>
+            <span className={styles.fieldName}>{localize.translate("Auth.Email")}</span>
             <div className={styles.formInput}>
               <InputBase
                 autoComplete="off"
@@ -64,15 +66,15 @@ export default function Component(): JSX.Element {
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, username: val.target.value });
                 }}
-                placeholder="E-mail"
+                placeholder={localize.translate("Auth.Email")}
               />
             </div>
-            <span className={styles.fieldName}>Password</span>
+            <span className={styles.fieldName}>{localize.translate("Auth.Password")}</span>
             <div className={styles.formInput}>
               <InputBase
                 ref={pwdRef}
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="Password"
+                placeholder={localize.translate("Auth.Password")}
                 type={isPwdVisible ? "text" : "password"}
                 onChange={(val) => {
                   setUserAuth({ ...userAuth, password: val.target.value });
@@ -93,16 +95,16 @@ export default function Component(): JSX.Element {
               style={{ textDecoration: "none", color: "white" }}
               to="/forgot-password"
             >
-              Forgot Password ?
+              {localize.translate("Auth.ForgotPassword")}
             </Link>
             <button onClick={handleLogin} className={styles.loginButton}>
-              <span>Login</span>
+              <span>{localize.translate("Auth.LoginBt")}</span>
             </button>
             <Link
               style={{ textDecoration: "none", color: "white" }}
               to="/register"
             >
-              Not registered yet ?
+              {localize.translate("Auth.Register")}
             </Link>
           </div>
         </div>
