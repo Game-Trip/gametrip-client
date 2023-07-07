@@ -13,8 +13,8 @@ import ResetPasswordPage from './pages/ForgotPassword/ResetPassword'
 import MapPage from './pages/Map/MapPage'
 import { LocationDto, SearchedGameDto } from '@game-trip/ts-api-client'
 import EmailCheck from './pages/EmailCheck/EmailCheck'
-import LocationForm from './pages/LocationForm/LocationForm'
 import { AnnonymSearchController } from './utils/api/baseApi'
+import { LocationForm } from './pages/LocationForm/LocationForm'
 
 setupIonicReact()
 

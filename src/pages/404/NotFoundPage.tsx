@@ -52,6 +52,11 @@ export default function NotFound() {
             setError(localize.translate("404.EasterEggDercraker"));
             setTimeout(() => window.open("https://www.twitch.tv/flexingseal", "_blank"), 2000);
           }
+          else if (text === "mhd") {
+            setText("");
+            setError("Opening free discord nitro givaway...");
+            setTimeout(() => window.open("https://www.youtube.com/watch?v=8CBjKLGwLqE", "_blank"), 2000);
+          }
           else {
             setError(`${localize.translate("404.Bash")} : ${text.slice(text.indexOf(" ") + 1, text.length)}: ${localize.translate("404.NotFoundCommand")}`);
             setText("");
