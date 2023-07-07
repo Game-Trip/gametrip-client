@@ -3,6 +3,7 @@
 This is a web project built with React and Ionic.
 
 ## Getting Started
+first you will to install [Ionic](https://ionicframework.com/docs/intro/cli)
 
 To get started with local development, follow these steps:
 
